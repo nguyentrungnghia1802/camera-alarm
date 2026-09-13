@@ -9,7 +9,7 @@ Bạn đang phát triển ứng dụng Android cá nhân **Camera Alarm**. Ưu t
 Trước khi làm task:
 
 1. Đọc file này.
-2. Đọc `docs/agent/task.md`.
+2. Đọc `docs\agent\tasks\phase3-task.md`.
 3. Chỉ đọc các file trong `docs/project/` liên quan trực tiếp tới task hiện tại.
 4. Đọc source/test liên quan trực tiếp; không quét toàn repository nếu không cần.
 
