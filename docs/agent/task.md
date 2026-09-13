@@ -317,14 +317,14 @@ Chỉ được sang Phase 2 khi tất cả đều đúng:
 
 ## P2.8 — UI cleanup và accessibility
 
-- [ ] App status dễ đọc: Ready / Needs setup / Alarming.
-- [ ] STOP target lớn, accessible label rõ.
-- [ ] Content descriptions cho icon quan trọng.
-- [ ] Không dựa riêng vào màu để biểu diễn readiness/error.
-- [ ] Strings đưa vào resources; tránh hardcode text rải rác.
-- [ ] Dark/light mode không làm mất readability.
-- [ ] Không thêm animation nặng ảnh hưởng alarm startup.
-- [ ] Commit: `ui: polish camera alarm experience`.
+- [x] App status dễ đọc: Ready / Needs setup / Alarming.
+- [x] STOP target lớn, accessible label rõ.
+- [x] Content descriptions cho icon quan trọng.
+- [x] Không dựa riêng vào màu để biểu diễn readiness/error.
+- [x] Strings đưa vào resources; tránh hardcode text rải rác.
+- [x] Dark/light mode không làm mất readability.
+- [x] Không thêm animation nặng ảnh hưởng alarm startup.
+- [x] Commit: `ui: polish camera alarm experience`.
 
 ## P2.9 — Final device validation và release APK
 
