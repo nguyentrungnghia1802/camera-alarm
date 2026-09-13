@@ -282,13 +282,13 @@ Chỉ được sang Phase 2 khi tất cả đều đúng:
 
 ## P2.5 — Alarm settings và Test Alarm
 
-- [ ] Delay presets 0/1/3/5 giây.
-- [ ] Cooldown presets 0/10/30/60 giây.
-- [ ] Vibration toggle.
-- [ ] `TEST ALARM` gọi cùng AlarmPlayer/Vibration runtime production path nhưng không giả notification match.
-- [ ] Test Alarm có STOP và không phá monitoring state.
-- [ ] Nếu alarm volume zero, show explicit warning trước/đồng thời test.
-- [ ] Commit: `ui: add alarm settings and test alarm`.
+- [x] Delay presets 0/1/3/5 giây.
+- [x] Cooldown presets 0/10/30/60 giây.
+- [x] Vibration toggle.
+- [x] `TEST ALARM` gọi cùng AlarmPlayer/Vibration runtime production path nhưng không giả notification match.
+- [x] Test Alarm có STOP và không phá monitoring state.
+- [x] Nếu alarm volume zero, show explicit warning trước/đồng thời test.
+- [x] Commit: `ui: add alarm settings and test alarm`.
 
 ## P2.6 — History và diagnostics
 
