@@ -173,6 +173,8 @@ Không dùng `force-stop` để chứng minh case này vì Android cố tình ch
 - diagnostics cảnh báo.
 - Test Alarm không được giả báo là loud.
 
+Nếu thiết bị báo `STREAM_ALARM` có minimum > 0 và từ chối đặt về 0, ghi lại giới hạn platform. Khi đó test unit nhánh `current = 0` của volume diagnostics và xác nhận debug output đọc đúng current/min/max trên thiết bị; không ghi rằng đã tạo được volume 0 thật.
+
 ## 7. ADB/debug injection
 
 Nên có debug-only `DebugTriggerActivity` hoặc developer action để tạo `IncomingNotification`/`ValidTrigger` giả, giúp test core mà không phụ thuộc hãng camera.

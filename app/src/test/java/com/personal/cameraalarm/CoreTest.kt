@@ -67,6 +67,16 @@ class CoreTest {
         assertEquals(1, scheduler.scheduled.size)
         assertTrue(coordinator.state.value is AlarmState.Pending)
     }
+    @Test fun lateAlarmStillRingsButDuplicateFireAfterStopIsStale() {
+        val t = snapshot()
+        val pending = AlarmState.Pending(t, 1100)
+        val late = AlarmReducer.reduce(pending, AlarmEvent.ExactAlarmFired(t), 50_000, AlarmPolicy())
+        assertEquals(AlarmState.Ringing(t, 50_000), late.nextState)
+        val stopped = AlarmReducer.reduce(late.nextState, AlarmEvent.StopRequested(t.alarmToken), 50_001, AlarmPolicy())
+        val duplicate = AlarmReducer.reduce(stopped.nextState, AlarmEvent.ExactAlarmFired(t), 50_002, AlarmPolicy())
+        assertEquals(stopped.nextState, duplicate.nextState)
+        assertTrue(duplicate.effects.none { it is AlarmEffect.StartRinging })
+    }
     private class RecordingScheduler : AlarmScheduler {
         val scheduled = mutableListOf<AlarmToken>()
         override fun canScheduleExactAlarms() = true

@@ -193,32 +193,32 @@ unit tests
 
 ### Checklist
 
-- [ ] Chạy M1 Foreground app.
-- [ ] Chạy M2 Background.
-- [ ] Chạy M3 Screen locked.
-- [ ] Chạy M4 Doze/idle nếu môi trường hỗ trợ.
-- [ ] Chạy M5 Spam notification: 5 event / 2 giây, chỉ một alarm.
-- [ ] Chạy M6 Cooldown boundary.
-- [ ] Chạy M7 Exact alarm permission revoke.
-- [ ] Chạy M8 Notification listener access off/on.
-- [ ] Chạy M9 Process recreation before fire.
-- [ ] Chạy M10 Alarm volume zero diagnostics tối thiểu bằng temporary debug output nếu UI chưa có.
-- [ ] Fix mọi crash, duplicate alarm, stale token hoặc STOP race phát hiện được.
-- [ ] `./gradlew test lint assembleDebug` pass sạch.
-- [ ] Cập nhật docs nếu platform behavior thực tế khác assumption.
-- [ ] Commit: `test: harden core alarm flow end to end`.
+- [x] Chạy M1 Foreground app.
+- [x] Chạy M2 Background.
+- [x] Chạy M3 Screen locked.
+- [x] Chạy M4 Doze/idle nếu môi trường hỗ trợ.
+- [x] Chạy M5 Spam notification: 5 event / 2 giây, chỉ một alarm.
+- [x] Chạy M6 Cooldown boundary.
+- [x] Chạy M7 Exact alarm permission revoke.
+- [x] Chạy M8 Notification listener access off/on.
+- [x] Chạy M9 Process recreation before fire.
+- [x] Chạy M10 Alarm volume zero diagnostics tối thiểu bằng temporary debug output nếu UI chưa có.
+- [x] Fix mọi crash, duplicate alarm, stale token hoặc STOP race phát hiện được.
+- [x] `./gradlew test lint assembleDebug` pass sạch.
+- [x] Cập nhật docs nếu platform behavior thực tế khác assumption.
+- [x] Commit: `test: harden core alarm flow end to end`.
 
 ### Phase 1 gate
 
 Chỉ được sang Phase 2 khi tất cả đều đúng:
 
-- [ ] Matcher/dedupe/reducer tests pass.
-- [ ] Notification thật hoặc representative injected event đi xuyên pipeline đúng.
-- [ ] Exact alarm fire được từ background.
-- [ ] Alarm continuous đến STOP.
-- [ ] Spam không double alarm.
-- [ ] Permission missing không crash/không fake success.
-- [ ] Screen-lock test pass trên ít nhất một API 34+ target.
+- [x] Matcher/dedupe/reducer tests pass.
+- [x] Notification thật hoặc representative injected event đi xuyên pipeline đúng.
+- [x] Exact alarm fire được từ background.
+- [x] Alarm continuous đến STOP.
+- [x] Spam không double alarm.
+- [x] Permission missing không crash/không fake success.
+- [x] Screen-lock test pass trên ít nhất một API 34+ target.
 
 ---
 
