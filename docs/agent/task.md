@@ -269,16 +269,16 @@ Chỉ được sang Phase 2 khi tất cả đều đúng:
 
 ## P2.4 — Trigger rule management
 
-- [ ] Rule list screen.
-- [ ] Create/edit/delete rule.
-- [ ] `CONTAINS_ANY` / `CONTAINS_ALL` selector.
-- [ ] Keywords one-per-line editor.
-- [ ] Validate max 30 keywords, mỗi keyword max 100 chars.
-- [ ] Enabled toggle + priority.
-- [ ] Add editable template cho person/motion keywords; không auto-enable trước xác nhận.
-- [ ] Hiển thị preview normalized keywords.
-- [ ] Tests cho validation/ViewModel.
-- [ ] Commit: `ui: add camera notification trigger rules`.
+- [x] Rule list screen.
+- [x] Create/edit/delete rule.
+- [x] `CONTAINS_ANY` / `CONTAINS_ALL` selector.
+- [x] Keywords one-per-line editor.
+- [x] Validate max 30 keywords, mỗi keyword max 100 chars.
+- [x] Enabled toggle + priority.
+- [x] Add editable template cho person/motion keywords; không auto-enable trước xác nhận.
+- [x] Hiển thị preview normalized keywords.
+- [x] Tests cho validation/ViewModel.
+- [x] Commit: `ui: add camera notification trigger rules`.
 
 ## P2.5 — Alarm settings và Test Alarm
 
