@@ -16,6 +16,8 @@ class InMemoryAlarmStateStore : AlarmStateStore {
     override suspend fun write(state: AlarmState) { stored = state }
 }
 fun interface AlarmEffectObserver { suspend fun onEffect(effect: AlarmEffect) }
+enum class AlarmOutcome { SCHEDULED, SCHEDULE_FAILED, SUPPRESSED_PENDING, SUPPRESSED_RINGING, SUPPRESSED_COOLDOWN }
+fun interface ValidTriggerSink { suspend fun onValidTrigger(trigger: TriggerSnapshot): AlarmOutcome }
 
 class AlarmCoordinator(
     private val clock: Clock,
@@ -23,12 +25,39 @@ class AlarmCoordinator(
     private val store: AlarmStateStore,
     private val policy: () -> AlarmPolicy,
     private val observer: AlarmEffectObserver = AlarmEffectObserver { }
-) {
+) : ValidTriggerSink {
     private val mutex = Mutex()
     private val mutableState = MutableStateFlow<AlarmState>(AlarmState.Idle)
     val state = mutableState.asStateFlow()
 
-    suspend fun onValidTrigger(trigger: TriggerSnapshot) = dispatch(AlarmEvent.ValidTrigger(trigger))
+    override suspend fun onValidTrigger(trigger: TriggerSnapshot): AlarmOutcome = mutex.withLock {
+        val current = store.read()
+        val transition = AlarmReducer.reduce(current, AlarmEvent.ValidTrigger(trigger), clock.nowEpochMs(), policy())
+        val suppression = transition.effects.filterIsInstance<AlarmEffect.RecordSuppression>().firstOrNull()
+        if (suppression != null) {
+            observer.onEffect(suppression)
+            return@withLock when (suppression.reason) {
+                SuppressionReason.PENDING -> AlarmOutcome.SUPPRESSED_PENDING
+                SuppressionReason.RINGING -> AlarmOutcome.SUPPRESSED_RINGING
+                else -> AlarmOutcome.SUPPRESSED_COOLDOWN
+            }
+        }
+        val schedule = transition.effects.filterIsInstance<AlarmEffect.ScheduleExact>().single()
+        store.write(transition.nextState)
+        mutableState.value = transition.nextState
+        val result = scheduler.scheduleExact(schedule.trigger.alarmToken, schedule.triggerAtEpochMs)
+        if (result == ScheduleResult.Scheduled) {
+            observer.onEffect(schedule)
+            AlarmOutcome.SCHEDULED
+        } else {
+            val failed = AlarmReducer.reduce(transition.nextState, AlarmEvent.ScheduleFailed(trigger.alarmToken), clock.nowEpochMs(), policy())
+            store.write(failed.nextState)
+            mutableState.value = failed.nextState
+            failed.effects.forEach { observer.onEffect(it) }
+            observer.onEffect(AlarmEffect.RecordFailure(result.toString()))
+            AlarmOutcome.SCHEDULE_FAILED
+        }
+    }
     suspend fun onExactAlarmFired(trigger: TriggerSnapshot) = dispatch(AlarmEvent.ExactAlarmFired(trigger))
     suspend fun onStopRequested(token: AlarmToken?) = dispatch(AlarmEvent.StopRequested(token))
 

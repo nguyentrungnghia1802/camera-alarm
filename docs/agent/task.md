@@ -80,21 +80,21 @@ unit tests
 
 ### Checklist
 
-- [ ] Khai báo `CameraNotificationListener` đúng manifest với `BIND_NOTIFICATION_LISTENER_SERVICE`, exported false và service intent filter.
-- [ ] Implement `ListenerConnectionState` cập nhật `CONNECTED/DISCONNECTED` từ lifecycle callback.
-- [ ] Implement Android `NotificationExtractor` đọc TITLE, TEXT, BIG_TEXT, TEXT_LINES, SUB_TEXT mà không crash với null/sai type.
-- [ ] Viết adapter tests/Robolectric tests cho extractor nếu khả thi; tối thiểu phải unit-test helper convert Bundle -> domain data.
-- [ ] Implement `TriggerPipeline` theo đúng order: monitoring -> package -> dedupe -> rules -> coordinator.
-- [ ] Đảm bảo callback listener không làm Room/DataStore I/O blocking trên main thread.
-- [ ] Không gọi MediaPlayer, Vibrator hoặc `startForegroundService()` trong listener.
-- [ ] Ghi structured decision/history contract nhưng có thể dùng fake repository trước khi Room hoàn thiện Phase 2.
-- [ ] Thêm debug logging không chứa full notification text ở release path.
-- [ ] Tạo debug-only injection path để bơm `IncomingNotification` giả qua TriggerPipeline; không exported ở release.
-- [ ] Test: wrong package không tới coordinator.
-- [ ] Test: duplicate selected-package notification không tới coordinator lần hai.
-- [ ] Test: matching rule gửi đúng một `ValidTrigger`.
-- [ ] Chạy `./gradlew test lint`.
-- [ ] Commit: `feat: ingest camera notifications safely`.
+- [x] Khai báo `CameraNotificationListener` đúng manifest với `BIND_NOTIFICATION_LISTENER_SERVICE`, exported false và service intent filter.
+- [x] Implement `ListenerConnectionState` cập nhật `CONNECTED/DISCONNECTED` từ lifecycle callback.
+- [x] Implement Android `NotificationExtractor` đọc TITLE, TEXT, BIG_TEXT, TEXT_LINES, SUB_TEXT mà không crash với null/sai type.
+- [x] Viết adapter tests/Robolectric tests cho extractor nếu khả thi; tối thiểu phải unit-test helper convert Bundle -> domain data.
+- [x] Implement `TriggerPipeline` theo đúng order: monitoring -> package -> dedupe -> rules -> coordinator.
+- [x] Đảm bảo callback listener không làm Room/DataStore I/O blocking trên main thread.
+- [x] Không gọi MediaPlayer, Vibrator hoặc `startForegroundService()` trong listener.
+- [x] Ghi structured decision/history contract nhưng có thể dùng fake repository trước khi Room hoàn thiện Phase 2.
+- [x] Thêm debug logging không chứa full notification text ở release path.
+- [x] Tạo debug-only injection path để bơm `IncomingNotification` giả qua TriggerPipeline; không exported ở release.
+- [x] Test: wrong package không tới coordinator.
+- [x] Test: duplicate selected-package notification không tới coordinator lần hai.
+- [x] Test: matching rule gửi đúng một `ValidTrigger`.
+- [x] Chạy `./gradlew test lint`.
+- [x] Commit: `feat: ingest camera notifications safely`.
 
 ### Acceptance criteria
 
