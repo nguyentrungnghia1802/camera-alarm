@@ -258,14 +258,14 @@ Chỉ được sang Phase 2 khi tất cả đều đúng:
 
 ## P2.3 — Source app picker
 
-- [ ] Thêm manifest `<queries>` cho launcher intent; không thêm `QUERY_ALL_PACKAGES`.
-- [ ] Query launchable apps, show icon/label/package.
-- [ ] Cho chọn một source app active.
-- [ ] Advanced manual package-name input.
-- [ ] Validate package string non-blank.
-- [ ] Sau đổi source, readiness yêu cầu enabled rule cho source mới.
-- [ ] Test repository/UI logic.
-- [ ] Commit: `ui: add camera source app picker`.
+- [x] Thêm manifest `<queries>` cho launcher intent; không thêm `QUERY_ALL_PACKAGES`.
+- [x] Query launchable apps, show icon/label/package.
+- [x] Cho chọn một source app active.
+- [x] Advanced manual package-name input.
+- [x] Validate package string non-blank.
+- [x] Sau đổi source, readiness yêu cầu enabled rule cho source mới.
+- [x] Test repository/UI logic.
+- [x] Commit: `ui: add camera source app picker`.
 
 ## P2.4 — Trigger rule management
 
