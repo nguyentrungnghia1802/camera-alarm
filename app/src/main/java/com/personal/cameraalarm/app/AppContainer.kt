@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class AppContainer(context: Context) {
@@ -27,6 +28,7 @@ class AppContainer(context: Context) {
     val settingsRepository = SettingsRepository(context)
     val ruleRepository = TriggerRuleRepository(database.triggerRuleDao())
     val historyRepository = HistoryRepository(database.alertEventDao())
+    val testAlarmToken = MutableStateFlow<AlarmToken?>(null)
 
     @Volatile
     var triggerConfiguration = TriggerConfiguration(false, null, emptyList())
@@ -109,20 +111,23 @@ class AppContainer(context: Context) {
             if (com.personal.cameraalarm.BuildConfig.DEBUG) {
                 android.util.Log.d("CameraAlarm", "decision=$decision source=${notification.packageName}")
             }
-            appScope.launch {
-                historyRepository.recordEvent(
-                    createdAtEpochMs = notification.postTimeEpochMs.takeIf { it > 0 } ?: System.currentTimeMillis(),
-                    sourcePackage = notification.packageName,
-                    notificationKey = notification.key,
-                    title = notification.title,
-                    textPreview = notification.text ?: notification.bigText ?: notification.subText,
-                    normalizedHash = null,
-                    decision = decision.name,
-                    ruleId = null,
-                    alarmToken = token?.value,
-                    details = null
-                )
-            }
+            historyRepository.recordEvent(
+                createdAtEpochMs = notification.postTimeEpochMs.takeIf { it > 0 } ?: System.currentTimeMillis(),
+                sourcePackage = notification.packageName,
+                notificationKey = notification.key,
+                title = notification.title,
+                textPreview = notification.text ?: notification.bigText ?: notification.subText,
+                normalizedHash = null,
+                decision = decision.name,
+                ruleId = null,
+                alarmToken = token?.value,
+                details = null
+            )
+        },
+        historyFailure = { error ->
+            val reason = "history: ${error.message ?: error.javaClass.simpleName}"
+            runtimeDiagnostics.record(reason)
+            android.util.Log.e("CameraAlarm", reason, error)
         }
     )
 }

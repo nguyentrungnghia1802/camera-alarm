@@ -34,4 +34,21 @@ class TriggerPipelineTest {
         assertEquals(0, count)
         assertEquals(listOf(TriggerDecision.IGNORED_MONITORING_OFF, TriggerDecision.IGNORED_NO_RULE_MATCH), decisions)
     }
+
+    @Test fun historyFailureDoesNotBreakScheduledAlarmPath() = runTest {
+        var scheduled = 0
+        var reported: Throwable? = null
+        val pipeline = TriggerPipeline(
+            Clock { 1_000 },
+            TriggerConfigurationSource { TriggerConfiguration(true, "camera.app", listOf(rule)) },
+            TtlDuplicateGuard(),
+            ValidTriggerSink { scheduled++; AlarmOutcome.SCHEDULED },
+            TriggerHistory { _, _, _ -> error("database unavailable") },
+            historyFailure = { reported = it }
+        )
+
+        assertEquals(TriggerDecision.SCHEDULED, pipeline.process(incoming("history-failure")))
+        assertEquals(1, scheduled)
+        assertEquals("database unavailable", reported?.message)
+    }
 }

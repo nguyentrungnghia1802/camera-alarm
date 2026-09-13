@@ -22,20 +22,19 @@ data class SettingsUiState(
 )
 
 class SettingsViewModel(private val container: AppContainer) : ViewModel() {
-    private val testAlarmActive = MutableStateFlow(false)
     private val userMessage = MutableStateFlow<String?>(null)
 
     val uiState: StateFlow<SettingsUiState> = combine(
         container.settingsRepository.settings,
         container.historyRepository.events,
-        testAlarmActive,
+        container.testAlarmToken,
         userMessage
-    ) { settings, events, testing, message ->
+    ) { settings, events, testToken, message ->
         val volume = container.readiness.volumeStatus()
         SettingsUiState(
             settings = settings,
             volumeStatus = volume,
-            isTestingAlarm = testing,
+            isTestingAlarm = testToken != null,
             historyCount = events.size,
             message = message
         )
@@ -65,21 +64,28 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     fun startTestAlarm(context: Context) {
+        if (container.testAlarmToken.value != null) return
         val testToken = AlarmToken("test-${System.currentTimeMillis()}")
         val intent = Intent(context, CameraAlarmService::class.java).apply {
             action = CameraAlarmService.ACTION_START
             putExtra(AlarmReceiver.EXTRA_TOKEN, testToken.value)
             putExtra(CameraAlarmService.EXTRA_IS_TEST, true)
         }
-        testAlarmActive.value = true
-        ContextCompat.startForegroundService(context, intent)
+        container.testAlarmToken.value = testToken
+        try {
+            ContextCompat.startForegroundService(context, intent)
+        } catch (error: RuntimeException) {
+            container.testAlarmToken.compareAndSet(testToken, null)
+            userMessage.value = "Unable to start Test Alarm: ${error.message ?: error.javaClass.simpleName}"
+        }
     }
 
     fun stopAlarm(context: Context) {
+        val token = container.testAlarmToken.value ?: return
         val intent = Intent(context, StopAlarmReceiver::class.java).apply {
             action = StopAlarmReceiver.ACTION_STOP
+            putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
         }
-        testAlarmActive.value = false
         context.sendBroadcast(intent)
     }
 

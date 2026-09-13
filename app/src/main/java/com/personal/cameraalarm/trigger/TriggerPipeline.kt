@@ -5,6 +5,7 @@ import com.personal.cameraalarm.notification.IncomingNotification
 import com.personal.cameraalarm.util.Clock
 import java.security.MessageDigest
 import java.util.UUID
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -21,13 +22,19 @@ class TriggerPipeline(
     private val configuration: TriggerConfigurationSource,
     private val duplicates: DuplicateGuard,
     private val coordinator: ValidTriggerSink,
-    private val history: TriggerHistory
+    private val history: TriggerHistory,
+    private val historyFailure: (Throwable) -> Unit = {}
 ) {
     private val mutex = Mutex()
 
     suspend fun process(notification: IncomingNotification): TriggerDecision {
         val (decision, token) = mutex.withLock { decide(notification) }
-        history.record(notification, decision, token)
+        try {
+            history.record(notification, decision, token)
+        } catch (error: Exception) {
+            if (error is CancellationException) throw error
+            historyFailure(error)
+        }
         return decision
     }
 

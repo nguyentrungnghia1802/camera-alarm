@@ -28,16 +28,21 @@ class CameraAlarmService : Service() {
         if (intent?.action == ACTION_STOP) {
             if (runtime.activeToken != null && runtime.activeToken != token) return START_NOT_STICKY
             runtime.stop(token).forEach { recordError(token, it) }
+            if (token != null && StopAlarmReceiver.isTestAlarm(token)) {
+                app.container.testAlarmToken.compareAndSet(token, null)
+            }
             if (com.personal.cameraalarm.BuildConfig.DEBUG) Log.d("CameraAlarm", "runtime stopped token=${token?.value}")
             stopForeground(STOP_FOREGROUND_REMOVE)
             stopSelf()
             return START_NOT_STICKY
         }
         if (intent?.action != ACTION_START || token == null) { stopSelf(); return START_NOT_STICKY }
+        if (runtime.activeToken != null && runtime.activeToken != token) return START_NOT_STICKY
         val isTest = intent.getBooleanExtra(EXTRA_IS_TEST, false)
         try { promote(token, null) } catch (e: RuntimeException) {
             recordError(token, "foreground: ${e.message ?: e.javaClass.simpleName}")
-            if (!isTest) scope.launch { app.container.coordinator.onStopRequested(token) }
+            if (isTest) app.container.testAlarmToken.compareAndSet(token, null)
+            else scope.launch { app.container.coordinator.onStopRequested(token) }
             stopSelf()
             return START_NOT_STICKY
         }
@@ -45,6 +50,7 @@ class CameraAlarmService : Service() {
             val testTrigger = TriggerSnapshot(token, "com.personal.cameraalarm", "test_key", "test_rule", "Test Alarm", "Testing camera alarm sound & vibration", System.currentTimeMillis())
             try { promote(token, testTrigger) } catch (e: RuntimeException) {
                 recordError(token, "foreground update: ${e.message ?: e.javaClass.simpleName}")
+                app.container.testAlarmToken.compareAndSet(token, null)
                 stopForeground(STOP_FOREGROUND_REMOVE); stopSelf(); return START_NOT_STICKY
             }
             runtime.start(token, app.container.alarmPolicy.vibrationEnabled).forEach { recordError(token, it) }
@@ -125,7 +131,11 @@ class CameraAlarmService : Service() {
     override fun onDestroy() {
         val token = runtime.activeToken
         runtime.stop(null).forEach { recordError(token, it) }
-        if (token != null && !token.value.startsWith("test-")) app.scope.launch { app.container.coordinator.onStopRequested(token) }
+        if (token != null && StopAlarmReceiver.isTestAlarm(token)) {
+            app.container.testAlarmToken.compareAndSet(token, null)
+        } else if (token != null) {
+            app.scope.launch { app.container.coordinator.onStopRequested(token) }
+        }
         scope.cancel()
         super.onDestroy()
     }

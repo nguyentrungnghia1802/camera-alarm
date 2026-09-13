@@ -34,7 +34,6 @@ data class MainUiState(
 )
 
 class MainViewModel(private val container: AppContainer) : ViewModel() {
-    private val testAlarmActive = MutableStateFlow(false)
     private val userMessage = MutableStateFlow<String?>(null)
     private val readinessTick = MutableStateFlow(0)
 
@@ -43,7 +42,7 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
         container.ruleRepository.rules,
         container.coordinator.state,
         container.historyRepository.events,
-        testAlarmActive,
+        container.testAlarmToken,
         userMessage,
         readinessTick
     ) { args ->
@@ -51,7 +50,7 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
         val rules = args[1] as List<com.personal.cameraalarm.trigger.TriggerRule>
         val alarmState = args[2] as AlarmState
         val events = args[3] as List<com.personal.cameraalarm.data.history.AlertEventEntity>
-        val testing = args[4] as Boolean
+        val testing = args[4] != null
         val message = args[5] as String?
 
         val readiness = container.readiness.snapshot()
@@ -113,21 +112,30 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     fun startTestAlarm(context: Context) {
+        if (container.testAlarmToken.value != null) return
         val testToken = AlarmToken("test-${System.currentTimeMillis()}")
         val intent = Intent(context, CameraAlarmService::class.java).apply {
             action = CameraAlarmService.ACTION_START
             putExtra(AlarmReceiver.EXTRA_TOKEN, testToken.value)
             putExtra(CameraAlarmService.EXTRA_IS_TEST, true)
         }
-        testAlarmActive.value = true
-        ContextCompat.startForegroundService(context, intent)
+        container.testAlarmToken.value = testToken
+        try {
+            ContextCompat.startForegroundService(context, intent)
+        } catch (error: RuntimeException) {
+            container.testAlarmToken.compareAndSet(testToken, null)
+            userMessage.value = "Unable to start Test Alarm: ${error.message ?: error.javaClass.simpleName}"
+        }
     }
 
     fun stopAlarm(context: Context) {
+        val token = container.testAlarmToken.value
+            ?: (container.coordinator.state.value as? AlarmState.Ringing)?.trigger?.alarmToken
+            ?: return
         val intent = Intent(context, StopAlarmReceiver::class.java).apply {
             action = StopAlarmReceiver.ACTION_STOP
+            putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
         }
-        testAlarmActive.value = false
         context.sendBroadcast(intent)
     }
 

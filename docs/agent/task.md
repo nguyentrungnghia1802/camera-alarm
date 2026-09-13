@@ -342,7 +342,7 @@ Chỉ được sang Phase 2 khi tất cả đều đúng:
 - [x] Full-screen fallback behavior pass.
 - [x] Review history không lưu dữ liệu quá mức cần thiết.
 - [x] `./gradlew test lint assembleDebug` pass.
-- [x] Nếu có device instrumentation: `./gradlew connectedDebugAndroidTest` pass hoặc ghi rõ test nào manual (không có emulator online; unit tests & build pass).
+- [x] Device instrumentation: `connectedDebugAndroidTest` passed on API 31 and API 36 on the final STOP fix; API 33/34 passed on the preceding build. See `v1-verification.md` for the remaining final-code matrix gap.
 - [x] Build APK release/debug dùng cho cá nhân theo nhu cầu (`app/build/outputs/apk/debug/app-debug.apk`).
 - [x] Cập nhật `docs/project/` nếu behavior cuối khác spec.
 - [x] Commit: `chore: prepare camera alarm v1 release`.

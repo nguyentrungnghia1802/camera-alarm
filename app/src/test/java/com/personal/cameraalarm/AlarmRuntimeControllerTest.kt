@@ -40,4 +40,9 @@ class AlarmRuntimeControllerTest {
         val errors2 = AlarmRuntimeController(player2, vibration2).start(AlarmToken("b"), true)
         assertEquals(1, errors2.size); assertEquals(1, player2.starts)
     }
+
+    @Test fun testAlarmStopIsRoutedWithoutCoordinatorState() {
+        assertTrue(StopAlarmReceiver.isTestAlarm(AlarmToken("test-123")))
+        assertFalse(StopAlarmReceiver.isTestAlarm(AlarmToken("production-123")))
+    }
 }

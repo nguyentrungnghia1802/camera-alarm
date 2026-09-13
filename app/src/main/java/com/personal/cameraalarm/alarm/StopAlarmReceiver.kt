@@ -16,15 +16,27 @@ class StopAlarmReceiver : BroadcastReceiver() {
         val app = context.applicationContext as CameraAlarmApp
         app.scope.launch {
             try {
+                if (isTestAlarm(token)) {
+                    startStopService(context, token)
+                    return@launch
+                }
                 app.container.coordinator.onStopRequested(token)
                 val state = app.container.stateStore.read()
                 if (state !is AlarmState.Cooldown || state.lastAlarmToken != token) return@launch
-                val stop = Intent(context, CameraAlarmService::class.java)
-                    .setAction(CameraAlarmService.ACTION_STOP).putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
-                ContextCompat.startForegroundService(context, stop)
+                startStopService(context, token)
             } catch (e: Exception) { Log.e("CameraAlarm", "STOP failed for token=${token.value}", e) }
             finally { pending.finish() }
         }
     }
-    companion object { const val ACTION_STOP = "com.personal.cameraalarm.action.STOP_REQUESTED" }
+    private fun startStopService(context: Context, token: AlarmToken) {
+        val stop = Intent(context, CameraAlarmService::class.java)
+            .setAction(CameraAlarmService.ACTION_STOP)
+            .putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
+        ContextCompat.startForegroundService(context, stop)
+    }
+
+    companion object {
+        const val ACTION_STOP = "com.personal.cameraalarm.action.STOP_REQUESTED"
+        internal fun isTestAlarm(token: AlarmToken): Boolean = token.value.startsWith("test-")
+    }
 }

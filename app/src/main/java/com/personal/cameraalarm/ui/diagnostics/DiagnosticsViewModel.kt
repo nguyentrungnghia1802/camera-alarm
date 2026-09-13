@@ -93,13 +93,20 @@ class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     fun startTestAlarm(context: Context) {
+        if (container.testAlarmToken.value != null) return
         val testToken = AlarmToken("test-${System.currentTimeMillis()}")
         val intent = Intent(context, CameraAlarmService::class.java).apply {
             action = CameraAlarmService.ACTION_START
             putExtra(AlarmReceiver.EXTRA_TOKEN, testToken.value)
             putExtra(CameraAlarmService.EXTRA_IS_TEST, true)
         }
-        ContextCompat.startForegroundService(context, intent)
+        container.testAlarmToken.value = testToken
+        try {
+            ContextCompat.startForegroundService(context, intent)
+        } catch (error: RuntimeException) {
+            container.testAlarmToken.compareAndSet(testToken, null)
+            copyMessage.value = "Unable to start Test Alarm: ${error.message ?: error.javaClass.simpleName}"
+        }
     }
 
     fun clearCopyMessage() {
