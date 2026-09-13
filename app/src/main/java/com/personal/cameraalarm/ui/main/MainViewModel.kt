@@ -7,13 +7,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.personal.cameraalarm.alarm.*
+import com.personal.cameraalarm.alarm.sound.AlarmSoundCatalog
 import com.personal.cameraalarm.app.AppContainer
 import com.personal.cameraalarm.permission.AlarmVolumeStatus
 import com.personal.cameraalarm.permission.ReadinessState
+import com.personal.cameraalarm.schedule.ActiveScheduleGate
+import com.personal.cameraalarm.schedule.ScheduleConfiguration
+import com.personal.cameraalarm.schedule.ScheduleDecision
+import com.personal.cameraalarm.schedule.ScheduleMode
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-enum class AppStatus { READY, NEEDS_SETUP, ALARMING }
+enum class AppStatus { READY, NEEDS_SETUP, ALARMING, STANDBY }
 
 data class MainUiState(
     val readiness: ReadinessState,
@@ -30,7 +35,12 @@ data class MainUiState(
     val isTestingAlarm: Boolean = false,
     val lastDecision: String? = null,
     val lastDecisionTime: Long? = null,
-    val userMessage: String? = null
+    val userMessage: String? = null,
+    val scheduleMode: ScheduleMode = ScheduleMode.ALWAYS_ACTIVE,
+    val scheduleActive: Boolean = true,
+    val scheduleDescription: String? = null,
+    val nextActiveTime: String? = null,
+    val alarmSoundName: String = "Default Alarm"
 )
 
 class MainViewModel(private val container: AppContainer) : ViewModel() {
@@ -47,8 +57,10 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
         readinessTick
     ) { args ->
         val settings = args[0] as com.personal.cameraalarm.data.settings.AppSettings
+        @Suppress("UNCHECKED_CAST")
         val rules = args[1] as List<com.personal.cameraalarm.trigger.TriggerRule>
         val alarmState = args[2] as AlarmState
+        @Suppress("UNCHECKED_CAST")
         val events = args[3] as List<com.personal.cameraalarm.data.history.AlertEventEntity>
         val testing = args[4] != null
         val message = args[5] as String?
@@ -58,10 +70,27 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
         val isRinging = alarmState is AlarmState.Ringing || testing
         val enabledRules = rules.filter { it.enabled && it.sourcePackage == settings.sourcePackage }
 
+        val scheduleConfig = ScheduleConfiguration(settings.scheduleMode, settings.scheduleRanges)
+        val now = System.currentTimeMillis()
+        val scheduleDecision = ActiveScheduleGate.evaluate(scheduleConfig, now)
+        val isScheduleActive = scheduleDecision == ScheduleDecision.ACTIVE
+        val nextActive = ActiveScheduleGate.nextActiveTime(scheduleConfig, now)
+        val soundName = AlarmSoundCatalog.resolve(settings.alarmSoundKey).displayName
+        val scheduleDesc = if (settings.scheduleMode == ScheduleMode.ALWAYS_ACTIVE) {
+            "Always active"
+        } else {
+            val enabled = settings.scheduleRanges.filter { it.enabled }
+            if (enabled.isEmpty()) "No active time ranges configured"
+            else enabled.joinToString(", ") { "${it.formatStart()} -> ${it.formatEnd()}" }
+        }
+
         val effectiveStatus = when {
             isRinging -> AppStatus.ALARMING
             !readiness.blockingReady -> AppStatus.NEEDS_SETUP
-            settings.monitoringEnabled && readiness.readyForMonitoring -> AppStatus.READY
+            settings.monitoringEnabled && readiness.readyForMonitoring -> {
+                if (settings.scheduleMode == ScheduleMode.CUSTOM && !isScheduleActive) AppStatus.STANDBY
+                else AppStatus.READY
+            }
             settings.monitoringEnabled && !readiness.readyForMonitoring -> AppStatus.NEEDS_SETUP
             else -> AppStatus.NEEDS_SETUP
         }
@@ -83,7 +112,12 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
             isTestingAlarm = testing,
             lastDecision = lastEvent?.decision,
             lastDecisionTime = lastEvent?.createdAtEpochMs,
-            userMessage = message
+            userMessage = message,
+            scheduleMode = settings.scheduleMode,
+            scheduleActive = isScheduleActive,
+            scheduleDescription = scheduleDesc,
+            nextActiveTime = nextActive,
+            alarmSoundName = soundName
         )
     }.stateIn(
         viewModelScope,

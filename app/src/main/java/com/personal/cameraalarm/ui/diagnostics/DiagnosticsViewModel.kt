@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.PowerManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -13,13 +14,19 @@ import com.personal.cameraalarm.alarm.*
 import com.personal.cameraalarm.app.AppContainer
 import com.personal.cameraalarm.permission.AlarmVolumeStatus
 import com.personal.cameraalarm.permission.ReadinessState
+import com.personal.cameraalarm.reliability.DeviceReliabilityAdvisor
+import com.personal.cameraalarm.reliability.XiaomiReliabilityAdvisor
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 data class DiagnosticsInfo(
     val appVersion: String = "1.0 (1)",
     val sdkInt: Int = Build.VERSION.SDK_INT,
+    val manufacturer: String = Build.MANUFACTURER,
+    val brand: String = Build.BRAND,
     val deviceModel: String = "${Build.MANUFACTURER} ${Build.MODEL}",
+    val isXiaomiFamily: Boolean = false,
+    val batteryOptimizationsIgnored: Boolean? = null,
     val readiness: ReadinessState,
     val volumeStatus: AlarmVolumeStatus,
     val monitoringEnabled: Boolean = false,
@@ -32,6 +39,7 @@ data class DiagnosticsInfo(
 
 class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
     private val copyMessage = MutableStateFlow<String?>(null)
+    val reliabilityAdvisor: DeviceReliabilityAdvisor = container.deviceAdvisor
 
     val uiState: StateFlow<Pair<DiagnosticsInfo, String?>> = combine(
         container.settingsRepository.settings,
@@ -44,11 +52,19 @@ class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
         val volume = container.readiness.volumeStatus()
         val enabledRules = rules.filter { it.enabled && it.sourcePackage == settings.sourcePackage }
         val canFullScreen = container.readiness.canUseFullScreenIntent()
+        val isXiaomi = reliabilityAdvisor.isApplicable
 
         val info = DiagnosticsInfo(
             appVersion = "1.0 (1)",
             sdkInt = Build.VERSION.SDK_INT,
+            manufacturer = Build.MANUFACTURER,
+            brand = Build.BRAND,
             deviceModel = "${Build.MANUFACTURER} ${Build.MODEL}",
+            isXiaomiFamily = isXiaomi,
+            batteryOptimizationsIgnored = (reliabilityAdvisor as? XiaomiReliabilityAdvisor)?.let {
+                // queryable via context if needed, fallback false
+                null
+            },
             readiness = readiness,
             volumeStatus = volume,
             monitoringEnabled = settings.monitoringEnabled,
@@ -69,11 +85,18 @@ class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
     )
 
     fun copyDiagnostics(context: Context, info: DiagnosticsInfo) {
+        val pm = context.getSystemService(PowerManager::class.java)
+        val batteryIgnored = pm?.isIgnoringBatteryOptimizations(context.packageName)
+
         val report = buildString {
             appendLine("=== CAMERA ALARM DIAGNOSTICS ===")
             appendLine("App Version: ${info.appVersion}")
             appendLine("Android SDK: API ${info.sdkInt} (${Build.VERSION.RELEASE})")
             appendLine("Device: ${info.deviceModel}")
+            appendLine("Manufacturer: ${info.manufacturer}")
+            appendLine("Brand: ${info.brand}")
+            appendLine("Xiaomi Advisor Detected: ${if (info.isXiaomiFamily) "YES" else "NO"}")
+            appendLine("Battery Optimizations Ignored: ${batteryIgnored ?: "UNKNOWN"}")
             appendLine("Notification Access: ${if (info.readiness.notificationAccessGranted) "GRANTED" else "REQUIRED"}")
             appendLine("Listener Connection: ${if (info.readiness.listenerConnected) "CONNECTED" else "DISCONNECTED"}")
             appendLine("Exact Alarm: ${if (info.readiness.exactAlarmGranted) "GRANTED" else "REQUIRED"}")

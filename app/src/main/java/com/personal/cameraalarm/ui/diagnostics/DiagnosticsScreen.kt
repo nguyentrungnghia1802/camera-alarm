@@ -1,5 +1,8 @@
 package com.personal.cameraalarm.ui.diagnostics
 
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -78,6 +81,8 @@ fun DiagnosticsScreen(
                     DiagRow("App Version", info.appVersion)
                     DiagRow("Android Version", "API ${info.sdkInt} (Android ${android.os.Build.VERSION.RELEASE})")
                     DiagRow("Device", info.deviceModel)
+                    DiagRow("Manufacturer / Brand", "${info.manufacturer} / ${info.brand}")
+                    DiagRow("Xiaomi Advisor", if (info.isXiaomiFamily) "Detected (Active)" else "Generic Android")
                 }
             }
 
@@ -141,6 +146,117 @@ fun DiagnosticsScreen(
                         actionLabel = null,
                         onAction = null
                     )
+                }
+            }
+
+            // Xiaomi / OEM Reliability Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = if (info.isXiaomiFamily) "Xiaomi / HyperOS Reliability" else "Device Background Reliability",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = if (info.isXiaomiFamily) "Configure OEM background, autostart, and battery settings for uninterrupted alerts."
+                        else "OEM-specific background settings are not required on this device.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    val items = viewModel.reliabilityAdvisor.getReliabilityItems(context)
+                    items.filter { it.isOemSpecific }.forEach { item ->
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Icon(
+                                        when (item.status) {
+                                            com.personal.cameraalarm.reliability.ReliabilityStatus.READY -> Icons.Default.CheckCircle
+                                            com.personal.cameraalarm.reliability.ReliabilityStatus.USER_CONFIRMATION_REQUIRED -> Icons.Default.Warning
+                                            com.personal.cameraalarm.reliability.ReliabilityStatus.MISSING -> Icons.Default.Cancel
+                                            else -> Icons.Default.Info
+                                        },
+                                        contentDescription = null,
+                                        tint = when (item.status) {
+                                            com.personal.cameraalarm.reliability.ReliabilityStatus.READY -> Color(0xFF2E7D32)
+                                            com.personal.cameraalarm.reliability.ReliabilityStatus.USER_CONFIRMATION_REQUIRED -> Color(0xFFEF6C00)
+                                            com.personal.cameraalarm.reliability.ReliabilityStatus.MISSING -> Color(0xFFC62828)
+                                            else -> Color(0xFF757575)
+                                        },
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Column {
+                                        Text(text = item.title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
+                                        Text(
+                                            text = item.description,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+
+                                if (item.actionLabel != null && item.actionIntent != null) {
+                                    OutlinedButton(
+                                        onClick = {
+                                            try {
+                                                context.startActivity(item.actionIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                                            } catch (_: Exception) {
+                                                try {
+                                                    context.startActivity(
+                                                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                                            data = Uri.fromParts("package", context.packageName, null)
+                                                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                                        }
+                                                    )
+                                                } catch (_: Exception) {}
+                                            }
+                                        },
+                                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
+                                        modifier = Modifier.height(32.dp)
+                                    ) {
+                                        Text(item.actionLabel, fontSize = 11.sp)
+                                    }
+                                }
+                            }
+
+                            item.userInstruction?.let { instruction ->
+                                Surface(
+                                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                                    shape = MaterialTheme.shapes.extraSmall,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 28.dp, top = 2.dp)
+                                    ) {
+                                    Text(
+                                        text = instruction,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        modifier = Modifier.padding(6.dp),
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
+                        HorizontalDivider()
+                    }
                 }
             }
 

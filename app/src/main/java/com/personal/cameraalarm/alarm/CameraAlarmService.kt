@@ -38,6 +38,7 @@ class CameraAlarmService : Service() {
         }
         if (intent?.action != ACTION_START || token == null) { stopSelf(); return START_NOT_STICKY }
         if (runtime.activeToken != null && runtime.activeToken != token) return START_NOT_STICKY
+        app.container.soundPreviewController.stop()
         val isTest = intent.getBooleanExtra(EXTRA_IS_TEST, false)
         try { promote(token, null) } catch (e: RuntimeException) {
             recordError(token, "foreground: ${e.message ?: e.javaClass.simpleName}")
@@ -53,7 +54,10 @@ class CameraAlarmService : Service() {
                 app.container.testAlarmToken.compareAndSet(token, null)
                 stopForeground(STOP_FOREGROUND_REMOVE); stopSelf(); return START_NOT_STICKY
             }
-            runtime.start(token, app.container.alarmPolicy.vibrationEnabled).forEach { recordError(token, it) }
+            val soundKey = kotlinx.coroutines.runBlocking {
+                try { app.container.settingsRepository.current().alarmSoundKey } catch (_: Exception) { null }
+            }
+            runtime.start(token, app.container.alarmPolicy.vibrationEnabled, soundKey).forEach { recordError(token, it) }
             return START_NOT_STICKY
         }
         scope.launch {
@@ -69,7 +73,8 @@ class CameraAlarmService : Service() {
                     app.container.coordinator.onStopRequested(token)
                     stopForeground(STOP_FOREGROUND_REMOVE); stopSelf(); return@launch
                 }
-                runtime.start(token, app.container.alarmPolicy.vibrationEnabled).forEach { recordError(token, it) }
+                val soundKey = try { app.container.settingsRepository.current().alarmSoundKey } catch (_: Exception) { null }
+                runtime.start(token, app.container.alarmPolicy.vibrationEnabled, soundKey).forEach { recordError(token, it) }
                 if (com.personal.cameraalarm.BuildConfig.DEBUG) Log.d("CameraAlarm", "runtime started token=${token.value}")
                 val latest = try { app.container.stateStore.read() } catch (e: Exception) {
                     recordError(token, "state recheck: ${e.message ?: e.javaClass.simpleName}"); null

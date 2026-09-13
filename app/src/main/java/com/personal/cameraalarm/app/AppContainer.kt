@@ -28,6 +28,7 @@ class AppContainer(context: Context) {
     val settingsRepository = SettingsRepository(context)
     val ruleRepository = TriggerRuleRepository(database.triggerRuleDao())
     val historyRepository = HistoryRepository(database.alertEventDao())
+    val soundPreviewController = com.personal.cameraalarm.alarm.sound.AlarmSoundPreviewController(context)
     val testAlarmToken = MutableStateFlow<AlarmToken?>(null)
 
     @Volatile
@@ -38,6 +39,8 @@ class AppContainer(context: Context) {
 
     val scheduler = AndroidAlarmScheduler(context)
     val readiness = ReadinessRepository(context, exactAlarmAccess, listenerConnection) { triggerConfiguration }
+    val deviceAdvisor: com.personal.cameraalarm.reliability.DeviceReliabilityAdvisor =
+        com.personal.cameraalarm.reliability.XiaomiReliabilityAdvisor(readiness)
 
     private val appScope = (context.applicationContext as? CameraAlarmApp)?.scope
         ?: CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -47,7 +50,11 @@ class AppContainer(context: Context) {
             triggerConfiguration = TriggerConfiguration(
                 monitoringEnabled = settings.monitoringEnabled,
                 sourcePackage = settings.sourcePackage,
-                rules = rules
+                rules = rules,
+                scheduleConfiguration = com.personal.cameraalarm.schedule.ScheduleConfiguration(
+                    mode = settings.scheduleMode,
+                    ranges = settings.scheduleRanges
+                )
             )
             alarmPolicy = AlarmPolicy(
                 delayMs = settings.alarmDelayMs,

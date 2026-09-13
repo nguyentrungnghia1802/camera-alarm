@@ -8,7 +8,7 @@ class AlarmRuntimeControllerTest {
     private class Player(var fail: Boolean = false) : AlarmPlayer {
         var starts = 0; var stops = 0
         override val isPlaying get() = starts > stops
-        override fun start(): Result<Unit> { starts++; return if (fail) Result.failure(IllegalStateException("audio unavailable")) else Result.success(Unit) }
+        override fun start(soundKey: String?): Result<Unit> { starts++; return if (fail) Result.failure(IllegalStateException("audio unavailable")) else Result.success(Unit) }
         override fun stop() { stops++ }
     }
     private class Vibration(var fail: Boolean = false) : VibrationController {

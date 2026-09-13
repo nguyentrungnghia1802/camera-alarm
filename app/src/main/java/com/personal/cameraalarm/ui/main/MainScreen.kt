@@ -7,6 +7,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -74,7 +75,7 @@ fun MainScreen(
                 NavigationBarItem(
                     selected = false,
                     onClick = onNavigateToRules,
-                    icon = { Icon(Icons.Default.Rule, contentDescription = "Rules") },
+                    icon = { Icon(Icons.AutoMirrored.Filled.Rule, contentDescription = "Rules") },
                     label = { Text("Rules") }
                 )
                 NavigationBarItem(
@@ -164,7 +165,7 @@ fun MainScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            Icons.Default.VolumeMute,
+                            Icons.AutoMirrored.Filled.VolumeMute,
                             contentDescription = "Volume zero warning",
                             tint = MaterialTheme.colorScheme.error
                         )
@@ -212,6 +213,7 @@ fun MainScreen(
 private fun StatusCard(state: MainUiState) {
     val (statusText, badgeColor, textColor) = when (state.effectiveStatus) {
         AppStatus.READY -> Triple("READY", Color(0xFF2E7D32), Color.White)
+        AppStatus.STANDBY -> Triple("STANDBY", Color(0xFF0288D1), Color.White)
         AppStatus.NEEDS_SETUP -> Triple("NEEDS SETUP", Color(0xFFEF6C00), Color.White)
         AppStatus.ALARMING -> Triple("ALARMING", Color(0xFFC62828), Color.White)
     }
@@ -220,37 +222,82 @@ private fun StatusCard(state: MainUiState) {
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Column {
-                Text(
-                    text = "System Status",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = if (state.monitoringEnabled) "Monitoring is Active" else "Monitoring is Off",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(badgeColor)
-                    .padding(horizontal = 12.dp, vertical = 6.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = statusText,
-                    color = textColor,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
-                )
+                Column {
+                    Text(
+                        text = "System Status",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = when {
+                            state.effectiveStatus == AppStatus.STANDBY -> "Monitoring Standby"
+                            state.monitoringEnabled -> "Monitoring is Active"
+                            else -> "Monitoring is Off"
+                        },
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(badgeColor)
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                ) {
+                    Text(
+                        text = statusText,
+                        color = textColor,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    )
+                }
+            }
+
+            if (state.effectiveStatus == AppStatus.STANDBY) {
+                HorizontalDivider()
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        text = "Outside active hours. Notifications are still monitored. Camera alarms are currently suppressed.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    state.nextActiveTime?.let {
+                        Text(
+                            text = "Next active: $it",
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            } else if (state.monitoringEnabled && state.effectiveStatus == AppStatus.READY) {
+                HorizontalDivider()
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Schedule: ${state.scheduleDescription ?: "Always active"}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = "Sound: ${state.alarmSoundName}",
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
             }
         }
     }

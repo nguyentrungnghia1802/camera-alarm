@@ -3,6 +3,10 @@ package com.personal.cameraalarm.data.settings
 import android.content.Context
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
+import com.personal.cameraalarm.alarm.sound.AlarmSoundCatalog
+import com.personal.cameraalarm.schedule.ActiveTimeRange
+import com.personal.cameraalarm.schedule.ScheduleMode
+import com.personal.cameraalarm.schedule.ScheduleSerializer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -26,7 +30,12 @@ class SettingsRepository(context: Context) {
                 alarmDelayMs = preferences[ALARM_DELAY_MS] ?: 1000L,
                 cooldownMs = preferences[COOLDOWN_MS] ?: 10000L,
                 vibrationEnabled = preferences[VIBRATION_ENABLED] ?: true,
-                fullScreenEnabled = preferences[FULL_SCREEN_ENABLED] ?: false
+                fullScreenEnabled = preferences[FULL_SCREEN_ENABLED] ?: false,
+                alarmSoundKey = preferences[ALARM_SOUND_KEY] ?: AlarmSoundCatalog.DEFAULT_KEY,
+                scheduleMode = preferences[SCHEDULE_MODE]?.let {
+                    runCatching { ScheduleMode.valueOf(it) }.getOrNull()
+                } ?: ScheduleMode.ALWAYS_ACTIVE,
+                scheduleRanges = ScheduleSerializer.deserialize(preferences[SCHEDULE_RANGES])
             )
         }
 
@@ -59,6 +68,18 @@ class SettingsRepository(context: Context) {
         dataStore.edit { it[FULL_SCREEN_ENABLED] = enabled }
     }
 
+    suspend fun setAlarmSound(soundKey: String) {
+        dataStore.edit { it[ALARM_SOUND_KEY] = soundKey }
+    }
+
+    suspend fun setScheduleMode(mode: ScheduleMode) {
+        dataStore.edit { it[SCHEDULE_MODE] = mode.name }
+    }
+
+    suspend fun setScheduleRanges(ranges: List<ActiveTimeRange>) {
+        dataStore.edit { it[SCHEDULE_RANGES] = ScheduleSerializer.serialize(ranges) }
+    }
+
     companion object {
         private val MONITORING_ENABLED = booleanPreferencesKey("monitoring_enabled")
         private val SOURCE_PACKAGE = stringPreferencesKey("source_package")
@@ -67,5 +88,8 @@ class SettingsRepository(context: Context) {
         private val COOLDOWN_MS = longPreferencesKey("cooldown_ms")
         private val VIBRATION_ENABLED = booleanPreferencesKey("vibration_enabled")
         private val FULL_SCREEN_ENABLED = booleanPreferencesKey("full_screen_enabled")
+        private val ALARM_SOUND_KEY = stringPreferencesKey("alarm_sound_key")
+        private val SCHEDULE_MODE = stringPreferencesKey("schedule_mode")
+        private val SCHEDULE_RANGES = stringPreferencesKey("schedule_ranges")
     }
 }
