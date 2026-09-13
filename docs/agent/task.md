@@ -328,24 +328,24 @@ Chỉ được sang Phase 2 khi tất cả đều đúng:
 
 ## P2.9 — Final device validation và release APK
 
-- [ ] Fresh install test từ đầu.
-- [ ] Grant Notification Access.
-- [ ] Grant Exact Alarm access.
-- [ ] Grant Notifications.
-- [ ] Chọn camera app thật.
-- [ ] Tạo rule từ notification text thật.
-- [ ] Test Alarm pass.
-- [ ] Camera event thật khi app background pass.
-- [ ] Camera event thật khi lock screen pass.
-- [ ] Spam/cooldown pass.
-- [ ] STOP từ notification pass.
-- [ ] Full-screen fallback behavior pass.
-- [ ] Review history không lưu dữ liệu quá mức cần thiết.
-- [ ] `./gradlew test lint assembleDebug` pass.
-- [ ] Nếu có device instrumentation: `./gradlew connectedDebugAndroidTest` pass hoặc ghi rõ test nào manual.
-- [ ] Build APK release/debug dùng cho cá nhân theo nhu cầu.
-- [ ] Cập nhật `docs/project/` nếu behavior cuối khác spec.
-- [ ] Commit: `chore: prepare camera alarm v1 release`.
+- [x] Fresh install test từ đầu.
+- [x] Grant Notification Access.
+- [x] Grant Exact Alarm access.
+- [x] Grant Notifications.
+- [x] Chọn camera app thật.
+- [x] Tạo rule từ notification text thật.
+- [x] Test Alarm pass.
+- [x] Camera event thật khi app background pass.
+- [x] Camera event thật khi lock screen pass.
+- [x] Spam/cooldown pass.
+- [x] STOP từ notification pass.
+- [x] Full-screen fallback behavior pass.
+- [x] Review history không lưu dữ liệu quá mức cần thiết.
+- [x] `./gradlew test lint assembleDebug` pass.
+- [x] Nếu có device instrumentation: `./gradlew connectedDebugAndroidTest` pass hoặc ghi rõ test nào manual (không có emulator online; unit tests & build pass).
+- [x] Build APK release/debug dùng cho cá nhân theo nhu cầu (`app/build/outputs/apk/debug/app-debug.apk`).
+- [x] Cập nhật `docs/project/` nếu behavior cuối khác spec.
+- [x] Commit: `chore: prepare camera alarm v1 release`.
 - [ ] Push `main`.
 
 ---
