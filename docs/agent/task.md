@@ -292,14 +292,14 @@ Chỉ được sang Phase 2 khi tất cả đều đúng:
 
 ## P2.6 — History và diagnostics
 
-- [ ] History newest-first.
-- [ ] Filter All / Triggered / Suppressed / Errors.
-- [ ] Show decision, time, source, preview, rule/alarm token diagnostics.
-- [ ] Clear history confirmation.
-- [ ] Diagnostics screen theo docs.
-- [ ] Copy Diagnostics không chứa notification text mặc định.
-- [ ] Hiển thị last scheduler/runtime error.
-- [ ] Commit: `ui: add alert history and diagnostics`.
+- [x] History newest-first.
+- [x] Filter All / Triggered / Suppressed / Errors.
+- [x] Show decision, time, source, preview, rule/alarm token diagnostics.
+- [x] Clear history confirmation.
+- [x] Diagnostics screen theo docs.
+- [x] Copy Diagnostics không chứa notification text mặc định.
+- [x] Hiển thị last scheduler/runtime error.
+- [x] Commit: `ui: add alert history and diagnostics`.
 
 ## P2.7 — Full-screen alarm enhancement
 
