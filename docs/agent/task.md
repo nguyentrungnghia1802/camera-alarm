@@ -244,17 +244,17 @@ Chỉ được sang Phase 2 khi tất cả đều đúng:
 
 **Đọc:** `docs/project/06-platform-permissions-compatibility.md`, `07-data-ui-observability.md`.
 
-- [ ] Main screen hiển thị Notification Access status.
-- [ ] Nút mở Notification Access Settings.
-- [ ] Hiển thị Exact Alarm status + nút grant.
-- [ ] Request/check POST_NOTIFICATIONS trên API 33+.
-- [ ] Hiển thị listener Connected/Disconnected.
-- [ ] Hiển thị source/rule readiness.
-- [ ] Hiển thị alarm stream current/max volume và warning nếu zero.
-- [ ] Monitoring toggle chỉ ON khi blocking setup đạt.
-- [ ] UI state lấy từ `ReadinessRepository`, không duplicate permission logic ở Composable.
-- [ ] Compose/UI tests cơ bản nếu project setup thuận lợi.
-- [ ] Commit: `ui: add monitoring readiness setup`.
+- [x] Main screen hiển thị Notification Access status.
+- [x] Nút mở Notification Access Settings.
+- [x] Hiển thị Exact Alarm status + nút grant.
+- [x] Request/check POST_NOTIFICATIONS trên API 33+.
+- [x] Hiển thị listener Connected/Disconnected.
+- [x] Hiển thị source/rule readiness.
+- [x] Hiển thị alarm stream current/max volume và warning nếu zero.
+- [x] Monitoring toggle chỉ ON khi blocking setup đạt.
+- [x] UI state lấy từ `ReadinessRepository`, không duplicate permission logic ở Composable.
+- [x] Compose/UI tests cơ bản nếu project setup thuận lợi.
+- [x] Commit: `ui: add monitoring readiness setup`.
 
 ## P2.3 — Source app picker
 

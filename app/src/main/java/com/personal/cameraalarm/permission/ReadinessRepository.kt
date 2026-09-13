@@ -55,4 +55,53 @@ class ReadinessRepository(private val context: Context, private val exact: Exact
         else Settings.Secure.getString(context.contentResolver, "enabled_notification_listeners")
             ?.split(':')?.any { ComponentName.unflattenFromString(it) == component } == true
     }
+
+    fun notificationAccessSettingsIntent(): android.content.Intent {
+        return if (Build.VERSION.SDK_INT >= 30) {
+            val component = ComponentName(context, CameraNotificationListener::class.java)
+            android.content.Intent(Settings.ACTION_NOTIFICATION_LISTENER_DETAIL_SETTINGS).apply {
+                putExtra(Settings.EXTRA_NOTIFICATION_LISTENER_COMPONENT_NAME, component.flattenToString())
+                flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+        } else {
+            android.content.Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS).apply {
+                flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+        }
+    }
+
+    fun exactAlarmSettingsIntent(): android.content.Intent? {
+        return exact.requestIntent()?.apply { flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK }
+    }
+
+    fun appNotificationSettingsIntent(): android.content.Intent {
+        return if (Build.VERSION.SDK_INT >= 26) {
+            android.content.Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+        } else {
+            android.content.Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, android.net.Uri.parse("package:${context.packageName}")).apply {
+                flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+        }
+    }
+
+    fun canUseFullScreenIntent(): Boolean {
+        return if (Build.VERSION.SDK_INT >= 34) {
+            context.getSystemService(NotificationManager::class.java).canUseFullScreenIntent()
+        } else {
+            true
+        }
+    }
+
+    fun fullScreenIntentSettingsIntent(): android.content.Intent? {
+        return if (Build.VERSION.SDK_INT >= 34) {
+            android.content.Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT, android.net.Uri.parse("package:${context.packageName}")).apply {
+                flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+        } else {
+            null
+        }
+    }
 }

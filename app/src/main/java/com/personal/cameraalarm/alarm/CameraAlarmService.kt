@@ -34,10 +34,20 @@ class CameraAlarmService : Service() {
             return START_NOT_STICKY
         }
         if (intent?.action != ACTION_START || token == null) { stopSelf(); return START_NOT_STICKY }
+        val isTest = intent.getBooleanExtra(EXTRA_IS_TEST, false)
         try { promote(token, null) } catch (e: RuntimeException) {
             recordError(token, "foreground: ${e.message ?: e.javaClass.simpleName}")
-            scope.launch { app.container.coordinator.onStopRequested(token) }
+            if (!isTest) scope.launch { app.container.coordinator.onStopRequested(token) }
             stopSelf()
+            return START_NOT_STICKY
+        }
+        if (isTest) {
+            val testTrigger = TriggerSnapshot(token, "com.personal.cameraalarm", "test_key", "test_rule", "Test Alarm", "Testing camera alarm sound & vibration", System.currentTimeMillis())
+            try { promote(token, testTrigger) } catch (e: RuntimeException) {
+                recordError(token, "foreground update: ${e.message ?: e.javaClass.simpleName}")
+                stopForeground(STOP_FOREGROUND_REMOVE); stopSelf(); return START_NOT_STICKY
+            }
+            runtime.start(token, app.container.alarmPolicy.vibrationEnabled).forEach { recordError(token, it) }
             return START_NOT_STICKY
         }
         scope.launch {
@@ -93,13 +103,14 @@ class CameraAlarmService : Service() {
     override fun onDestroy() {
         val token = runtime.activeToken
         runtime.stop(null).forEach { recordError(token, it) }
-        if (token != null) app.scope.launch { app.container.coordinator.onStopRequested(token) }
+        if (token != null && !token.value.startsWith("test-")) app.scope.launch { app.container.coordinator.onStopRequested(token) }
         scope.cancel()
         super.onDestroy()
     }
     companion object {
         const val ACTION_START = "com.personal.cameraalarm.action.START_ALARM"
         const val ACTION_STOP = "com.personal.cameraalarm.action.STOP_ALARM"
+        const val EXTRA_IS_TEST = "extra_is_test"
         const val CHANNEL = "alarm_runtime"
         private const val NOTIFICATION_ID = 1
     }
