@@ -31,7 +31,12 @@ class AlarmCoordinator(
     val state = mutableState.asStateFlow()
 
     override suspend fun onValidTrigger(trigger: TriggerSnapshot): AlarmOutcome = mutex.withLock {
-        val current = store.read()
+        var current = store.read()
+        if (current is AlarmState.Pending && !scheduler.canScheduleExactAlarms()) {
+            store.write(AlarmState.Idle)
+            mutableState.value = AlarmState.Idle
+            current = AlarmState.Idle
+        }
         val transition = AlarmReducer.reduce(current, AlarmEvent.ValidTrigger(trigger), clock.nowEpochMs(), policy())
         val suppression = transition.effects.filterIsInstance<AlarmEffect.RecordSuppression>().firstOrNull()
         if (suppression != null) {

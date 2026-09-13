@@ -118,23 +118,23 @@ unit tests
 
 ### Checklist
 
-- [ ] Khai báo `SCHEDULE_EXACT_ALARM`.
-- [ ] Implement `AlarmScheduler` interface và `AndroidAlarmScheduler`.
-- [ ] Luôn check `canScheduleExactAlarms()` trước schedule trên API yêu cầu.
-- [ ] Dùng `setExactAndAllowWhileIdle(RTC_WAKEUP, triggerAt, PendingIntent)` cho pending alert.
-- [ ] PendingIntent phải explicit + immutable, identity canonical, chứa alarm token/payload tối thiểu.
-- [ ] Implement cancel dùng đúng cùng PendingIntent identity.
-- [ ] Persist pending alarm metadata trước/đồng bộ với logical Pending đủ để receiver xử lý khi process bị recreate.
-- [ ] Nếu schedule fail, clear pending metadata và đưa coordinator về Idle qua failure event.
-- [ ] Implement `AlarmReceiver` validate action/token/persisted metadata, reject stale token.
-- [ ] Receiver không play audio; receiver chỉ start alarm runtime foreground service.
-- [ ] Không dùng inexact fallback khi exact alarm access thiếu.
-- [ ] Implement UI/platform helper mở `ACTION_REQUEST_SCHEDULE_EXACT_ALARM`; UI polish để Phase 2 nhưng API phải sẵn.
-- [ ] Test fake scheduler: permission missing, success, failure, cancel, token propagation.
-- [ ] Test stale fired token không thay active token.
-- [ ] Test/process scenario: schedule 5 giây, process recreate trước fire vẫn có receiver path hợp lệ; không dùng force-stop để mô phỏng process reclaim.
-- [ ] Chạy `./gradlew test lint assembleDebug`.
-- [ ] Commit: `feat: schedule alerts with exact alarms`.
+- [x] Khai báo `SCHEDULE_EXACT_ALARM`.
+- [x] Implement `AlarmScheduler` interface và `AndroidAlarmScheduler`.
+- [x] Luôn check `canScheduleExactAlarms()` trước schedule trên API yêu cầu.
+- [x] Dùng `setExactAndAllowWhileIdle(RTC_WAKEUP, triggerAt, PendingIntent)` cho pending alert.
+- [x] PendingIntent phải explicit + immutable, identity canonical, chứa alarm token/payload tối thiểu.
+- [x] Implement cancel dùng đúng cùng PendingIntent identity.
+- [x] Persist pending alarm metadata trước/đồng bộ với logical Pending đủ để receiver xử lý khi process bị recreate.
+- [x] Nếu schedule fail, clear pending metadata và đưa coordinator về Idle qua failure event.
+- [x] Implement `AlarmReceiver` validate action/token/persisted metadata, reject stale token.
+- [x] Receiver không play audio; receiver chỉ start alarm runtime foreground service.
+- [x] Không dùng inexact fallback khi exact alarm access thiếu.
+- [x] Implement UI/platform helper mở `ACTION_REQUEST_SCHEDULE_EXACT_ALARM`; UI polish để Phase 2 nhưng API phải sẵn.
+- [x] Test fake scheduler: permission missing, success, failure, cancel, token propagation.
+- [x] Test stale fired token không thay active token.
+- [x] Test/process scenario: schedule 5 giây, process recreate trước fire vẫn có receiver path hợp lệ; không dùng force-stop để mô phỏng process reclaim.
+- [x] Chạy `./gradlew test lint assembleDebug`.
+- [x] Commit: `feat: schedule alerts with exact alarms`.
 
 ### Acceptance criteria
 
