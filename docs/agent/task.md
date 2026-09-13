@@ -230,15 +230,15 @@ Chỉ được sang Phase 2 khi tất cả đều đúng:
 
 **Đọc:** `docs/project/07-data-ui-observability.md`.
 
-- [ ] Implement `AppSettings` + Preferences DataStore defaults.
-- [ ] Implement Room `trigger_rules` entity/DAO.
-- [ ] Implement Room `alert_events` entity/DAO.
-- [ ] Implement history retention tối đa 500 rows.
-- [ ] Implement repositories trả Flow/suspend API rõ ràng.
-- [ ] Kết nối runtime metadata persistence từ Phase 1 vào repository thật.
-- [ ] Unit/database tests cho defaults, CRUD, retention.
-- [ ] Chạy tests.
-- [ ] Commit: `feat: persist settings rules and alert history`.
+- [x] Implement `AppSettings` + Preferences DataStore defaults.
+- [x] Implement Room `trigger_rules` entity/DAO.
+- [x] Implement Room `alert_events` entity/DAO.
+- [x] Implement history retention tối đa 500 rows.
+- [x] Implement repositories trả Flow/suspend API rõ ràng.
+- [x] Kết nối runtime metadata persistence từ Phase 1 vào repository thật.
+- [x] Unit/database tests cho defaults, CRUD, retention.
+- [x] Chạy tests.
+- [x] Commit: `feat: persist settings rules and alert history`.
 
 ## P2.2 — Readiness/onboarding screen
 
