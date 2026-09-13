@@ -32,6 +32,10 @@ class AlarmReceiver : BroadcastReceiver() {
                 }
             } catch (e: Exception) {
                 Log.e("CameraAlarm", "Alarm receiver failed for token=$token", e)
+                app.container.runtimeDiagnostics.record("receiver: ${e.message ?: e.javaClass.simpleName}")
+                try { app.container.coordinator.onStopRequested(AlarmToken(token)) } catch (cleanup: Exception) {
+                    Log.e("CameraAlarm", "Alarm receiver cleanup failed for token=$token", cleanup)
+                }
             } finally { pending.finish() }
         }
     }

@@ -3,24 +3,104 @@ package com.personal.cameraalarm.alarm
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
+import android.graphics.drawable.Icon
+import android.util.Log
+import com.personal.cameraalarm.app.CameraAlarmApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
-/** P1.3 foreground bridge; P1.4 owns continuous runtime and STOP. */
 class CameraAlarmService : Service() {
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    private val app get() = application as CameraAlarmApp
+    private val runtime by lazy { AlarmRuntimeController(AndroidAlarmPlayer(this), AndroidVibrationController(this)) }
     override fun onBind(intent: Intent?): IBinder? = null
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val manager = getSystemService(NotificationManager::class.java)
-        manager.createNotificationChannel(NotificationChannel(CHANNEL, "Camera alarms", NotificationManager.IMPORTANCE_HIGH))
-        val notification = Notification.Builder(this, CHANNEL).setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-            .setContentTitle("Camera Alert").setContentText("Camera notification detected")
-            .setCategory(Notification.CATEGORY_ALARM).setOngoing(true).build()
-        if (Build.VERSION.SDK_INT >= 34) startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SYSTEM_EXEMPTED)
-        else startForeground(1, notification)
+        val token = intent?.getStringExtra(AlarmReceiver.EXTRA_TOKEN)?.takeIf(String::isNotBlank)?.let(::AlarmToken)
+        if (intent?.action == ACTION_STOP) {
+            if (runtime.activeToken != null && runtime.activeToken != token) return START_NOT_STICKY
+            runtime.stop(token).forEach { recordError(token, it) }
+            if (com.personal.cameraalarm.BuildConfig.DEBUG) Log.d("CameraAlarm", "runtime stopped token=${token?.value}")
+            stopForeground(STOP_FOREGROUND_REMOVE)
+            stopSelf()
+            return START_NOT_STICKY
+        }
+        if (intent?.action != ACTION_START || token == null) { stopSelf(); return START_NOT_STICKY }
+        try { promote(token, null) } catch (e: RuntimeException) {
+            recordError(token, "foreground: ${e.message ?: e.javaClass.simpleName}")
+            scope.launch { app.container.coordinator.onStopRequested(token) }
+            stopSelf()
+            return START_NOT_STICKY
+        }
+        scope.launch {
+            val state = try { app.container.stateStore.read() } catch (e: Exception) {
+                recordError(token, "state read: ${e.message ?: e.javaClass.simpleName}"); null
+            }
+            if (state !is AlarmState.Ringing || state.trigger.alarmToken != token) {
+                stopForeground(STOP_FOREGROUND_REMOVE); stopSelf(); return@launch
+            }
+            if (runtime.activeToken == null) {
+                try { promote(token, state.trigger) } catch (e: RuntimeException) {
+                    recordError(token, "foreground update: ${e.message ?: e.javaClass.simpleName}")
+                    app.container.coordinator.onStopRequested(token)
+                    stopForeground(STOP_FOREGROUND_REMOVE); stopSelf(); return@launch
+                }
+                runtime.start(token, app.container.alarmPolicy.vibrationEnabled).forEach { recordError(token, it) }
+                if (com.personal.cameraalarm.BuildConfig.DEBUG) Log.d("CameraAlarm", "runtime started token=${token.value}")
+                val latest = try { app.container.stateStore.read() } catch (e: Exception) {
+                    recordError(token, "state recheck: ${e.message ?: e.javaClass.simpleName}"); null
+                }
+                if (latest !is AlarmState.Ringing || latest.trigger.alarmToken != token) {
+                    runtime.stop(token).forEach { recordError(token, it) }
+                    stopForeground(STOP_FOREGROUND_REMOVE); stopSelf()
+                }
+            }
+        }
         return START_NOT_STICKY
     }
-    companion object { const val ACTION_START = "com.personal.cameraalarm.action.START_ALARM"; const val CHANNEL = "alarm_runtime" }
+    private fun promote(token: AlarmToken, trigger: TriggerSnapshot?) {
+        val manager = getSystemService(NotificationManager::class.java)
+        val channel = NotificationChannel(CHANNEL, "Camera alarms", NotificationManager.IMPORTANCE_HIGH)
+        channel.setSound(null, null)
+        manager.createNotificationChannel(channel)
+        val stop = PendingIntent.getBroadcast(this, 1,
+            Intent(this, StopAlarmReceiver::class.java).setAction(StopAlarmReceiver.ACTION_STOP)
+                .putExtra(AlarmReceiver.EXTRA_TOKEN, token.value),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val notification = Notification.Builder(this, CHANNEL)
+            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+            .setContentTitle("Camera Alert")
+            .setContentText(trigger?.title ?: trigger?.textPreview ?: "Camera notification detected")
+            .setWhen(trigger?.receivedAtEpochMs ?: System.currentTimeMillis())
+            .setCategory(Notification.CATEGORY_ALARM).setOngoing(true).setAutoCancel(false)
+            .addAction(Notification.Action.Builder(Icon.createWithResource(this, android.R.drawable.ic_menu_close_clear_cancel), "STOP", stop).build())
+            .build()
+        if (Build.VERSION.SDK_INT >= 34) startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SYSTEM_EXEMPTED)
+        else startForeground(NOTIFICATION_ID, notification)
+    }
+    private fun recordError(token: AlarmToken?, error: String) {
+        Log.e("CameraAlarm", "alarm runtime error token=${token?.value}: $error")
+        app.container.runtimeDiagnostics.record(error)
+    }
+    override fun onDestroy() {
+        val token = runtime.activeToken
+        runtime.stop(null).forEach { recordError(token, it) }
+        if (token != null) app.scope.launch { app.container.coordinator.onStopRequested(token) }
+        scope.cancel()
+        super.onDestroy()
+    }
+    companion object {
+        const val ACTION_START = "com.personal.cameraalarm.action.START_ALARM"
+        const val ACTION_STOP = "com.personal.cameraalarm.action.STOP_ALARM"
+        const val CHANNEL = "alarm_runtime"
+        private const val NOTIFICATION_ID = 1
+    }
 }

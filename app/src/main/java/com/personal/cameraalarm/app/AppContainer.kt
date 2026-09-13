@@ -9,6 +9,7 @@ import com.personal.cameraalarm.permission.ExactAlarmAccess
 
 class AppContainer(context: Context) {
     val listenerConnection = ListenerConnectionState()
+    val runtimeDiagnostics = RuntimeDiagnostics()
     val exactAlarmAccess = ExactAlarmAccess(context)
     val stateStore = DataStoreAlarmStateStore(context)
     var triggerConfiguration = TriggerConfiguration(false, null, emptyList())

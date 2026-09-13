@@ -157,24 +157,24 @@ unit tests
 
 ### Checklist
 
-- [ ] Khai báo `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_SYSTEM_EXEMPTED`, `VIBRATE`, `WAKE_LOCK`.
-- [ ] Khai báo `CameraAlarmService` exported false, FGS type `systemExempted` cho target/API phù hợp.
-- [ ] Service promote foreground ngay khi start path yêu cầu.
-- [ ] Tạo channel `alarm_runtime`; không dùng channel sound làm nguồn alarm chính.
-- [ ] Foreground notification có `CATEGORY_ALARM`, ongoing và STOP action.
-- [ ] Implement `AlarmPlayer` dùng system default alarm URI, `USAGE_ALARM`, `CONTENT_TYPE_SONIFICATION`, `isLooping=true`, wake mode, player volume 1.0.
-- [ ] Implement failure-safe MediaPlayer lifecycle; mọi path STOP/onDestroy release resource.
-- [ ] Implement `VibrationController` repeating waveform; STOP luôn cancel.
-- [ ] Implement service START idempotency: same token không double-player/double-vibration.
-- [ ] Defensive behavior: token khác khi đang ringing không tạo runtime thứ hai.
-- [ ] Implement STOP từ notification action; repeated STOP safe.
-- [ ] Khi audio fail, vibration + STOP notification vẫn hoạt động và error được record.
-- [ ] Khi vibration unavailable/fail, audio vẫn hoạt động.
-- [ ] Integrate coordinator `ExactAlarmFired -> Ringing` và `StopRequested -> Cooldown`.
-- [ ] Viết service/controller tests bằng fake AlarmPlayer/VibrationController.
-- [ ] Manual test background + screen locked trên ít nhất một device/emulator API 34+.
-- [ ] Chạy `./gradlew test lint assembleDebug`.
-- [ ] Commit: `feat: add continuous foreground camera alarm`.
+- [x] Khai báo `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_SYSTEM_EXEMPTED`, `VIBRATE`, `WAKE_LOCK`.
+- [x] Khai báo `CameraAlarmService` exported false, FGS type `systemExempted` cho target/API phù hợp.
+- [x] Service promote foreground ngay khi start path yêu cầu.
+- [x] Tạo channel `alarm_runtime`; không dùng channel sound làm nguồn alarm chính.
+- [x] Foreground notification có `CATEGORY_ALARM`, ongoing và STOP action.
+- [x] Implement `AlarmPlayer` dùng system default alarm URI, `USAGE_ALARM`, `CONTENT_TYPE_SONIFICATION`, `isLooping=true`, wake mode, player volume 1.0.
+- [x] Implement failure-safe MediaPlayer lifecycle; mọi path STOP/onDestroy release resource.
+- [x] Implement `VibrationController` repeating waveform; STOP luôn cancel.
+- [x] Implement service START idempotency: same token không double-player/double-vibration.
+- [x] Defensive behavior: token khác khi đang ringing không tạo runtime thứ hai.
+- [x] Implement STOP từ notification action; repeated STOP safe.
+- [x] Khi audio fail, vibration + STOP notification vẫn hoạt động và error được record.
+- [x] Khi vibration unavailable/fail, audio vẫn hoạt động.
+- [x] Integrate coordinator `ExactAlarmFired -> Ringing` và `StopRequested -> Cooldown`.
+- [x] Viết service/controller tests bằng fake AlarmPlayer/VibrationController.
+- [x] Manual test background + screen locked trên ít nhất một device/emulator API 34+.
+- [x] Chạy `./gradlew test lint assembleDebug`.
+- [x] Commit: `feat: add continuous foreground camera alarm`.
 
 ### Acceptance criteria
 
