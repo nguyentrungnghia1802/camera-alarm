@@ -85,14 +85,36 @@ class CameraAlarmService : Service() {
             Intent(this, StopAlarmReceiver::class.java).setAction(StopAlarmReceiver.ACTION_STOP)
                 .putExtra(AlarmReceiver.EXTRA_TOKEN, token.value),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val notification = Notification.Builder(this, CHANNEL)
+        val builder = Notification.Builder(this, CHANNEL)
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setContentTitle("Camera Alert")
             .setContentText(trigger?.title ?: trigger?.textPreview ?: "Camera notification detected")
             .setWhen(trigger?.receivedAtEpochMs ?: System.currentTimeMillis())
             .setCategory(Notification.CATEGORY_ALARM).setOngoing(true).setAutoCancel(false)
             .addAction(Notification.Action.Builder(Icon.createWithResource(this, android.R.drawable.ic_menu_close_clear_cancel), "STOP", stop).build())
-            .build()
+
+        val canFullScreen = app.container.readiness.canUseFullScreenIntent()
+        val fullScreenEnabled = kotlinx.coroutines.runBlocking {
+            try { app.container.settingsRepository.current().fullScreenEnabled } catch (_: Exception) { false }
+        }
+        if (canFullScreen && fullScreenEnabled) {
+            val fullScreenIntent = Intent(this, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
+                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_SOURCE, trigger?.sourcePackage)
+                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TITLE, trigger?.title)
+                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_PREVIEW, trigger?.textPreview)
+                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, trigger?.receivedAtEpochMs ?: System.currentTimeMillis())
+            }
+            val pendingFullScreen = PendingIntent.getActivity(
+                this,
+                2,
+                fullScreenIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            builder.setFullScreenIntent(pendingFullScreen, true)
+        }
+        val notification = builder.build()
         if (Build.VERSION.SDK_INT >= 34) startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SYSTEM_EXEMPTED)
         else startForeground(NOTIFICATION_ID, notification)
     }

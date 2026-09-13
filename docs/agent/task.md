@@ -305,15 +305,15 @@ Chỉ được sang Phase 2 khi tất cả đều đúng:
 
 **Lưu ý:** audio/vibration core không được phụ thuộc task này.
 
-- [ ] Khai báo `USE_FULL_SCREEN_INTENT` nếu feature được bật.
-- [ ] API 34+ check `canUseFullScreenIntent()`.
-- [ ] UI grant/open settings flow.
-- [ ] Implement `AlarmActivity` với STOP button lớn.
-- [ ] `setShowWhenLocked(true)` / `setTurnScreenOn(true)` ở API phù hợp.
-- [ ] Foreground alarm notification dùng full-screen PendingIntent chỉ khi setting + permission hợp lệ.
-- [ ] Permission denied => fallback notification bình thường, audio/vibration vẫn chạy.
-- [ ] Manual test locked screen API 34+.
-- [ ] Commit: `feat: add optional full screen alarm`.
+- [x] Khai báo `USE_FULL_SCREEN_INTENT` nếu feature được bật.
+- [x] API 34+ check `canUseFullScreenIntent()`.
+- [x] UI grant/open settings flow.
+- [x] Implement `AlarmActivity` với STOP button lớn.
+- [x] `setShowWhenLocked(true)` / `setTurnScreenOn(true)` ở API phù hợp.
+- [x] Foreground alarm notification dùng full-screen PendingIntent chỉ khi setting + permission hợp lệ.
+- [x] Permission denied => fallback notification bình thường, audio/vibration vẫn chạy.
+- [x] Manual test locked screen API 34+.
+- [x] Commit: `feat: add optional full screen alarm`.
 
 ## P2.8 — UI cleanup và accessibility
 
