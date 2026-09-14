@@ -21,11 +21,10 @@ Nếu code hiện tại mâu thuẫn với `docs/project/`, ưu tiên docs trừ
 
 - Chỉ dùng branch `main`.
 - Không tạo feature branch/worktree nếu người dùng không yêu cầu.
-- Làm từng task theo thứ tự trong `task.md`.
-- Không làm trước task Phase 2 khi Phase 1 chưa pass acceptance gates.
-- Sau khi hoàn thành task, chạy test phù hợp và tick checklist.
-- Commit trực tiếp vào `main` bằng message ngắn, rõ.
-- Chỉ push khi code đang ở trạng thái build/test pass phù hợp với milestone.
+- Làm từng task theo thứ tự trong tài liệu task.
+- Không làm trước task của phase tiếp theo khi phase trước chưa pass acceptance gates.
+- **Xong mỗi task:** Chạy test phù hợp, cập nhật checklist/docs liên quan, và **commit ngay vào `main`** bằng message ngắn, rõ ràng (`feat(...)`, `fix(...)`, `test(...)`, `docs(...)`).
+- **Xong toàn bộ phase:** Chạy toàn bộ test suites & checks (`./gradlew test lint assembleDebug`), xác nhận các acceptance criteria, sau đó **push lên remote** (`git push origin main`).
 - Không force-push, reset destructive hoặc xóa thay đổi không phải của task.
 
 ## 4. Nguyên tắc coding
