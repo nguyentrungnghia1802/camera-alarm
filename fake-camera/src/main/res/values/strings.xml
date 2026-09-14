@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Front Door Camera</string>
+    <string name="fake_camera_title">Fake Camera</string>
+    <string name="notification_test_subtitle">Notification Test</string>
+    <string name="human_detected">Human Detected</string>
+    <string name="motion_detected">Motion Detected</string>
+    <string name="camera_offline">Camera Offline</string>
+    <string name="custom_alert">Custom Alert</string>
+    <string name="send_notification">Send Notification</string>
+</resources>

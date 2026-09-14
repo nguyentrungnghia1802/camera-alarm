@@ -7,3 +7,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "CameraAlarm"
 include(":app")
+include(":fake-camera")
