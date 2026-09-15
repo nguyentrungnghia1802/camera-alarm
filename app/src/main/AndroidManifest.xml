@@ -13,7 +13,12 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent>
     </queries>
-    <application android:name=".app.CameraAlarmApp" android:theme="@android:style/Theme.Material.Light.NoActionBar" android:label="Camera Alarm" android:icon="@android:drawable/ic_lock_idle_alarm">
+    <application
+        android:name=".app.CameraAlarmApp"
+        android:theme="@android:style/Theme.Material.Light.NoActionBar"
+        android:label="Camera Alarm"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round">
         <service android:name=".notification.CameraNotificationListener"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
             android:exported="false">
