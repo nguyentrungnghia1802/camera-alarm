@@ -18,6 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.personal.cameraalarm.R
@@ -87,7 +89,7 @@ fun DiagnosticsScreen(
                     DiagRow(stringResource(R.string.diag_android_version), "API ${info.sdkInt} (Android ${android.os.Build.VERSION.RELEASE})")
                     DiagRow(stringResource(R.string.diag_device), info.deviceModel)
                     DiagRow(stringResource(R.string.diag_manufacturer), "${info.manufacturer} / ${info.brand}")
-                    DiagRow("Hệ điều hành nhận diện", info.activeOemName)
+                    DiagRow(stringResource(R.string.diag_active_oem), info.activeOemName)
                 }
             }
 
@@ -232,7 +234,7 @@ fun DiagnosticsScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
-                                text = "Thiết bị này tuân theo chuẩn Android AOSP gốc. Chỉ cần đảm bảo đã cấp đủ 5 quyền ở mục 'Quyền & Dịch vụ' phía trên để ứng dụng hoạt động ổn định nhất.",
+                                text = stringResource(R.string.diag_aosp_standard_guidance),
                                 style = MaterialTheme.typography.bodySmall,
                                 modifier = Modifier.padding(12.dp),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -251,7 +253,9 @@ fun DiagnosticsScreen(
                                 ) {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
-                                        modifier = Modifier.weight(1f)
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .padding(end = 8.dp)
                                     ) {
                                         Icon(
                                             when (item.status) {
@@ -270,7 +274,7 @@ fun DiagnosticsScreen(
                                             modifier = Modifier.size(20.dp)
                                         )
                                         Spacer(modifier = Modifier.width(8.dp))
-                                        Column {
+                                        Column(modifier = Modifier.weight(1f)) {
                                             Text(text = item.title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
                                             Text(
                                                 text = item.description,
@@ -299,7 +303,7 @@ fun DiagnosticsScreen(
                                             contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
                                             modifier = Modifier.height(32.dp)
                                         ) {
-                                            Text(item.actionLabel, fontSize = 11.sp)
+                                            Text(item.actionLabel, fontSize = 11.sp, softWrap = false, maxLines = 1)
                                         }
                                     }
                                 }
@@ -372,11 +376,26 @@ fun DiagnosticsScreen(
 @Composable
 private fun DiagRow(label: String, value: String) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 2.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(text = value, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(0.48f, fill = false)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium,
+            textAlign = TextAlign.End,
+            modifier = Modifier.weight(0.52f, fill = false)
+        )
     }
 }
 
@@ -395,7 +414,9 @@ private fun DiagStatusItem(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 8.dp)
         ) {
             Icon(
                 if (ok) Icons.Default.CheckCircle else Icons.Default.Cancel,
@@ -404,9 +425,21 @@ private fun DiagStatusItem(
                 modifier = Modifier.size(20.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Column {
-                Text(text = title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
-                Text(text = detail, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = detail,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
         if (actionLabel != null && onAction != null) {
@@ -415,7 +448,12 @@ private fun DiagStatusItem(
                 contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
                 modifier = Modifier.height(32.dp)
             ) {
-                Text(actionLabel, fontSize = 11.sp)
+                Text(
+                    text = actionLabel,
+                    fontSize = 11.sp,
+                    softWrap = false,
+                    maxLines = 1
+                )
             }
         }
     }

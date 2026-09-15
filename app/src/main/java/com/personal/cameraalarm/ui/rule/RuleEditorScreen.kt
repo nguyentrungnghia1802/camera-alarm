@@ -140,13 +140,13 @@ fun RuleEditorScreen(
                     FilterChip(
                         selected = state.matchMode == MatchMode.CONTAINS_ANY,
                         onClick = { viewModel.updateMatchMode(MatchMode.CONTAINS_ANY) },
-                        label = { Text(stringResource(R.string.rule_match_any)) },
+                        label = { Text(stringResource(R.string.rule_match_any_chip)) },
                         modifier = Modifier.weight(1f)
                     )
                     FilterChip(
                         selected = state.matchMode == MatchMode.CONTAINS_ALL,
                         onClick = { viewModel.updateMatchMode(MatchMode.CONTAINS_ALL) },
-                        label = { Text(stringResource(R.string.rule_match_all)) },
+                        label = { Text(stringResource(R.string.rule_match_all_chip)) },
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -259,7 +259,11 @@ fun RuleEditorScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 10.dp)
+                ) {
                     Text("${stringResource(R.string.rule_priority)}: ${state.priority}", fontWeight = FontWeight.Bold)
                     Text(stringResource(R.string.rule_priority_desc), style = MaterialTheme.typography.bodySmall)
                 }
@@ -281,7 +285,11 @@ fun RuleEditorScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column(modifier = Modifier.weight(1f)) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 12.dp)
+                ) {
                     Text(stringResource(R.string.rule_enabled), fontWeight = FontWeight.Bold)
                     Text(stringResource(R.string.rule_enabled_desc), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }

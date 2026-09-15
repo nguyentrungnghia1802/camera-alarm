@@ -13,10 +13,10 @@
     <string name="status_needs_setup">CẦN THIẾT LẬP</string>
     <string name="status_alarming">ĐANG BÁO ĐỘNG</string>
     <string name="system_status_title">Trạng thái bảo vệ</string>
-    <string name="monitoring_active">Đang kích hoạt giám sát camera</string>
-    <string name="monitoring_inactive">Đã tắt bảo vệ</string>
-    <string name="monitoring_standby">Chế độ chờ (ngoài khung giờ)</string>
-    <string name="standby_desc">Ngoài khung giờ hoạt động. Vẫn theo dõi camera nhưng chuông báo đã bỏ qua.</string>
+    <string name="monitoring_active">Giám sát camera đang bật</string>
+    <string name="monitoring_inactive">Bảo vệ đang tắt</string>
+    <string name="monitoring_standby">Tạm nghỉ (ngoài khung giờ)</string>
+    <string name="standby_desc">Hiện đang ngoài khung giờ hoạt động. Ứng dụng vẫn theo dõi camera nhưng không phát chuông báo động.</string>
     <string name="next_active_time">Khung giờ tiếp theo: %s</string>
     <string name="info_camera_label">Camera:</string>
     <string name="info_sound_label">Âm báo:</string>
@@ -113,7 +113,7 @@
     <string name="section_alarm_delay">Độ trễ báo động</string>
     <string name="desc_alarm_delay">Thời gian chờ từ khi nhận thông báo camera đến khi chuông reo</string>
     <string name="section_cooldown">Thời gian cảnh báo lại</string>
-    <string name="desc_cooldown">Bỏ qua thông báo lặp lại trong khoảng thời gian này sau khi bấm TẮT</string>
+    <string name="desc_cooldown">Khoảng cách tối thiểu giữa hai lần báo động. Nhập số giây mong muốn và bấm Lưu (VD: 10 giây điền 10, 10 phút điền 600, 0 để báo động mọi lúc).</string>
     <string name="cooldown_none">Không chờ</string>
     <string name="cooldown_10s">10 giây</string>
     <string name="cooldown_30s">30 giây</string>
@@ -122,6 +122,17 @@
     <string name="cooldown_custom">Tùy chỉnh</string>
     <string name="cooldown_custom_label">Cooldown:</string>
     <string name="cooldown_seconds_unit">giây</string>
+    <string name="cooldown_input_label">Thời gian chờ (giây)</string>
+    <string name="cooldown_input_placeholder">Nhập số giây (VD: 10, 60, 600...)</string>
+    <string name="btn_save_cooldown">Lưu</string>
+    <string name="cooldown_zero_explanation">0 giây — Cảnh báo ngay mỗi lần phát hiện (không chờ)</string>
+    <string name="cooldown_format_hours_mins_secs">%1$d giờ %2$d phút %3$d giây (%4$d giây)</string>
+    <string name="cooldown_format_hours_mins">%1$d giờ %2$d phút (%3$d giây)</string>
+    <string name="cooldown_format_hours_secs">%1$d giờ %2$d giây (%3$d giây)</string>
+    <string name="cooldown_format_hours">%1$d giờ (%2$d giây)</string>
+    <string name="cooldown_format_mins_secs">%1$d phút %2$d giây (%3$d giây)</string>
+    <string name="cooldown_format_mins">%1$d phút (%2$d giây)</string>
+    <string name="cooldown_format_secs">%1$d giây</string>
     <string name="decision_suppressed_cooldown_reason">Đang trong thời gian chờ cảnh báo lại</string>
     <string name="decision_suppressed_cooldown_remaining">Còn lại: %s</string>
     <string name="section_behavior">Phản hồi thiết bị</string>
@@ -247,4 +258,33 @@
     <string name="diag_oem_section_title">Hướng dẫn độ tin cậy theo từng hãng máy</string>
     <string name="diag_oem_detected_badge">Đang dùng</string>
     <string name="diag_oem_select_hint">Chọn hãng điện thoại của bạn để xem các bước thiết lập chạy ngầm:</string>
+    <string name="diag_active_oem">Hệ điều hành nhận diện</string>
+    <string name="diag_aosp_standard_guidance">Thiết bị này tuân theo chuẩn Android gốc. Chỉ cần đảm bảo đã cấp đủ các quyền ở mục \'Quyền hệ thống &amp; Dịch vụ\' phía trên để ứng dụng hoạt động ổn định nhất.</string>
+
+    <!-- Schedule Summary -->
+    <string name="schedule_summary_count">%1$d khung giờ hoạt động</string>
+    <string name="schedule_no_ranges_summary">Chưa bật khung giờ</string>
+
+    <!-- History Badges, Reasons & Pagination -->
+    <string name="history_badge_alarm">Báo động</string>
+    <string name="history_badge_suppressed">Đã bỏ qua</string>
+    <string name="history_badge_ignored">Bỏ qua</string>
+    <string name="history_badge_error">Lỗi</string>
+    <string name="history_reason_prefix">Lý do: %s</string>
+    <string name="history_details_prefix">Chi tiết: %s</string>
+    <string name="history_rule_id_prefix">Mã quy tắc: %s</string>
+    <string name="history_page_number">Trang %1$d / %2$d</string>
+    <string name="history_page_range">(%1$d - %2$d trên %3$d)</string>
+
+    <!-- Rule List & Editor Chips -->
+    <string name="rule_match_any_chip">Khớp bất kỳ</string>
+    <string name="rule_match_all_chip">Khớp tất cả</string>
+    <string name="rule_priority_chip">Ưu tiên %1$d</string>
+    <string name="rule_keywords_count_format">Từ khóa (%1$d): %2$s</string>
+    <string name="rule_sample_template_btn">Tạo mẫu Người / Chuyển động</string>
+    <string name="rule_delete_confirm_dialog">Bạn có chắc chắn muốn xóa quy tắc \"%1$s\" không?</string>
+
+    <!-- Source Picker -->
+    <string name="source_picker_installed_apps">Ứng dụng trên máy (%1$d)</string>
+    <string name="source_picker_empty_search">Không tìm thấy ứng dụng phù hợp.</string>
 </resources>

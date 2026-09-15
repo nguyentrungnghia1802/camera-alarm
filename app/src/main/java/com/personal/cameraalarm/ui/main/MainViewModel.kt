@@ -39,6 +39,8 @@ data class MainUiState(
     val scheduleMode: ScheduleMode = ScheduleMode.ALWAYS_ACTIVE,
     val scheduleActive: Boolean = true,
     val scheduleDescription: String? = null,
+    val activeScheduleRangesCount: Int = 0,
+    val singleScheduleRangeSummary: String? = null,
     val nextActiveTime: String? = null,
     val alarmSoundName: String = "Default Alarm"
 )
@@ -76,12 +78,16 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
         val isScheduleActive = scheduleDecision == ScheduleDecision.ACTIVE
         val nextActive = ActiveScheduleGate.nextActiveTime(scheduleConfig, now)
         val soundName = AlarmSoundCatalog.resolve(settings.alarmSoundKey).displayName
+        val enabledRanges = settings.scheduleRanges.filter { it.enabled }
+        val singleRangeText = if (enabledRanges.size == 1) {
+            "${enabledRanges[0].formatStart()} - ${enabledRanges[0].formatEnd()}"
+        } else null
         val scheduleDesc = if (settings.scheduleMode == ScheduleMode.ALWAYS_ACTIVE) {
             "Always active"
         } else {
-            val enabled = settings.scheduleRanges.filter { it.enabled }
-            if (enabled.isEmpty()) "No active time ranges configured"
-            else enabled.joinToString(", ") { "${it.formatStart()} -> ${it.formatEnd()}" }
+            if (enabledRanges.isEmpty()) "None"
+            else if (enabledRanges.size == 1) singleRangeText
+            else "${enabledRanges.size} ranges"
         }
 
         val effectiveStatus = when {
@@ -116,6 +122,8 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
             scheduleMode = settings.scheduleMode,
             scheduleActive = isScheduleActive,
             scheduleDescription = scheduleDesc,
+            activeScheduleRangesCount = enabledRanges.size,
+            singleScheduleRangeSummary = singleRangeText,
             nextActiveTime = nextActive,
             alarmSoundName = soundName
         )

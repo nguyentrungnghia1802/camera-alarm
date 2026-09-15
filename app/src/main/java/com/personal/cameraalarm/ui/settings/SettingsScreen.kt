@@ -19,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -324,7 +325,11 @@ fun SettingsScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Column(modifier = Modifier.weight(1f)) {
+                                Column(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(end = 8.dp)
+                                ) {
                                     Text(
                                         text = "${range.formatStart()} → ${range.formatEnd()}",
                                         style = MaterialTheme.typography.bodyLarge,
@@ -417,111 +422,92 @@ fun SettingsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Text(stringResource(R.string.section_cooldown), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text(
+                        stringResource(R.string.section_cooldown),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
                     Text(
                         stringResource(R.string.desc_cooldown),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
-                    val presets = listOf(
-                        0L to stringResource(R.string.cooldown_none),
-                        10_000L to stringResource(R.string.cooldown_10s),
-                        30_000L to stringResource(R.string.cooldown_30s),
-                        60_000L to stringResource(R.string.cooldown_1m),
-                        300_000L to stringResource(R.string.cooldown_5m)
-                    )
-                    val presetValues = remember { listOf(0L, 10_000L, 30_000L, 60_000L, 300_000L) }
-                    val currentMs = state.draftSettings.cooldownMs
-                    val isCustom = currentMs !in presetValues
-                    var customSecText by remember(currentMs) {
-                        mutableStateOf(if (isCustom) (currentMs / 1000L).toString() else "120")
+                    var cooldownSecText by remember(state.settings.cooldownMs) {
+                        mutableStateOf((state.draftSettings.cooldownMs / 1000L).toString())
+                    }
+                    val keyboardController = LocalSoftwareKeyboardController.current
+                    val enteredSec = cooldownSecText.toLongOrNull() ?: 0L
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = cooldownSecText,
+                            onValueChange = { input ->
+                                val digits = input.filter { it.isDigit() }.take(6)
+                                cooldownSecText = digits
+                                val sec = digits.toLongOrNull() ?: 0L
+                                viewModel.setCooldown(sec * 1000L)
+                            },
+                            modifier = Modifier.weight(1f),
+                            label = { Text(stringResource(R.string.cooldown_input_label)) },
+                            placeholder = { Text(stringResource(R.string.cooldown_input_placeholder)) },
+                            suffix = { Text(stringResource(R.string.cooldown_seconds_unit)) },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        )
+                        Button(
+                            onClick = {
+                                keyboardController?.hide()
+                                val sec = cooldownSecText.toLongOrNull() ?: 0L
+                                viewModel.saveCooldown(sec * 1000L)
+                            },
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier.defaultMinSize(minHeight = 56.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.Save,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                stringResource(R.string.btn_save_cooldown),
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                softWrap = false
+                            )
+                        }
                     }
 
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    // Duration conversion explanation
+                    Surface(
+                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        presets.forEach { (ms, label) ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { viewModel.setCooldown(ms) }
-                                    .padding(vertical = 4.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                RadioButton(
-                                    selected = !isCustom && currentMs == ms,
-                                    onClick = { viewModel.setCooldown(ms) }
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = label,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = if (!isCustom && currentMs == ms) FontWeight.Bold else FontWeight.Normal
-                                )
-                            }
-                        }
-
-                        // Custom option
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    val sec = customSecText.toLongOrNull() ?: 120L
-                                    viewModel.setCooldown(sec * 1000L)
-                                }
-                                .padding(vertical = 4.dp),
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            RadioButton(
-                                selected = isCustom,
-                                onClick = {
-                                    val sec = customSecText.toLongOrNull() ?: 120L
-                                    viewModel.setCooldown(sec * 1000L)
-                                }
+                            Icon(
+                                Icons.Default.Timer,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(18.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = stringResource(R.string.cooldown_custom),
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = if (isCustom) FontWeight.Bold else FontWeight.Normal
+                                text = formatCooldownExplanation(enteredSec),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                fontWeight = FontWeight.Medium
                             )
-                        }
-
-                        if (isCustom) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 40.dp, top = 4.dp, bottom = 4.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.cooldown_custom_label),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                OutlinedTextField(
-                                    value = customSecText,
-                                    onValueChange = { input ->
-                                        val digits = input.filter { it.isDigit() }.take(5)
-                                        customSecText = digits
-                                        val sec = digits.toLongOrNull() ?: 0L
-                                        viewModel.setCooldown(sec * 1000L)
-                                    },
-                                    modifier = Modifier.width(100.dp),
-                                    singleLine = true,
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                    textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center)
-                                )
-                                Text(
-                                    text = stringResource(R.string.cooldown_seconds_unit),
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
                         }
                     }
                 }
@@ -546,7 +532,11 @@ fun SettingsScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Column(modifier = Modifier.weight(1f)) {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 12.dp)
+                        ) {
                             Text(stringResource(R.string.setting_vibration), fontWeight = FontWeight.Bold)
                             Text(stringResource(R.string.desc_vibration), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
@@ -563,7 +553,11 @@ fun SettingsScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Column(modifier = Modifier.weight(1f)) {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 12.dp)
+                        ) {
                             Text(stringResource(R.string.setting_fullscreen), fontWeight = FontWeight.Bold)
                             Text(stringResource(R.string.desc_fullscreen), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
@@ -601,13 +595,13 @@ fun SettingsScreen(
                         FilterChip(
                             selected = state.draftSettings.language == "vi",
                             onClick = { viewModel.setLanguage("vi") },
-                            label = { Text(stringResource(R.string.lang_vietnamese)) },
+                            label = { Text(stringResource(R.string.lang_vietnamese), textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()) },
                             modifier = Modifier.weight(1f)
                         )
                         FilterChip(
                             selected = state.draftSettings.language == "en",
                             onClick = { viewModel.setLanguage("en") },
-                            label = { Text(stringResource(R.string.lang_english)) },
+                            label = { Text(stringResource(R.string.lang_english), textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()) },
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -634,7 +628,7 @@ fun SettingsScreen(
                     ) {
                         Icon(Icons.Default.BugReport, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(stringResource(R.string.btn_open_diagnostics))
+                        Text(stringResource(R.string.btn_open_diagnostics), textAlign = TextAlign.Center)
                     }
 
                     OutlinedButton(
@@ -644,7 +638,10 @@ fun SettingsScreen(
                     ) {
                         Icon(Icons.Default.DeleteForever, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(stringResource(R.string.btn_clear_history, state.historyCount))
+                        Text(
+                            text = stringResource(R.string.btn_clear_history, state.historyCount),
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
             }
@@ -824,4 +821,37 @@ private fun TimeRangeEditDialog(
             }
         }
     )
+}
+
+@Composable
+private fun formatCooldownExplanation(seconds: Long): String {
+    if (seconds <= 0L) {
+        return stringResource(R.string.cooldown_zero_explanation)
+    }
+    val hours = seconds / 3600
+    val minutes = (seconds % 3600) / 60
+    val remSecs = seconds % 60
+    return when {
+        hours > 0 -> {
+            if (minutes > 0 && remSecs > 0) {
+                stringResource(R.string.cooldown_format_hours_mins_secs, hours, minutes, remSecs, seconds)
+            } else if (minutes > 0) {
+                stringResource(R.string.cooldown_format_hours_mins, hours, minutes, seconds)
+            } else if (remSecs > 0) {
+                stringResource(R.string.cooldown_format_hours_secs, hours, remSecs, seconds)
+            } else {
+                stringResource(R.string.cooldown_format_hours, hours, seconds)
+            }
+        }
+        minutes > 0 -> {
+            if (remSecs > 0) {
+                stringResource(R.string.cooldown_format_mins_secs, minutes, remSecs, seconds)
+            } else {
+                stringResource(R.string.cooldown_format_mins, minutes, seconds)
+            }
+        }
+        else -> {
+            stringResource(R.string.cooldown_format_secs, seconds)
+        }
+    }
 }

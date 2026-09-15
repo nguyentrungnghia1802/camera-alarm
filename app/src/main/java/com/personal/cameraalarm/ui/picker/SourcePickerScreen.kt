@@ -107,7 +107,7 @@ fun SourcePickerScreen(
             }
 
             Text(
-                text = "Ứng dụng trên máy (${state.filteredApps.size})",
+                text = stringResource(R.string.source_picker_installed_apps, state.filteredApps.size),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold
             )
@@ -128,7 +128,7 @@ fun SourcePickerScreen(
                         .weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("Không tìm thấy ứng dụng phù hợp.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.source_picker_empty_search), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             } else {
                 LazyColumn(

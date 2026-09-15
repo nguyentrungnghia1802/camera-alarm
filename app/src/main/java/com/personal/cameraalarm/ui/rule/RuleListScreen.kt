@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.personal.cameraalarm.R
 import com.personal.cameraalarm.trigger.MatchMode
@@ -33,7 +34,7 @@ fun RuleListScreen(
         AlertDialog(
             onDismissRequest = { ruleToDelete = null },
             title = { Text(stringResource(R.string.title_rules)) },
-            text = { Text("Bạn có chắc chắn muốn xóa quy tắc '${ruleToDelete?.name}'?") },
+            text = { Text(stringResource(R.string.rule_delete_confirm_dialog, ruleToDelete?.name ?: "")) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -115,7 +116,7 @@ fun RuleListScreen(
                         viewModel.initFromTemplate()
                         onAddRule()
                     }) {
-                        Text("Tạo mẫu Người / Chuyển động")
+                        Text(stringResource(R.string.rule_sample_template_btn))
                     }
                 }
             }
@@ -170,16 +171,24 @@ private fun RuleCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column(modifier = Modifier.weight(1f)) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp)
+                ) {
                     Text(
                         text = rule.name,
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = rule.sourcePackage,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
                 Switch(
@@ -195,17 +204,20 @@ private fun RuleCard(
                 AssistChip(
                     onClick = { },
                     label = {
-                        Text(if (rule.matchMode == MatchMode.CONTAINS_ANY) stringResource(R.string.rule_match_any) else stringResource(R.string.rule_match_all))
+                        Text(
+                            if (rule.matchMode == MatchMode.CONTAINS_ANY) stringResource(R.string.rule_match_any_chip)
+                            else stringResource(R.string.rule_match_all_chip)
+                        )
                     }
                 )
                 AssistChip(
                     onClick = { },
-                    label = { Text("Ưu tiên ${rule.priority}") }
+                    label = { Text(stringResource(R.string.rule_priority_chip, rule.priority)) }
                 )
             }
 
             Text(
-                text = "Từ khóa (${rule.keywords.size}): ${rule.keywords.joinToString(", ")}",
+                text = stringResource(R.string.rule_keywords_count_format, rule.keywords.size, rule.keywords.joinToString(", ")),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface
             )

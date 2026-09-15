@@ -22,11 +22,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.personal.cameraalarm.R
 import com.personal.cameraalarm.alarm.sound.AlarmSoundCatalog
 import com.personal.cameraalarm.permission.ReadinessRepository
+import com.personal.cameraalarm.schedule.ScheduleMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -273,6 +275,13 @@ private fun StatusCard(
         ?.let { stringResource(it.displayNameResId) }
         ?: state.alarmSoundName
 
+    val scheduleSummary = when {
+        state.scheduleMode == ScheduleMode.ALWAYS_ACTIVE -> stringResource(R.string.schedule_always_active)
+        state.activeScheduleRangesCount == 0 -> stringResource(R.string.schedule_no_ranges_summary)
+        state.activeScheduleRangesCount == 1 -> state.singleScheduleRangeSummary ?: stringResource(R.string.schedule_summary_count, 1)
+        else -> stringResource(R.string.schedule_summary_count, state.activeScheduleRangesCount)
+    }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -289,7 +298,11 @@ private fun StatusCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 10.dp)
+                ) {
                     Text(
                         text = stringResource(R.string.system_status_title),
                         style = MaterialTheme.typography.labelMedium,
@@ -302,20 +315,24 @@ private fun StatusCard(
                             else -> stringResource(R.string.monitoring_inactive)
                         },
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(badgeColor)
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = badgeColor,
+                    modifier = Modifier.wrapContentSize()
                 ) {
                     Text(
                         text = statusText,
                         color = textColor,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 13.sp
+                        fontSize = 12.sp,
+                        softWrap = false,
+                        maxLines = 1,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
                     )
                 }
             }
@@ -324,95 +341,23 @@ private fun StatusCard(
 
             // Summary Information
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                // Camera App
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable(onClick = onNavigateToSourcePicker)
-                        .padding(vertical = 2.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.info_camera_label),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = state.sourceLabel ?: state.sourcePackage ?: stringResource(R.string.camera_not_selected),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowForwardIos,
-                            contentDescription = null,
-                            modifier = Modifier.size(14.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
+                InfoRow(
+                    label = stringResource(R.string.info_camera_label),
+                    value = state.sourceLabel ?: state.sourcePackage ?: stringResource(R.string.camera_not_selected),
+                    onClick = onNavigateToSourcePicker
+                )
 
-                // Sound
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable(onClick = onNavigateToSoundPicker)
-                        .padding(vertical = 2.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.info_sound_label),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = soundDisplayName,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowForwardIos,
-                            contentDescription = null,
-                            modifier = Modifier.size(14.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
+                InfoRow(
+                    label = stringResource(R.string.info_sound_label),
+                    value = soundDisplayName,
+                    onClick = onNavigateToSoundPicker
+                )
 
-                // Schedule
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable(onClick = onNavigateToSettings)
-                        .padding(vertical = 2.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.info_schedule_label),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = state.scheduleDescription ?: stringResource(R.string.schedule_always_active),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowForwardIos,
-                            contentDescription = null,
-                            modifier = Modifier.size(14.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
+                InfoRow(
+                    label = stringResource(R.string.info_schedule_label),
+                    value = scheduleSummary,
+                    onClick = onNavigateToSettings
+                )
             }
 
             if (state.effectiveStatus == AppStatus.STANDBY) {
@@ -438,6 +383,51 @@ private fun StatusCard(
 }
 
 @Composable
+private fun InfoRow(
+    label: String,
+    value: String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(0.38f)
+        )
+        Row(
+            modifier = Modifier.weight(0.62f),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.End,
+                modifier = Modifier.weight(1f, fill = false)
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Icon(
+                Icons.AutoMirrored.Filled.ArrowForwardIos,
+                contentDescription = null,
+                modifier = Modifier.size(14.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
 private fun MonitoringCard(
     monitoringEnabled: Boolean,
     blockingReady: Boolean,
@@ -455,7 +445,11 @@ private fun MonitoringCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(modifier = Modifier.weight(1f)) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 12.dp)
+            ) {
                 Text(
                     text = stringResource(R.string.title_monitoring),
                     style = MaterialTheme.typography.titleMedium,
@@ -568,7 +562,9 @@ private fun ChecklistItem(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 8.dp)
         ) {
             Icon(
                 if (isOk) Icons.Default.CheckCircle else Icons.Default.Warning,
@@ -577,16 +573,20 @@ private fun ChecklistItem(
                 modifier = Modifier.size(20.dp)
             )
             Spacer(modifier = Modifier.width(10.dp))
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = statusText,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
@@ -596,7 +596,12 @@ private fun ChecklistItem(
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
                 modifier = Modifier.height(34.dp)
             ) {
-                Text(text = buttonText, fontSize = 12.sp)
+                Text(
+                    text = buttonText,
+                    fontSize = 12.sp,
+                    softWrap = false,
+                    maxLines = 1
+                )
             }
         }
     }

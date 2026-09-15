@@ -2,9 +2,11 @@ package com.personal.cameraalarm.ui.history
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -86,7 +88,9 @@ fun HistoryScreen(
         ) {
             // Filter Chips
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 HistoryFilter.entries.forEach { filter ->
@@ -141,7 +145,7 @@ fun HistoryScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                            .padding(horizontal = 8.dp, vertical = 6.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -152,18 +156,21 @@ fun HistoryScreen(
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.btn_prev_page))
                         }
 
-                        Text(
-                            text = stringResource(
-                                R.string.history_page_format,
-                                state.currentPage,
-                                state.totalPages,
-                                startItem,
-                                endItem,
-                                state.totalCount
-                            ),
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = stringResource(R.string.history_page_number, state.currentPage, state.totalPages),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = stringResource(R.string.history_page_range, startItem, endItem, state.totalCount),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
 
                         IconButton(
                             onClick = { viewModel.nextPage() },
@@ -184,17 +191,24 @@ private fun HistoryItemCard(event: AlertEventEntity) {
     val timeFormat = remember { SimpleDateFormat("HH:mm:ss • dd/MM/yyyy", Locale.getDefault()) }
     val formattedTime = remember(event.createdAtEpochMs) { timeFormat.format(Date(event.createdAtEpochMs)) }
 
-    val (badgeColor, textColor, localizedDecision) = when (event.decision) {
-        "SCHEDULED", "ALARM_FIRED" -> Triple(Color(0xFF2E7D32), Color.White, stringResource(R.string.decision_scheduled))
-        "SUPPRESSED_PENDING" -> Triple(Color(0xFFEF6C00), Color.White, stringResource(R.string.decision_suppressed_pending))
-        "SUPPRESSED_RINGING" -> Triple(Color(0xFFEF6C00), Color.White, stringResource(R.string.decision_suppressed_ringing))
-        "SUPPRESSED_COOLDOWN" -> Triple(Color(0xFFEF6C00), Color.White, stringResource(R.string.history_filter_suppressed))
-        "SUPPRESSED_OUTSIDE_ACTIVE_HOURS" -> Triple(Color(0xFF0288D1), Color.White, stringResource(R.string.decision_suppressed_outside_hours))
-        "IGNORED_NO_RULE_MATCH" -> Triple(Color(0xFF757575), Color.White, stringResource(R.string.decision_ignored_no_match))
-        "IGNORED_WRONG_PACKAGE" -> Triple(Color(0xFF757575), Color.White, stringResource(R.string.decision_ignored_wrong_package))
-        "IGNORED_DUPLICATE" -> Triple(Color(0xFF757575), Color.White, stringResource(R.string.decision_ignored_duplicate))
-        "IGNORED_MONITORING_OFF" -> Triple(Color(0xFF757575), Color.White, stringResource(R.string.decision_ignored_monitoring_off))
-        else -> Triple(Color(0xFF757575), Color.White, event.decision)
+    val (badgeText, badgeColor) = when (event.decision) {
+        "SCHEDULED", "ALARM_FIRED" -> Pair(stringResource(R.string.history_badge_alarm), Color(0xFF2E7D32))
+        "SUPPRESSED_PENDING", "SUPPRESSED_RINGING", "SUPPRESSED_COOLDOWN", "SUPPRESSED_OUTSIDE_ACTIVE_HOURS" -> Pair(stringResource(R.string.history_badge_suppressed), Color(0xFFEF6C00))
+        "IGNORED_NO_RULE_MATCH", "IGNORED_WRONG_PACKAGE", "IGNORED_DUPLICATE", "IGNORED_MONITORING_OFF" -> Pair(stringResource(R.string.history_badge_ignored), Color(0xFF757575))
+        else -> Pair(stringResource(R.string.history_badge_error), Color(0xFFC62828))
+    }
+
+    val reasonText = when (event.decision) {
+        "SCHEDULED", "ALARM_FIRED" -> stringResource(R.string.decision_scheduled)
+        "SUPPRESSED_PENDING" -> stringResource(R.string.decision_suppressed_pending)
+        "SUPPRESSED_RINGING" -> stringResource(R.string.decision_suppressed_ringing)
+        "SUPPRESSED_COOLDOWN" -> stringResource(R.string.decision_suppressed_cooldown_reason)
+        "SUPPRESSED_OUTSIDE_ACTIVE_HOURS" -> stringResource(R.string.decision_suppressed_outside_hours)
+        "IGNORED_NO_RULE_MATCH" -> stringResource(R.string.decision_ignored_no_match)
+        "IGNORED_WRONG_PACKAGE" -> stringResource(R.string.decision_ignored_wrong_package)
+        "IGNORED_DUPLICATE" -> stringResource(R.string.decision_ignored_duplicate)
+        "IGNORED_MONITORING_OFF" -> stringResource(R.string.decision_ignored_monitoring_off)
+        else -> event.decision
     }
 
     Card(
@@ -218,24 +232,28 @@ private fun HistoryItemCard(event: AlertEventEntity) {
                 Text(
                     text = formattedTime,
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f)
                 )
                 Surface(
                     color = badgeColor,
-                    shape = RoundedCornerShape(6.dp)
+                    shape = RoundedCornerShape(6.dp),
+                    modifier = Modifier.wrapContentSize()
                 ) {
                     Text(
-                        text = localizedDecision,
-                        color = textColor,
+                        text = badgeText,
+                        color = Color.White,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
+                        softWrap = false,
+                        maxLines = 1,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
                     )
                 }
             }
 
             Text(
-                text = event.sourcePackage ?: "Ứng dụng camera",
+                text = event.sourcePackage ?: stringResource(R.string.setup_source_app),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold
             )
@@ -257,46 +275,40 @@ private fun HistoryItemCard(event: AlertEventEntity) {
                 )
             }
 
-            if (event.decision == "SUPPRESSED_COOLDOWN") {
+            Text(
+                text = stringResource(R.string.history_reason_prefix, reasonText),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            if (event.decision == "SUPPRESSED_COOLDOWN" && !event.details.isNullOrBlank()) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 4.dp),
+                        .padding(top = 2.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                     ),
                     shape = RoundedCornerShape(8.dp)
                 ) {
-                    Column(
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(10.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                            .padding(horizontal = 10.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            text = "Lý do:",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
                         Text(
                             text = stringResource(R.string.decision_suppressed_cooldown_reason),
                             style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.Medium
+                            modifier = Modifier.weight(1f)
                         )
-                        if (!event.details.isNullOrBlank()) {
-                            Spacer(modifier = Modifier.height(2.dp))
-                            Text(
-                                text = "Còn lại:",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            Text(
-                                text = event.details,
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFFEF6C00)
-                            )
-                        }
+                        Text(
+                            text = event.details,
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFFEF6C00)
+                        )
                     }
                 }
             }
@@ -310,10 +322,12 @@ private fun HistoryItemCard(event: AlertEventEntity) {
                 ) {
                     HorizontalDivider()
                     event.ruleId?.let {
-                        Text("Mã quy tắc: $it", style = MaterialTheme.typography.labelSmall, fontFamily = FontFamily.Monospace)
+                        Text(stringResource(R.string.history_rule_id_prefix, it), style = MaterialTheme.typography.labelSmall, fontFamily = FontFamily.Monospace)
                     }
-                    event.details?.let {
-                        Text("Chi tiết: $it", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error)
+                    if (event.decision != "SUPPRESSED_COOLDOWN") {
+                        event.details?.let {
+                            Text(stringResource(R.string.history_details_prefix, it), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error)
+                        }
                     }
                 }
             }

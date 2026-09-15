@@ -11,7 +11,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material.icons.filled.Warning
@@ -174,27 +176,30 @@ fun AlarmScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp, vertical = 32.dp),
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             // Header: 🚨 CAMERA ALERT
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.padding(top = 16.dp)
+                modifier = Modifier.padding(top = 8.dp)
             ) {
                 Box(
                     modifier = Modifier
                         .background(Color(0xFFC62828), RoundedCornerShape(12.dp))
-                        .padding(horizontal = 24.dp, vertical = 10.dp)
+                        .padding(horizontal = 20.dp, vertical = 8.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.alarm_screen_badge),
                         color = Color.White,
-                        fontSize = 18.sp,
+                        fontSize = 17.sp,
                         fontWeight = FontWeight.Bold,
-                        letterSpacing = 2.sp
+                        letterSpacing = 2.sp,
+                        softWrap = false,
+                        maxLines = 1
                     )
                 }
 
@@ -202,7 +207,7 @@ fun AlarmScreen(
                     Icons.Default.Warning,
                     contentDescription = null,
                     tint = Color(0xFFEF5350),
-                    modifier = Modifier.size(72.dp)
+                    modifier = Modifier.size(64.dp)
                 )
             }
 
@@ -215,23 +220,23 @@ fun AlarmScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(24.dp),
+                        .padding(20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
                         text = displayHeadline,
                         color = Color.White,
-                        fontSize = 24.sp,
+                        fontSize = 22.sp,
                         fontWeight = FontWeight.ExtraBold,
                         textAlign = TextAlign.Center,
-                        lineHeight = 30.sp
+                        lineHeight = 28.sp
                     )
 
                     Text(
                         text = displaySubtitle,
                         color = Color(0xFFB0BEC5),
-                        fontSize = 18.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         textAlign = TextAlign.Center
                     )
@@ -240,7 +245,7 @@ fun AlarmScreen(
                         text = stringResource(R.string.alarm_screen_triggered_at, formattedTime),
                         color = Color.Gray,
                         fontSize = 13.sp,
-                        modifier = Modifier.padding(top = 8.dp)
+                        modifier = Modifier.padding(top = 4.dp)
                     )
                 }
             }
@@ -260,7 +265,7 @@ fun AlarmScreen(
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(72.dp)
+                        .defaultMinSize(minHeight = 64.dp)
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -269,14 +274,16 @@ fun AlarmScreen(
                         Icon(
                             imageVector = Icons.Default.Videocam,
                             contentDescription = null,
-                            modifier = Modifier.size(28.dp)
+                            modifier = Modifier.size(26.dp)
                         )
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
                             text = stringResource(R.string.btn_open_camera),
-                            fontSize = 22.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.ExtraBold,
-                            letterSpacing = 1.sp
+                            letterSpacing = 1.sp,
+                            softWrap = false,
+                            maxLines = 1
                         )
                     }
                 }
@@ -291,13 +298,15 @@ fun AlarmScreen(
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp)
+                        .defaultMinSize(minHeight = 52.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.btn_stop_alarm),
-                        fontSize = 18.sp,
+                        fontSize = 17.sp,
                         fontWeight = FontWeight.Bold,
-                        letterSpacing = 1.sp
+                        letterSpacing = 1.sp,
+                        softWrap = false,
+                        maxLines = 1
                     )
                 }
             }

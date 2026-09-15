@@ -113,7 +113,7 @@
     <string name="section_alarm_delay">Alarm Delay</string>
     <string name="desc_alarm_delay">Time to wait between receiving camera alert and sounding alarm</string>
     <string name="section_cooldown">Cooldown Window</string>
-    <string name="desc_cooldown">Suppresses duplicate alerts for this period after pressing STOP</string>
+    <string name="desc_cooldown">Minimum interval between consecutive alarms. Enter seconds and tap Save (e.g. 10 for 10s, 600 for 10 min, 0 for always alert).</string>
     <string name="cooldown_none">No wait</string>
     <string name="cooldown_10s">10 seconds</string>
     <string name="cooldown_30s">30 seconds</string>
@@ -122,6 +122,17 @@
     <string name="cooldown_custom">Custom</string>
     <string name="cooldown_custom_label">Cooldown:</string>
     <string name="cooldown_seconds_unit">seconds</string>
+    <string name="cooldown_input_label">Wait time (seconds)</string>
+    <string name="cooldown_input_placeholder">Enter seconds (e.g. 10, 60, 600...)</string>
+    <string name="btn_save_cooldown">Save</string>
+    <string name="cooldown_zero_explanation">0 seconds — Trigger immediately on every detection (no wait)</string>
+    <string name="cooldown_format_hours_mins_secs">%1$d hr %2$d min %3$d sec (%4$d sec)</string>
+    <string name="cooldown_format_hours_mins">%1$d hr %2$d min (%3$d sec)</string>
+    <string name="cooldown_format_hours_secs">%1$d hr %2$d sec (%3$d sec)</string>
+    <string name="cooldown_format_hours">%1$d hr (%2$d sec)</string>
+    <string name="cooldown_format_mins_secs">%1$d min %2$d sec (%3$d sec)</string>
+    <string name="cooldown_format_mins">%1$d min (%2$d sec)</string>
+    <string name="cooldown_format_secs">%1$d seconds</string>
     <string name="decision_suppressed_cooldown_reason">Currently in cooldown period</string>
     <string name="decision_suppressed_cooldown_remaining">Remaining: %s</string>
     <string name="section_behavior">Device Feedback</string>
@@ -247,4 +258,33 @@
     <string name="diag_oem_section_title">OEM Reliability Guidance</string>
     <string name="diag_oem_detected_badge">Detected</string>
     <string name="diag_oem_select_hint">Select device manufacturer to view background setup steps:</string>
+    <string name="diag_active_oem">Detected OS System</string>
+    <string name="diag_aosp_standard_guidance">This device adheres to standard Android AOSP. Ensure all required permissions above are granted for best reliability.</string>
+
+    <!-- Schedule Summary -->
+    <string name="schedule_summary_count">%1$d active time ranges</string>
+    <string name="schedule_no_ranges_summary">No active hours</string>
+
+    <!-- History Badges, Reasons & Pagination -->
+    <string name="history_badge_alarm">Alarm</string>
+    <string name="history_badge_suppressed">Suppressed</string>
+    <string name="history_badge_ignored">Ignored</string>
+    <string name="history_badge_error">Error</string>
+    <string name="history_reason_prefix">Reason: %s</string>
+    <string name="history_details_prefix">Details: %s</string>
+    <string name="history_rule_id_prefix">Rule ID: %s</string>
+    <string name="history_page_number">Page %1$d / %2$d</string>
+    <string name="history_page_range">(%1$d - %2$d of %3$d)</string>
+
+    <!-- Rule List & Editor Chips -->
+    <string name="rule_match_any_chip">Match Any</string>
+    <string name="rule_match_all_chip">Match All</string>
+    <string name="rule_priority_chip">Priority %1$d</string>
+    <string name="rule_keywords_count_format">Keywords (%1$d): %2$s</string>
+    <string name="rule_sample_template_btn">Create Person / Motion Template</string>
+    <string name="rule_delete_confirm_dialog">Are you sure you want to delete rule \"%1$s\"?</string>
+
+    <!-- Source Picker -->
+    <string name="source_picker_installed_apps">Installed Apps (%1$d)</string>
+    <string name="source_picker_empty_search">No matching apps found.</string>
 </resources>

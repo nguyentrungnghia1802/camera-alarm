@@ -89,6 +89,11 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
         updateDraft { it.copy(cooldownMs = cooldownMs) }
     }
 
+    fun saveCooldown(cooldownMs: Long, onSuccess: (() -> Unit)? = null) {
+        setCooldown(cooldownMs)
+        saveSettings(onSuccess)
+    }
+
     fun setVibration(enabled: Boolean) {
         updateDraft { it.copy(vibrationEnabled = enabled) }
     }
