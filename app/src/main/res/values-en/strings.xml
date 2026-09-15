@@ -1,0 +1,196 @@
+<resources>
+    <!-- App & Navigation -->
+    <string name="app_name">Camera Alarm</string>
+    <string name="nav_dashboard">Protection</string>
+    <string name="nav_rules">Rules</string>
+    <string name="nav_history">History</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_diagnostics">Diagnostics</string>
+
+    <!-- System Status -->
+    <string name="status_ready">ACTIVE</string>
+    <string name="status_standby">STANDBY</string>
+    <string name="status_needs_setup">NEEDS SETUP</string>
+    <string name="status_alarming">ALARMING</string>
+    <string name="system_status_title">Protection Status</string>
+    <string name="monitoring_active">Monitoring is Active</string>
+    <string name="monitoring_inactive">Protection is Off</string>
+    <string name="monitoring_standby">Standby (Outside active hours)</string>
+    <string name="standby_desc">Outside active hours. Camera notifications are monitored, but alarms are suppressed.</string>
+    <string name="next_active_time">Next active: %s</string>
+    <string name="info_camera_label">Camera:</string>
+    <string name="info_sound_label">Sound:</string>
+    <string name="info_schedule_label">Schedule:</string>
+    <string name="schedule_always_active">Always active (24/7)</string>
+    <string name="camera_not_selected">Camera not selected</string>
+
+    <!-- Monitoring Switch -->
+    <string name="title_monitoring">Camera Monitoring</string>
+    <string name="desc_monitoring_ready">Automatically sounds alarm when camera detects alert</string>
+    <string name="desc_monitoring_not_ready">Please complete setup items below to enable protection</string>
+
+    <!-- Setup Checklist -->
+    <string name="section_setup">Setup Checklist</string>
+    <string name="setup_notif_access">Notification Access</string>
+    <string name="setup_exact_alarm">Exact Alarm Permission</string>
+    <string name="setup_post_notif">App Notifications</string>
+    <string name="setup_source_app">Camera Source App</string>
+    <string name="setup_trigger_rules">Trigger Rules</string>
+    <string name="setup_listener">Notification Listener</string>
+
+    <string name="status_granted">Granted</string>
+    <string name="status_required">Required</string>
+    <string name="status_connected">Connected</string>
+    <string name="status_disconnected">Disconnected</string>
+    <string name="status_rules_count">%1$d rules active</string>
+    <string name="status_rules_none">No rules enabled</string>
+
+    <!-- Action Buttons -->
+    <string name="btn_test_alarm">Test Alarm</string>
+    <string name="btn_test_alarm_desc">Press to test sound and vibration. Does not trigger real camera alerts.</string>
+    <string name="btn_stop_alarm">STOP ALARM</string>
+    <string name="btn_open_settings">Settings</string>
+    <string name="btn_grant">Grant</string>
+    <string name="btn_select">Select</string>
+    <string name="btn_rules">Rules</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_delete">Delete</string>
+    <string name="btn_edit">Edit</string>
+    <string name="btn_add">Add</string>
+    <string name="btn_clear">Clear</string>
+
+    <!-- Volume & Alerts -->
+    <string name="warning_volume_zero">Alarm volume is 0! Alarms will not produce sound until volume is raised.</string>
+    <string name="alarm_active_banner">🚨 ALARM ACTIVE!</string>
+
+    <!-- Sound Selection -->
+    <string name="title_sound_picker">Alarm Sound</string>
+    <string name="current_sound_label">Current Sound:</string>
+    <string name="sound_preview_play">Preview</string>
+    <string name="sound_preview_stop">Stop</string>
+    <string name="sound_list_title">Available Sounds</string>
+    <string name="sound_default">Default Alarm</string>
+    <string name="sound_siren">Siren</string>
+    <string name="sound_warning">Urgent Warning</string>
+    <string name="sound_loud">Loud Alarm</string>
+
+    <!-- Settings Screen -->
+    <string name="title_settings">Settings</string>
+    <string name="section_sound">Alarm Sound</string>
+    <string name="desc_sound">Select MP3 sound to play when camera alert is detected</string>
+    <string name="section_schedule">Alarm Schedule</string>
+    <string name="desc_schedule">Define active hours when camera alerts are allowed to sound</string>
+    <string name="schedule_mode_always">Always active (24/7)</string>
+    <string name="schedule_mode_custom">Custom active hours</string>
+    <string name="schedule_no_ranges">No active time ranges. Camera alerts will not ring.</string>
+    <string name="schedule_add_range">+ Add time range</string>
+    <string name="schedule_overnight_badge">Overnight</string>
+    <string name="schedule_24h_badge">24 hours</string>
+    <string name="dialog_add_time_range">Add Active Time Range</string>
+    <string name="dialog_edit_time_range">Edit Time Range</string>
+    <string name="dialog_time_desc">Configure start and end clock times in current device timezone.</string>
+    <string name="time_start">Start Time:</string>
+    <string name="time_end">End Time:</string>
+    <string name="time_hour">Hour (0-23)</string>
+    <string name="time_minute">Minute (0-59)</string>
+    <string name="time_overnight_info">ℹ Overnight range: active from %1$02d:%2$02d through midnight until %3$02d:%4$02d the next morning.</string>
+    <string name="time_24h_info">ℹ Equal start and end times: active full 24 hours continuously.</string>
+
+    <string name="section_alarm_delay">Alarm Delay</string>
+    <string name="desc_alarm_delay">Time to wait between receiving camera alert and sounding alarm</string>
+    <string name="section_cooldown">Cooldown Window</string>
+    <string name="desc_cooldown">Suppresses duplicate alerts for this period after pressing STOP</string>
+    <string name="section_behavior">Device Feedback</string>
+    <string name="setting_vibration">Vibration</string>
+    <string name="desc_vibration">Vibrate continuously during alarm</string>
+    <string name="setting_fullscreen">Full-screen Alarm</string>
+    <string name="desc_fullscreen">Show alarm activity and unlock screen when locked</string>
+
+    <string name="section_advanced">Advanced Settings</string>
+    <string name="btn_open_diagnostics">System Diagnostics</string>
+    <string name="desc_open_diagnostics">View permission status, listener connection, and diagnostics</string>
+    <string name="btn_clear_history">Clear Alert History (%1$d entries)</string>
+    <string name="dialog_clear_history_title">Clear Alert History</string>
+    <string name="dialog_clear_history_message">Are you sure you want to delete all alert history records? This cannot be undone.</string>
+
+    <!-- Rules Screen -->
+    <string name="title_rules">Trigger Rules</string>
+    <string name="desc_rules">Only sound alarm when camera notification text contains these keywords</string>
+    <string name="rule_empty">No rules configured. Tap Add to create your first rule.</string>
+    <string name="rule_name">Rule Name</string>
+    <string name="rule_keywords">Keywords (comma-separated)</string>
+    <string name="rule_keywords_hint">e.g. person, human, motion, movement</string>
+    <string name="rule_match_mode">Keyword Match Mode</string>
+    <string name="rule_match_any">Contains any keyword (Recommended)</string>
+    <string name="rule_match_all">Contains all keywords</string>
+    <string name="rule_enabled">Enable this rule</string>
+    <string name="rule_priority">Priority</string>
+    <string name="rule_priority_desc">Lower numbers are checked first (1, 2, 3...)</string>
+
+    <!-- History Screen -->
+    <string name="title_history">Alert History</string>
+    <string name="history_empty">No camera alert events recorded yet.</string>
+    <string name="history_filter_all">All</string>
+    <string name="history_filter_triggered">Triggered</string>
+    <string name="history_filter_suppressed">Suppressed</string>
+    <string name="history_filter_errors">Errors</string>
+    <string name="decision_scheduled">Alarm Triggered</string>
+    <string name="decision_suppressed_pending">Suppressed (alarm pending)</string>
+    <string name="decision_suppressed_ringing">Suppressed (alarm ringing)</string>
+    <string name="decision_suppressed_cooldown">Suppressed (cooldown active)</string>
+    <string name="decision_suppressed_outside_hours">Suppressed (outside active hours)</string>
+    <string name="decision_ignored_no_match">Ignored (no keyword match)</string>
+    <string name="decision_ignored_wrong_package">Ignored (different app)</string>
+    <string name="decision_ignored_duplicate">Ignored (duplicate notification)</string>
+    <string name="decision_ignored_monitoring_off">Ignored (monitoring off)</string>
+
+    <!-- Fullscreen Alarm Screen -->
+    <string name="alarm_screen_badge">🚨 CAMERA ALERT</string>
+    <string name="alarm_screen_triggered_at">Triggered at %s</string>
+
+    <!-- Source Picker Screen -->
+    <string name="title_source_picker">Select Camera App</string>
+    <string name="source_picker_search_hint">Search installed apps...</string>
+    <string name="source_picker_manual_title">Or enter application package name:</string>
+    <string name="source_picker_manual_hint">e.g. com.mcu.cameraview</string>
+    <string name="source_picker_confirm">Confirm</string>
+
+    <!-- Diagnostics Screen -->
+    <string name="title_diagnostics">Device Diagnostics</string>
+    <string name="diag_environment">Environment</string>
+    <string name="diag_app_version">App Version</string>
+    <string name="diag_android_version">Android Version</string>
+    <string name="diag_device">Device</string>
+    <string name="diag_manufacturer">Manufacturer / Brand</string>
+    <string name="diag_xiaomi_advisor">Xiaomi Advisor</string>
+    <string name="diag_xiaomi_detected">Detected (Active)</string>
+    <string name="diag_generic_android">Generic Android</string>
+    <string name="diag_permissions_services">Permissions &amp; Services</string>
+    <string name="diag_notif_access">Notification Access</string>
+    <string name="diag_listener_conn">Listener Connection</string>
+    <string name="diag_exact_alarm">Exact Alarm</string>
+    <string name="diag_app_notif">App Notifications</string>
+    <string name="diag_fullscreen">Full-Screen Intent</string>
+    <string name="diag_volume">Alarm Stream Volume</string>
+    <string name="diag_volume_detail">Current: %1$d (Min: %2$d, Max: %3$d)</string>
+    <string name="diag_oem_title_xiaomi">Xiaomi / HyperOS Reliability</string>
+    <string name="diag_oem_title_generic">Device Background Reliability</string>
+    <string name="diag_oem_desc_xiaomi">Configure OEM background, autostart, and battery settings for uninterrupted alerts.</string>
+    <string name="diag_oem_desc_generic">OEM-specific background settings are not required on this device.</string>
+    <string name="diag_core_state">Core Alarm State</string>
+    <string name="diag_alarm_state">Current Alarm State</string>
+    <string name="diag_monitoring_enabled">Monitoring Enabled</string>
+    <string name="diag_active_source">Active Source Package</string>
+    <string name="diag_none_configured">None configured</string>
+    <string name="diag_active_rules">Active Enabled Rules</string>
+    <string name="diag_rules_count_format">%1$d rules</string>
+    <string name="diag_last_error">Last Error</string>
+    <string name="diag_none">None</string>
+    <string name="diag_copy_btn">Copy Diagnostics to Clipboard</string>
+    <string name="diag_run_test_btn">Run Test Alarm</string>
+    <string name="diag_yes">Yes</string>
+    <string name="diag_no">No</string>
+    <string name="diag_allowed">Allowed</string>
+    <string name="diag_disallowed">Disallowed</string>
+</resources>

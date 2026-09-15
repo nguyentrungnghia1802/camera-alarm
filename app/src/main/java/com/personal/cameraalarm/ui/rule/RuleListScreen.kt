@@ -11,9 +11,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.personal.cameraalarm.R
 import com.personal.cameraalarm.trigger.MatchMode
 import com.personal.cameraalarm.trigger.TriggerRule
 
@@ -31,8 +32,8 @@ fun RuleListScreen(
     if (ruleToDelete != null) {
         AlertDialog(
             onDismissRequest = { ruleToDelete = null },
-            title = { Text("Delete Rule") },
-            text = { Text("Are you sure you want to delete rule '${ruleToDelete?.name}'?") },
+            title = { Text(stringResource(R.string.title_rules)) },
+            text = { Text("Bạn có chắc chắn muốn xóa quy tắc '${ruleToDelete?.name}'?") },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -40,12 +41,12 @@ fun RuleListScreen(
                         ruleToDelete = null
                     }
                 ) {
-                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.btn_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { ruleToDelete = null }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.btn_cancel))
                 }
             }
         )
@@ -54,24 +55,18 @@ fun RuleListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Trigger Rules") },
+                title = { Text(stringResource(R.string.title_rules), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.btn_cancel))
                     }
                 },
                 actions = {
-                    TextButton(onClick = {
-                        viewModel.initFromTemplate()
-                        onAddRule()
-                    }) {
-                        Text("Add Template")
-                    }
                     IconButton(onClick = {
                         viewModel.initNewRule()
                         onAddRule()
                     }) {
-                        Icon(Icons.Default.Add, contentDescription = "Add Rule")
+                        Icon(Icons.Default.Add, contentDescription = stringResource(R.string.btn_add))
                     }
                 }
             )
@@ -83,7 +78,7 @@ fun RuleListScreen(
                     onAddRule()
                 }
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Rule")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.btn_add))
             }
         }
     ) { padding ->
@@ -106,12 +101,12 @@ fun RuleListScreen(
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "No trigger rules configured yet",
+                        text = stringResource(R.string.rule_empty),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = "Rules determine which camera notifications trigger the alarm.",
+                        text = stringResource(R.string.desc_rules),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -120,7 +115,7 @@ fun RuleListScreen(
                         viewModel.initFromTemplate()
                         onAddRule()
                     }) {
-                        Text("Load Person / Motion Template")
+                        Text("Tạo mẫu Người / Chuyển động")
                     }
                 }
             }
@@ -200,17 +195,17 @@ private fun RuleCard(
                 AssistChip(
                     onClick = { },
                     label = {
-                        Text(if (rule.matchMode == MatchMode.CONTAINS_ANY) "ANY match" else "ALL match")
+                        Text(if (rule.matchMode == MatchMode.CONTAINS_ANY) stringResource(R.string.rule_match_any) else stringResource(R.string.rule_match_all))
                     }
                 )
                 AssistChip(
                     onClick = { },
-                    label = { Text("Priority ${rule.priority}") }
+                    label = { Text("Ưu tiên ${rule.priority}") }
                 )
             }
 
             Text(
-                text = "Keywords (${rule.keywords.size}): ${rule.keywords.joinToString(", ")}",
+                text = "Từ khóa (${rule.keywords.size}): ${rule.keywords.joinToString(", ")}",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -220,10 +215,10 @@ private fun RuleCard(
                 horizontalArrangement = Arrangement.End
             ) {
                 IconButton(onClick = onEdit) {
-                    Icon(Icons.Default.Edit, contentDescription = "Edit")
+                    Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.btn_edit))
                 }
                 IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
+                    Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.btn_delete), tint = MaterialTheme.colorScheme.error)
                 }
             }
         }

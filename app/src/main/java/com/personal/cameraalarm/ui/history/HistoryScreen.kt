@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
@@ -13,10 +14,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.personal.cameraalarm.R
 import com.personal.cameraalarm.data.history.AlertEventEntity
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -34,8 +37,8 @@ fun HistoryScreen(
     if (showClearDialog) {
         AlertDialog(
             onDismissRequest = { showClearDialog = false },
-            title = { Text("Clear Alert History") },
-            text = { Text("Are you sure you want to clear all history records? This cannot be undone.") },
+            title = { Text(stringResource(R.string.dialog_clear_history_title)) },
+            text = { Text(stringResource(R.string.dialog_clear_history_message)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -43,12 +46,12 @@ fun HistoryScreen(
                         showClearDialog = false
                     }
                 ) {
-                    Text("Clear All", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.btn_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showClearDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.btn_cancel))
                 }
             }
         )
@@ -57,16 +60,16 @@ fun HistoryScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Alert History") },
+                title = { Text(stringResource(R.string.title_history), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.btn_cancel))
                     }
                 },
                 actions = {
                     if (state.events.isNotEmpty()) {
                         IconButton(onClick = { showClearDialog = true }) {
-                            Icon(Icons.Default.DeleteSweep, contentDescription = "Clear History")
+                            Icon(Icons.Default.DeleteSweep, contentDescription = stringResource(R.string.btn_clear))
                         }
                     }
                 }
@@ -86,10 +89,16 @@ fun HistoryScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 HistoryFilter.entries.forEach { filter ->
+                    val labelRes = when (filter) {
+                        HistoryFilter.ALL -> R.string.history_filter_all
+                        HistoryFilter.TRIGGERED -> R.string.history_filter_triggered
+                        HistoryFilter.SUPPRESSED -> R.string.history_filter_suppressed
+                        HistoryFilter.ERRORS -> R.string.history_filter_errors
+                    }
                     FilterChip(
                         selected = state.filter == filter,
                         onClick = { viewModel.setFilter(filter) },
-                        label = { Text(filter.name.lowercase().replaceFirstChar { it.uppercase() }) }
+                        label = { Text(stringResource(labelRes)) }
                     )
                 }
             }
@@ -101,7 +110,7 @@ fun HistoryScreen(
                         .weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("No alert history found.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.history_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             } else {
                 LazyColumn(
@@ -126,23 +135,30 @@ private fun HistoryItemCard(event: AlertEventEntity) {
     val timeFormat = remember { SimpleDateFormat("HH:mm:ss • dd/MM/yyyy", Locale.getDefault()) }
     val formattedTime = remember(event.createdAtEpochMs) { timeFormat.format(Date(event.createdAtEpochMs)) }
 
-    val (badgeColor, textColor) = when {
-        event.decision == "SCHEDULED" || event.decision == "ALARM_FIRED" -> Color(0xFF2E7D32) to Color.White
-        event.decision.startsWith("SUPPRESSED_") -> Color(0xFFEF6C00) to Color.White
-        event.decision.startsWith("IGNORED_") -> Color(0xFF757575) to Color.White
-        else -> Color(0xFFC62828) to Color.White
+    val (badgeColor, textColor, localizedDecision) = when (event.decision) {
+        "SCHEDULED", "ALARM_FIRED" -> Triple(Color(0xFF2E7D32), Color.White, stringResource(R.string.decision_scheduled))
+        "SUPPRESSED_PENDING" -> Triple(Color(0xFFEF6C00), Color.White, stringResource(R.string.decision_suppressed_pending))
+        "SUPPRESSED_RINGING" -> Triple(Color(0xFFEF6C00), Color.White, stringResource(R.string.decision_suppressed_ringing))
+        "SUPPRESSED_COOLDOWN" -> Triple(Color(0xFFEF6C00), Color.White, stringResource(R.string.decision_suppressed_cooldown))
+        "SUPPRESSED_OUTSIDE_ACTIVE_HOURS" -> Triple(Color(0xFF0288D1), Color.White, stringResource(R.string.decision_suppressed_outside_hours))
+        "IGNORED_NO_RULE_MATCH" -> Triple(Color(0xFF757575), Color.White, stringResource(R.string.decision_ignored_no_match))
+        "IGNORED_WRONG_PACKAGE" -> Triple(Color(0xFF757575), Color.White, stringResource(R.string.decision_ignored_wrong_package))
+        "IGNORED_DUPLICATE" -> Triple(Color(0xFF757575), Color.White, stringResource(R.string.decision_ignored_duplicate))
+        "IGNORED_MONITORING_OFF" -> Triple(Color(0xFF757575), Color.White, stringResource(R.string.decision_ignored_monitoring_off))
+        else -> Triple(Color(0xFF757575), Color.White, event.decision)
     }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { expanded = !expanded },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(12.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Row(
@@ -157,20 +173,20 @@ private fun HistoryItemCard(event: AlertEventEntity) {
                 )
                 Surface(
                     color = badgeColor,
-                    shape = MaterialTheme.shapes.extraSmall
+                    shape = RoundedCornerShape(6.dp)
                 ) {
                     Text(
-                        text = event.decision,
+                        text = localizedDecision,
                         color = textColor,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
                     )
                 }
             }
 
             Text(
-                text = event.sourcePackage ?: "Unknown source",
+                text = event.sourcePackage ?: "Ứng dụng camera",
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold
             )
@@ -201,16 +217,10 @@ private fun HistoryItemCard(event: AlertEventEntity) {
                 ) {
                     HorizontalDivider()
                     event.ruleId?.let {
-                        Text("Rule ID: $it", style = MaterialTheme.typography.labelSmall, fontFamily = FontFamily.Monospace)
-                    }
-                    event.alarmToken?.let {
-                        Text("Alarm Token: $it", style = MaterialTheme.typography.labelSmall, fontFamily = FontFamily.Monospace)
-                    }
-                    event.notificationKey?.let {
-                        Text("Notification Key: $it", style = MaterialTheme.typography.labelSmall, fontFamily = FontFamily.Monospace)
+                        Text("Mã quy tắc: $it", style = MaterialTheme.typography.labelSmall, fontFamily = FontFamily.Monospace)
                     }
                     event.details?.let {
-                        Text("Details: $it", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error)
+                        Text("Chi tiết: $it", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error)
                     }
                 }
             }

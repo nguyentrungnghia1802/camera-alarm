@@ -16,10 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.personal.cameraalarm.R
 import com.personal.cameraalarm.alarm.AlarmReceiver
 import com.personal.cameraalarm.alarm.StopAlarmReceiver
 import java.text.SimpleDateFormat
@@ -109,7 +111,7 @@ fun AlarmScreen(
                         .padding(horizontal = 20.dp, vertical = 8.dp)
                 ) {
                     Text(
-                        text = "🚨 CAMERA ALERT",
+                        text = stringResource(R.string.alarm_screen_badge),
                         color = Color.White,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
@@ -162,7 +164,7 @@ fun AlarmScreen(
                     )
 
                     Text(
-                        text = "Triggered at $formattedTime",
+                        text = stringResource(R.string.alarm_screen_triggered_at, formattedTime),
                         color = Color.Gray,
                         fontSize = 13.sp
                     )
@@ -180,7 +182,7 @@ fun AlarmScreen(
                     .padding(bottom = 8.dp)
             ) {
                 Text(
-                    text = "STOP ALARM",
+                    text = stringResource(R.string.btn_stop_alarm),
                     color = Color.White,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.ExtraBold,

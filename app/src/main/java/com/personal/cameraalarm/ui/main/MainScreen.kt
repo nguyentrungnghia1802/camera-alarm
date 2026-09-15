@@ -2,6 +2,7 @@ package com.personal.cameraalarm.ui.main
 
 import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,9 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.personal.cameraalarm.R
+import com.personal.cameraalarm.alarm.sound.AlarmSoundCatalog
 import com.personal.cameraalarm.permission.ReadinessRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,7 +35,7 @@ fun MainScreen(
     onNavigateToRules: () -> Unit,
     onNavigateToHistory: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onNavigateToDiagnostics: () -> Unit
+    onNavigateToSoundPicker: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -48,18 +53,24 @@ fun MainScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = "Camera Alarm",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.Shield,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = stringResource(R.string.app_name),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp
+                        )
+                    }
                 },
                 actions = {
-                    IconButton(onClick = onNavigateToDiagnostics) {
-                        Icon(Icons.Default.Info, contentDescription = "Diagnostics")
-                    }
                     IconButton(onClick = onNavigateToSettings) {
-                        Icon(Icons.Default.Settings, contentDescription = "Settings")
+                        Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.nav_settings))
                     }
                 }
             )
@@ -69,26 +80,26 @@ fun MainScreen(
                 NavigationBarItem(
                     selected = true,
                     onClick = { },
-                    icon = { Icon(Icons.Default.Home, contentDescription = "Dashboard") },
-                    label = { Text("Dashboard") }
+                    icon = { Icon(Icons.Default.Shield, contentDescription = stringResource(R.string.nav_dashboard)) },
+                    label = { Text(stringResource(R.string.nav_dashboard)) }
                 )
                 NavigationBarItem(
                     selected = false,
                     onClick = onNavigateToRules,
-                    icon = { Icon(Icons.AutoMirrored.Filled.Rule, contentDescription = "Rules") },
-                    label = { Text("Rules") }
+                    icon = { Icon(Icons.AutoMirrored.Filled.Rule, contentDescription = stringResource(R.string.nav_rules)) },
+                    label = { Text(stringResource(R.string.nav_rules)) }
                 )
                 NavigationBarItem(
                     selected = false,
                     onClick = onNavigateToHistory,
-                    icon = { Icon(Icons.Default.History, contentDescription = "History") },
-                    label = { Text("History") }
+                    icon = { Icon(Icons.Default.History, contentDescription = stringResource(R.string.nav_history)) },
+                    label = { Text(stringResource(R.string.nav_history)) }
                 )
                 NavigationBarItem(
                     selected = false,
                     onClick = onNavigateToSettings,
-                    icon = { Icon(Icons.Default.Tune, contentDescription = "Settings") },
-                    label = { Text("Settings") }
+                    icon = { Icon(Icons.Default.Tune, contentDescription = stringResource(R.string.nav_settings)) },
+                    label = { Text(stringResource(R.string.nav_settings)) }
                 )
             }
         }
@@ -101,22 +112,28 @@ fun MainScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Status Card
-            StatusCard(state = state)
+            // Status & Quick Summary Card
+            StatusCard(
+                state = state,
+                onNavigateToSourcePicker = onNavigateToSourcePicker,
+                onNavigateToSoundPicker = onNavigateToSoundPicker,
+                onNavigateToSettings = onNavigateToSettings
+            )
 
             // Ringing / Alarming Banner with STOP button
             if (state.isRinging) {
                 Card(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp)
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(20.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Text(
-                            text = "🚨 ALARM ACTIVE",
+                            text = stringResource(R.string.alarm_active_banner),
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.onErrorContainer,
                             fontWeight = FontWeight.Bold
@@ -126,10 +143,11 @@ fun MainScreen(
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(56.dp)
+                                .height(56.dp),
+                            shape = RoundedCornerShape(12.dp)
                         ) {
                             Text(
-                                text = "STOP ALARM",
+                                text = stringResource(R.string.btn_stop_alarm),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
@@ -145,7 +163,7 @@ fun MainScreen(
                 onToggle = { viewModel.toggleMonitoring(it) }
             )
 
-            // Setup Checklist
+            // Setup Checklist Card
             SetupChecklistCard(
                 state = state,
                 context = context,
@@ -154,11 +172,12 @@ fun MainScreen(
                 onNavigateToRules = onNavigateToRules
             )
 
-            // Alarm Stream Volume Warning
+            // Alarm Stream Volume Warning (if 0)
             if (!state.readiness.alarmVolumeNonZero) {
                 Card(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
                 ) {
                     Row(
                         modifier = Modifier.padding(16.dp),
@@ -166,12 +185,12 @@ fun MainScreen(
                     ) {
                         Icon(
                             Icons.AutoMirrored.Filled.VolumeMute,
-                            contentDescription = "Volume zero warning",
+                            contentDescription = null,
                             tint = MaterialTheme.colorScheme.error
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
-                            text = "Alarm volume is 0! Alarms will not make sound until volume is increased.",
+                            text = stringResource(R.string.warning_volume_zero),
                             color = MaterialTheme.colorScheme.onErrorContainer,
                             style = MaterialTheme.typography.bodyMedium
                         )
@@ -179,54 +198,88 @@ fun MainScreen(
                 }
             }
 
-            // Quick Test Alarm Button
-            Button(
-                onClick = {
-                    if (state.isRinging) viewModel.stopAlarm(context)
-                    else viewModel.startTestAlarm(context)
-                },
-                colors = if (state.isRinging) {
-                    ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-                } else {
-                    ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
+            // Quick Test Alarm Section
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+                shape = RoundedCornerShape(16.dp)
             ) {
-                Icon(
-                    if (state.isRinging) Icons.Default.Stop else Icons.Default.PlayArrow,
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = if (state.isRinging) "STOP ALARM" else "TEST ALARM",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Button(
+                        onClick = {
+                            if (state.isRinging) viewModel.stopAlarm(context)
+                            else viewModel.startTestAlarm(context)
+                        },
+                        colors = if (state.isRinging) {
+                            ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                        } else {
+                            ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Icon(
+                            if (state.isRinging) Icons.Default.Stop else Icons.Default.PlayArrow,
+                            contentDescription = null
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = if (state.isRinging) stringResource(R.string.btn_stop_alarm)
+                            else stringResource(R.string.btn_test_alarm),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        )
+                    }
+                    Text(
+                        text = stringResource(R.string.btn_test_alarm_desc),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun StatusCard(state: MainUiState) {
+private fun StatusCard(
+    state: MainUiState,
+    onNavigateToSourcePicker: () -> Unit,
+    onNavigateToSoundPicker: () -> Unit,
+    onNavigateToSettings: () -> Unit
+) {
     val (statusText, badgeColor, textColor) = when (state.effectiveStatus) {
-        AppStatus.READY -> Triple("READY", Color(0xFF2E7D32), Color.White)
-        AppStatus.STANDBY -> Triple("STANDBY", Color(0xFF0288D1), Color.White)
-        AppStatus.NEEDS_SETUP -> Triple("NEEDS SETUP", Color(0xFFEF6C00), Color.White)
-        AppStatus.ALARMING -> Triple("ALARMING", Color(0xFFC62828), Color.White)
+        AppStatus.READY -> Triple(stringResource(R.string.status_ready), Color(0xFF2E7D32), Color.White)
+        AppStatus.STANDBY -> Triple(stringResource(R.string.status_standby), Color(0xFF0288D1), Color.White)
+        AppStatus.NEEDS_SETUP -> Triple(stringResource(R.string.status_needs_setup), Color(0xFFEF6C00), Color.White)
+        AppStatus.ALARMING -> Triple(stringResource(R.string.status_alarming), Color(0xFFC62828), Color.White)
     }
+
+    val selectedSound = AlarmSoundCatalog.resolve(null)
+    val soundDisplayName = AlarmSoundCatalog.allSounds
+        .firstOrNull { it.displayName == state.alarmSoundName || it.key == state.alarmSoundName }
+        ?.let { stringResource(it.displayNameResId) }
+        ?: state.alarmSoundName
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        shape = RoundedCornerShape(16.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -235,15 +288,15 @@ private fun StatusCard(state: MainUiState) {
             ) {
                 Column {
                     Text(
-                        text = "System Status",
+                        text = stringResource(R.string.system_status_title),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
                         text = when {
-                            state.effectiveStatus == AppStatus.STANDBY -> "Monitoring Standby"
-                            state.monitoringEnabled -> "Monitoring is Active"
-                            else -> "Monitoring is Off"
+                            state.effectiveStatus == AppStatus.STANDBY -> stringResource(R.string.monitoring_standby)
+                            state.monitoringEnabled -> stringResource(R.string.monitoring_active)
+                            else -> stringResource(R.string.monitoring_inactive)
                         },
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold
@@ -259,8 +312,103 @@ private fun StatusCard(state: MainUiState) {
                         text = statusText,
                         color = textColor,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp
+                        fontSize = 13.sp
                     )
+                }
+            }
+
+            HorizontalDivider()
+
+            // Summary Information
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                // Camera App
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClick = onNavigateToSourcePicker)
+                        .padding(vertical = 2.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.info_camera_label),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = state.sourceLabel ?: state.sourcePackage ?: stringResource(R.string.camera_not_selected),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowForwardIos,
+                            contentDescription = null,
+                            modifier = Modifier.size(14.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                // Sound
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClick = onNavigateToSoundPicker)
+                        .padding(vertical = 2.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.info_sound_label),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = soundDisplayName,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowForwardIos,
+                            contentDescription = null,
+                            modifier = Modifier.size(14.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                // Schedule
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClick = onNavigateToSettings)
+                        .padding(vertical = 2.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.info_schedule_label),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = state.scheduleDescription ?: stringResource(R.string.schedule_always_active),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowForwardIos,
+                            contentDescription = null,
+                            modifier = Modifier.size(14.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
 
@@ -268,35 +416,18 @@ private fun StatusCard(state: MainUiState) {
                 HorizontalDivider()
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(
-                        text = "Outside active hours. Notifications are still monitored. Camera alarms are currently suppressed.",
+                        text = stringResource(R.string.standby_desc),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     state.nextActiveTime?.let {
                         Text(
-                            text = "Next active: $it",
+                            text = stringResource(R.string.next_active_time, it),
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
-                }
-            } else if (state.monitoringEnabled && state.effectiveStatus == AppStatus.READY) {
-                HorizontalDivider()
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Schedule: ${state.scheduleDescription ?: "Always active"}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = "Sound: ${state.alarmSoundName}",
-                        style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.Medium
-                    )
                 }
             }
         }
@@ -311,7 +442,8 @@ private fun MonitoringCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(16.dp)
     ) {
         Row(
             modifier = Modifier
@@ -322,12 +454,13 @@ private fun MonitoringCard(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Camera Monitoring",
+                    text = stringResource(R.string.title_monitoring),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = if (blockingReady) "Listen for camera notifications" else "Complete setup checklist below to enable",
+                    text = if (blockingReady) stringResource(R.string.desc_monitoring_ready)
+                    else stringResource(R.string.desc_monitoring_not_ready),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -350,7 +483,8 @@ private fun SetupChecklistCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(16.dp)
     ) {
         Column(
             modifier = Modifier
@@ -359,63 +493,58 @@ private fun SetupChecklistCard(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Setup Checklist",
+                text = stringResource(R.string.section_setup),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
 
-            // Notification Access
+            // 1. Notification Access
             ChecklistItem(
-                title = "Notification Access",
+                title = stringResource(R.string.setup_notif_access),
                 isOk = state.readiness.notificationAccessGranted,
-                statusText = if (state.readiness.notificationAccessGranted) "Granted" else "Required",
-                buttonText = "Settings",
+                statusText = if (state.readiness.notificationAccessGranted) stringResource(R.string.status_granted)
+                else stringResource(R.string.status_required),
+                buttonText = if (!state.readiness.notificationAccessGranted) stringResource(R.string.btn_grant) else null,
                 onAction = { context.startActivity(readinessRepo.notificationAccessSettingsIntent()) }
             )
 
-            // Exact Alarm
+            // 2. Exact Alarm
             ChecklistItem(
-                title = "Exact Alarm Permission",
+                title = stringResource(R.string.setup_exact_alarm),
                 isOk = state.readiness.exactAlarmGranted,
-                statusText = if (state.readiness.exactAlarmGranted) "Granted" else "Required",
-                buttonText = "Grant",
+                statusText = if (state.readiness.exactAlarmGranted) stringResource(R.string.status_granted)
+                else stringResource(R.string.status_required),
+                buttonText = if (!state.readiness.exactAlarmGranted) stringResource(R.string.btn_grant) else null,
                 onAction = { readinessRepo.exactAlarmSettingsIntent()?.let { context.startActivity(it) } }
             )
 
-            // App Notifications (POST_NOTIFICATIONS)
+            // 3. App Notifications
             ChecklistItem(
-                title = "App Notifications",
+                title = stringResource(R.string.setup_post_notif),
                 isOk = state.readiness.postNotificationsGranted,
-                statusText = if (state.readiness.postNotificationsGranted) "Granted" else "Required",
-                buttonText = "Settings",
+                statusText = if (state.readiness.postNotificationsGranted) stringResource(R.string.status_granted)
+                else stringResource(R.string.status_required),
+                buttonText = if (!state.readiness.postNotificationsGranted) stringResource(R.string.btn_grant) else null,
                 onAction = { context.startActivity(readinessRepo.appNotificationSettingsIntent()) }
             )
 
-            // Source App
+            // 4. Source App
             ChecklistItem(
-                title = "Camera Source App",
+                title = stringResource(R.string.setup_source_app),
                 isOk = state.readiness.sourceConfigured,
-                statusText = state.sourceLabel ?: state.sourcePackage ?: "Not selected",
-                buttonText = "Select",
+                statusText = state.sourceLabel ?: state.sourcePackage ?: stringResource(R.string.camera_not_selected),
+                buttonText = stringResource(R.string.btn_select),
                 onAction = onNavigateToSourcePicker
             )
 
-            // Trigger Rules
+            // 5. Trigger Rules
             ChecklistItem(
-                title = "Trigger Rules",
+                title = stringResource(R.string.setup_trigger_rules),
                 isOk = state.readiness.ruleConfigured,
-                statusText = if (state.enabledRuleCount > 0) "${state.enabledRuleCount} enabled" else "None enabled",
-                buttonText = "Rules",
+                statusText = if (state.enabledRuleCount > 0) stringResource(R.string.status_rules_count, state.enabledRuleCount)
+                else stringResource(R.string.status_rules_none),
+                buttonText = stringResource(R.string.btn_rules),
                 onAction = onNavigateToRules
-            )
-
-            // Listener Connection
-            ChecklistItem(
-                title = "Listener Service",
-                isOk = state.readiness.listenerConnected,
-                statusText = if (state.readiness.listenerConnected) "Connected" else "Disconnected",
-                buttonText = null,
-                onAction = null
             )
         }
     }
@@ -444,7 +573,7 @@ private fun ChecklistItem(
                 tint = if (isOk) Color(0xFF2E7D32) else Color(0xFFEF6C00),
                 modifier = Modifier.size(20.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(10.dp))
             Column {
                 Text(
                     text = title,
@@ -462,7 +591,7 @@ private fun ChecklistItem(
             OutlinedButton(
                 onClick = onAction,
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
-                modifier = Modifier.height(36.dp)
+                modifier = Modifier.height(34.dp)
             ) {
                 Text(text = buttonText, fontSize = 12.sp)
             }

@@ -21,6 +21,7 @@ import com.personal.cameraalarm.ui.rule.RuleListScreen
 import com.personal.cameraalarm.ui.rule.RuleViewModel
 import com.personal.cameraalarm.ui.settings.SettingsScreen
 import com.personal.cameraalarm.ui.settings.SettingsViewModel
+import com.personal.cameraalarm.ui.settings.SoundPickerScreen
 import com.personal.cameraalarm.ui.theme.CameraAlarmTheme
 
 enum class AppScreen {
@@ -29,6 +30,7 @@ enum class AppScreen {
     RULES,
     RULE_EDITOR,
     SETTINGS,
+    SOUND_PICKER,
     HISTORY,
     DIAGNOSTICS
 }
@@ -63,7 +65,12 @@ class MainActivity : ComponentActivity() {
 
                 if (currentScreen != AppScreen.DASHBOARD) {
                     BackHandler {
-                        currentScreen = if (currentScreen == AppScreen.RULE_EDITOR) AppScreen.RULES else AppScreen.DASHBOARD
+                        currentScreen = when (currentScreen) {
+                            AppScreen.RULE_EDITOR -> AppScreen.RULES
+                            AppScreen.SOUND_PICKER -> AppScreen.SETTINGS
+                            AppScreen.DIAGNOSTICS -> AppScreen.SETTINGS
+                            else -> AppScreen.DASHBOARD
+                        }
                     }
                 }
 
@@ -78,7 +85,7 @@ class MainActivity : ComponentActivity() {
                         onNavigateToRules = { currentScreen = AppScreen.RULES },
                         onNavigateToHistory = { currentScreen = AppScreen.HISTORY },
                         onNavigateToSettings = { currentScreen = AppScreen.SETTINGS },
-                        onNavigateToDiagnostics = { currentScreen = AppScreen.DIAGNOSTICS }
+                        onNavigateToSoundPicker = { currentScreen = AppScreen.SOUND_PICKER }
                     )
                     AppScreen.SOURCE_PICKER -> SourcePickerScreen(
                         viewModel = sourcePickerViewModel,
@@ -97,7 +104,12 @@ class MainActivity : ComponentActivity() {
                     AppScreen.SETTINGS -> SettingsScreen(
                         viewModel = settingsViewModel,
                         onBack = { currentScreen = AppScreen.DASHBOARD },
+                        onNavigateToSoundPicker = { currentScreen = AppScreen.SOUND_PICKER },
                         onNavigateToDiagnostics = { currentScreen = AppScreen.DIAGNOSTICS }
+                    )
+                    AppScreen.SOUND_PICKER -> SoundPickerScreen(
+                        viewModel = settingsViewModel,
+                        onBack = { currentScreen = AppScreen.SETTINGS }
                     )
                     AppScreen.HISTORY -> HistoryScreen(
                         viewModel = historyViewModel,
@@ -106,7 +118,7 @@ class MainActivity : ComponentActivity() {
                     AppScreen.DIAGNOSTICS -> DiagnosticsScreen(
                         viewModel = diagnosticsViewModel,
                         readinessRepo = app.container.readiness,
-                        onBack = { currentScreen = AppScreen.DASHBOARD }
+                        onBack = { currentScreen = AppScreen.SETTINGS }
                     )
                 }
             }

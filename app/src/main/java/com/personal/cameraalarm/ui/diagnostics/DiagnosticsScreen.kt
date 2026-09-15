@@ -20,6 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.personal.cameraalarm.permission.ReadinessRepository
 
+import androidx.compose.ui.res.stringResource
+import com.personal.cameraalarm.R
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiagnosticsScreen(
@@ -44,15 +47,15 @@ fun DiagnosticsScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text("Device Diagnostics") },
+                title = { Text(stringResource(R.string.title_diagnostics)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.btn_cancel))
                     }
                 },
                 actions = {
                     IconButton(onClick = { viewModel.copyDiagnostics(context, info) }) {
-                        Icon(Icons.Default.ContentCopy, contentDescription = "Copy Diagnostics")
+                        Icon(Icons.Default.ContentCopy, contentDescription = stringResource(R.string.diag_copy_btn))
                     }
                 }
             )
@@ -77,12 +80,12 @@ fun DiagnosticsScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text("Environment", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    DiagRow("App Version", info.appVersion)
-                    DiagRow("Android Version", "API ${info.sdkInt} (Android ${android.os.Build.VERSION.RELEASE})")
-                    DiagRow("Device", info.deviceModel)
-                    DiagRow("Manufacturer / Brand", "${info.manufacturer} / ${info.brand}")
-                    DiagRow("Xiaomi Advisor", if (info.isXiaomiFamily) "Detected (Active)" else "Generic Android")
+                    Text(stringResource(R.string.diag_environment), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    DiagRow(stringResource(R.string.diag_app_version), info.appVersion)
+                    DiagRow(stringResource(R.string.diag_android_version), "API ${info.sdkInt} (Android ${android.os.Build.VERSION.RELEASE})")
+                    DiagRow(stringResource(R.string.diag_device), info.deviceModel)
+                    DiagRow(stringResource(R.string.diag_manufacturer), "${info.manufacturer} / ${info.brand}")
+                    DiagRow(stringResource(R.string.diag_xiaomi_advisor), if (info.isXiaomiFamily) stringResource(R.string.diag_xiaomi_detected) else stringResource(R.string.diag_generic_android))
                 }
             }
 
@@ -97,52 +100,52 @@ fun DiagnosticsScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text("Permissions & Services", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.diag_permissions_services), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
 
                     DiagStatusItem(
-                        title = "Notification Access",
+                        title = stringResource(R.string.diag_notif_access),
                         ok = info.readiness.notificationAccessGranted,
-                        detail = if (info.readiness.notificationAccessGranted) "Granted" else "Required",
-                        actionLabel = "Settings",
+                        detail = if (info.readiness.notificationAccessGranted) stringResource(R.string.status_granted) else stringResource(R.string.status_required),
+                        actionLabel = stringResource(R.string.btn_open_settings),
                         onAction = { context.startActivity(readinessRepo.notificationAccessSettingsIntent()) }
                     )
 
                     DiagStatusItem(
-                        title = "Listener Connection",
+                        title = stringResource(R.string.diag_listener_conn),
                         ok = info.readiness.listenerConnected,
-                        detail = if (info.readiness.listenerConnected) "Connected" else "Disconnected",
+                        detail = if (info.readiness.listenerConnected) stringResource(R.string.status_connected) else stringResource(R.string.status_disconnected),
                         actionLabel = null,
                         onAction = null
                     )
 
                     DiagStatusItem(
-                        title = "Exact Alarm",
+                        title = stringResource(R.string.diag_exact_alarm),
                         ok = info.readiness.exactAlarmGranted,
-                        detail = if (info.readiness.exactAlarmGranted) "Granted" else "Required",
-                        actionLabel = "Grant",
+                        detail = if (info.readiness.exactAlarmGranted) stringResource(R.string.status_granted) else stringResource(R.string.status_required),
+                        actionLabel = stringResource(R.string.btn_grant),
                         onAction = { readinessRepo.exactAlarmSettingsIntent()?.let { context.startActivity(it) } }
                     )
 
                     DiagStatusItem(
-                        title = "App Notifications",
+                        title = stringResource(R.string.diag_app_notif),
                         ok = info.readiness.postNotificationsGranted,
-                        detail = if (info.readiness.postNotificationsGranted) "Granted" else "Denied",
-                        actionLabel = "Settings",
+                        detail = if (info.readiness.postNotificationsGranted) stringResource(R.string.status_granted) else stringResource(R.string.status_required),
+                        actionLabel = stringResource(R.string.btn_open_settings),
                         onAction = { context.startActivity(readinessRepo.appNotificationSettingsIntent()) }
                     )
 
                     DiagStatusItem(
-                        title = "Full-Screen Intent",
+                        title = stringResource(R.string.diag_fullscreen),
                         ok = info.fullScreenIntentAllowed,
-                        detail = if (info.fullScreenIntentAllowed) "Allowed" else "Disallowed",
-                        actionLabel = if (!info.fullScreenIntentAllowed && readinessRepo.fullScreenIntentSettingsIntent() != null) "Settings" else null,
+                        detail = if (info.fullScreenIntentAllowed) stringResource(R.string.diag_allowed) else stringResource(R.string.diag_disallowed),
+                        actionLabel = if (!info.fullScreenIntentAllowed && readinessRepo.fullScreenIntentSettingsIntent() != null) stringResource(R.string.btn_open_settings) else null,
                         onAction = { readinessRepo.fullScreenIntentSettingsIntent()?.let { context.startActivity(it) } }
                     )
 
                     DiagStatusItem(
-                        title = "Alarm Stream Volume",
+                        title = stringResource(R.string.diag_volume),
                         ok = info.volumeStatus.isNonZero,
-                        detail = "Current: ${info.volumeStatus.current} (Min: ${info.volumeStatus.minimum}, Max: ${info.volumeStatus.maximum})",
+                        detail = stringResource(R.string.diag_volume_detail, info.volumeStatus.current, info.volumeStatus.minimum, info.volumeStatus.maximum),
                         actionLabel = null,
                         onAction = null
                     )
@@ -161,13 +164,13 @@ fun DiagnosticsScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = if (info.isXiaomiFamily) "Xiaomi / HyperOS Reliability" else "Device Background Reliability",
+                        text = if (info.isXiaomiFamily) stringResource(R.string.diag_oem_title_xiaomi) else stringResource(R.string.diag_oem_title_generic),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = if (info.isXiaomiFamily) "Configure OEM background, autostart, and battery settings for uninterrupted alerts."
-                        else "OEM-specific background settings are not required on this device.",
+                        text = if (info.isXiaomiFamily) stringResource(R.string.diag_oem_desc_xiaomi)
+                        else stringResource(R.string.diag_oem_desc_generic),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -189,17 +192,17 @@ fun DiagnosticsScreen(
                                 ) {
                                     Icon(
                                         when (item.status) {
-                                            com.personal.cameraalarm.reliability.ReliabilityStatus.READY -> Icons.Default.CheckCircle
-                                            com.personal.cameraalarm.reliability.ReliabilityStatus.USER_CONFIRMATION_REQUIRED -> Icons.Default.Warning
-                                            com.personal.cameraalarm.reliability.ReliabilityStatus.MISSING -> Icons.Default.Cancel
-                                            else -> Icons.Default.Info
+                                             com.personal.cameraalarm.reliability.ReliabilityStatus.READY -> Icons.Default.CheckCircle
+                                             com.personal.cameraalarm.reliability.ReliabilityStatus.USER_CONFIRMATION_REQUIRED -> Icons.Default.Warning
+                                             com.personal.cameraalarm.reliability.ReliabilityStatus.MISSING -> Icons.Default.Cancel
+                                             else -> Icons.Default.Info
                                         },
                                         contentDescription = null,
                                         tint = when (item.status) {
-                                            com.personal.cameraalarm.reliability.ReliabilityStatus.READY -> Color(0xFF2E7D32)
-                                            com.personal.cameraalarm.reliability.ReliabilityStatus.USER_CONFIRMATION_REQUIRED -> Color(0xFFEF6C00)
-                                            com.personal.cameraalarm.reliability.ReliabilityStatus.MISSING -> Color(0xFFC62828)
-                                            else -> Color(0xFF757575)
+                                             com.personal.cameraalarm.reliability.ReliabilityStatus.READY -> Color(0xFF2E7D32)
+                                             com.personal.cameraalarm.reliability.ReliabilityStatus.USER_CONFIRMATION_REQUIRED -> Color(0xFFEF6C00)
+                                             com.personal.cameraalarm.reliability.ReliabilityStatus.MISSING -> Color(0xFFC62828)
+                                             else -> Color(0xFF757575)
                                         },
                                         modifier = Modifier.size(20.dp)
                                     )
@@ -271,12 +274,12 @@ fun DiagnosticsScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text("Core Alarm State", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    DiagRow("Current Alarm State", info.alarmState)
-                    DiagRow("Monitoring Enabled", if (info.monitoringEnabled) "Yes" else "No")
-                    DiagRow("Active Source Package", info.sourcePackage ?: "None configured")
-                    DiagRow("Active Enabled Rules", "${info.enabledRuleCount} rules")
-                    DiagRow("Last Error", info.lastRuntimeError ?: "None")
+                    Text(stringResource(R.string.diag_core_state), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    DiagRow(stringResource(R.string.diag_alarm_state), info.alarmState)
+                    DiagRow(stringResource(R.string.diag_monitoring_enabled), if (info.monitoringEnabled) stringResource(R.string.diag_yes) else stringResource(R.string.diag_no))
+                    DiagRow(stringResource(R.string.diag_active_source), info.sourcePackage ?: stringResource(R.string.diag_none_configured))
+                    DiagRow(stringResource(R.string.diag_active_rules), stringResource(R.string.diag_rules_count_format, info.enabledRuleCount))
+                    DiagRow(stringResource(R.string.diag_last_error), info.lastRuntimeError ?: stringResource(R.string.diag_none))
                 }
             }
 
@@ -287,7 +290,7 @@ fun DiagnosticsScreen(
             ) {
                 Icon(Icons.Default.ContentCopy, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Copy Diagnostics to Clipboard")
+                Text(stringResource(R.string.diag_copy_btn))
             }
 
             OutlinedButton(
@@ -296,7 +299,7 @@ fun DiagnosticsScreen(
             ) {
                 Icon(Icons.Default.PlayArrow, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Run Test Alarm")
+                Text(stringResource(R.string.diag_run_test_btn))
             }
         }
     }

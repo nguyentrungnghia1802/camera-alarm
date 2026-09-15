@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
@@ -12,9 +13,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.personal.cameraalarm.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,10 +30,10 @@ fun SourcePickerScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Select Camera App") },
+                title = { Text(stringResource(R.string.title_source_picker), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.btn_cancel))
                     }
                 }
             )
@@ -47,25 +50,27 @@ fun SourcePickerScreen(
             OutlinedTextField(
                 value = state.searchQuery,
                 onValueChange = viewModel::onSearchQueryChanged,
-                placeholder = { Text("Search installed apps...") },
+                placeholder = { Text(stringResource(R.string.source_picker_search_hint)) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 singleLine = true,
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // Advanced Manual Package Input Card
+            // Manual Package Input Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(12.dp),
+                        .padding(14.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "Manual Package Name (Advanced)",
+                        text = stringResource(R.string.source_picker_manual_title),
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -77,16 +82,18 @@ fun SourcePickerScreen(
                         OutlinedTextField(
                             value = state.manualInput,
                             onValueChange = viewModel::onManualInputChanged,
-                            placeholder = { Text("e.g. com.camera.vendor") },
+                            placeholder = { Text(stringResource(R.string.source_picker_manual_hint)) },
                             singleLine = true,
                             isError = state.errorMessage != null,
+                            shape = RoundedCornerShape(10.dp),
                             modifier = Modifier.weight(1f)
                         )
                         Button(
                             onClick = { viewModel.submitManualInput(onBack) },
+                            shape = RoundedCornerShape(10.dp),
                             modifier = Modifier.height(56.dp)
                         ) {
-                            Text("Save")
+                            Text(stringResource(R.string.source_picker_confirm))
                         }
                     }
                     if (state.errorMessage != null) {
@@ -100,7 +107,7 @@ fun SourcePickerScreen(
             }
 
             Text(
-                text = "Installed Apps (${state.filteredApps.size})",
+                text = "Ứng dụng trên máy (${state.filteredApps.size})",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold
             )
@@ -121,14 +128,14 @@ fun SourcePickerScreen(
                         .weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("No matching apps found.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Không tìm thấy ứng dụng phù hợp.", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             } else {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     items(state.filteredApps, key = { it.packageName }) { app ->
                         val isSelected = app.packageName == state.selectedPackage
@@ -156,12 +163,13 @@ private fun AppRow(
             .clickable(onClick = onSelect),
         colors = CardDefaults.cardColors(
             containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
-        )
+        ),
+        shape = RoundedCornerShape(10.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -180,7 +188,7 @@ private fun AppRow(
             if (isSelected) {
                 Icon(
                     Icons.Default.CheckCircle,
-                    contentDescription = "Selected",
+                    contentDescription = "Đã chọn",
                     tint = Color(0xFF2E7D32),
                     modifier = Modifier.size(24.dp)
                 )

@@ -3,44 +3,45 @@ package com.personal.cameraalarm.ui.settings
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.VolumeMute
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.personal.cameraalarm.R
+import com.personal.cameraalarm.alarm.sound.AlarmSoundCatalog
+import com.personal.cameraalarm.schedule.ActiveTimeRange
+import com.personal.cameraalarm.schedule.ScheduleMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
     onBack: () -> Unit,
+    onNavigateToSoundPicker: () -> Unit,
     onNavigateToDiagnostics: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
     var showClearHistoryDialog by remember { mutableStateOf(false) }
     var showAddRangeDialog by remember { mutableStateOf(false) }
-    var editingRange by remember { mutableStateOf<com.personal.cameraalarm.schedule.ActiveTimeRange?>(null) }
+    var editingRange by remember { mutableStateOf<ActiveTimeRange?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val selectedSound = AlarmSoundCatalog.resolve(state.settings.alarmSoundKey)
 
     LaunchedEffect(state.message) {
         state.message?.let {
             snackbarHostState.showSnackbar(it)
             viewModel.clearMessage()
-        }
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            viewModel.stopPreview()
         }
     }
 
@@ -69,8 +70,8 @@ fun SettingsScreen(
     if (showClearHistoryDialog) {
         AlertDialog(
             onDismissRequest = { showClearHistoryDialog = false },
-            title = { Text("Clear History") },
-            text = { Text("Are you sure you want to delete all alert history records? This cannot be undone.") },
+            title = { Text(stringResource(R.string.dialog_clear_history_title)) },
+            text = { Text(stringResource(R.string.dialog_clear_history_message)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -78,12 +79,12 @@ fun SettingsScreen(
                         showClearHistoryDialog = false
                     }
                 ) {
-                    Text("Clear All", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.btn_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showClearHistoryDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.btn_cancel))
                 }
             }
         )
@@ -93,10 +94,10 @@ fun SettingsScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text("Alarm Settings") },
+                title = { Text(stringResource(R.string.title_settings), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.btn_cancel))
                     }
                 }
             )
@@ -110,73 +111,59 @@ fun SettingsScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Alarm Sound Card
+            // Sound Picker Navigation Card
             Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onNavigateToSoundPicker),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                shape = RoundedCornerShape(16.dp)
             ) {
-                Column(
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("Alarm Sound", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    Text(
-                        "Select bundled MP3 sound for camera alert",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-
-                    viewModel.availableSounds.forEach { sound ->
-                        val isSelected = state.settings.alarmSoundKey == sound.key
-                        val isPreviewingThis = state.previewPlayingKey == sound.key
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { viewModel.selectAlarmSound(sound.key) }
-                                .padding(vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                RadioButton(
-                                    selected = isSelected,
-                                    onClick = { viewModel.selectAlarmSound(sound.key) }
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = sound.displayName,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                                )
-                            }
-
-                            IconButton(
-                                onClick = {
-                                    if (isPreviewingThis) viewModel.stopPreview()
-                                    else viewModel.playPreview(sound)
-                                }
-                            ) {
-                                Icon(
-                                    if (isPreviewingThis) Icons.Default.Stop else Icons.Default.PlayArrow,
-                                    contentDescription = if (isPreviewingThis) "Stop Preview" else "Play Preview",
-                                    tint = if (isPreviewingThis) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
-                                )
-                            }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Icon(
+                            Icons.Default.MusicNote,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column {
+                            Text(
+                                text = stringResource(R.string.section_sound),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = stringResource(selectedSound.displayNameResId),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.SemiBold
+                            )
                         }
                     }
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowForwardIos,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
 
-            // Alarm Schedule Card
+            // Schedule Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                shape = RoundedCornerShape(16.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -184,9 +171,9 @@ fun SettingsScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text("Alarm Schedule", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.section_schedule), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     Text(
-                        "Define active hours when camera alerts are allowed to sound alarms",
+                        stringResource(R.string.desc_schedule),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -196,20 +183,20 @@ fun SettingsScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         FilterChip(
-                            selected = state.settings.scheduleMode == com.personal.cameraalarm.schedule.ScheduleMode.ALWAYS_ACTIVE,
-                            onClick = { viewModel.setScheduleMode(com.personal.cameraalarm.schedule.ScheduleMode.ALWAYS_ACTIVE) },
-                            label = { Text("Always active") },
+                            selected = state.settings.scheduleMode == ScheduleMode.ALWAYS_ACTIVE,
+                            onClick = { viewModel.setScheduleMode(ScheduleMode.ALWAYS_ACTIVE) },
+                            label = { Text(stringResource(R.string.schedule_mode_always)) },
                             modifier = Modifier.weight(1f)
                         )
                         FilterChip(
-                            selected = state.settings.scheduleMode == com.personal.cameraalarm.schedule.ScheduleMode.CUSTOM,
-                            onClick = { viewModel.setScheduleMode(com.personal.cameraalarm.schedule.ScheduleMode.CUSTOM) },
-                            label = { Text("Custom active hours") },
+                            selected = state.settings.scheduleMode == ScheduleMode.CUSTOM,
+                            onClick = { viewModel.setScheduleMode(ScheduleMode.CUSTOM) },
+                            label = { Text(stringResource(R.string.schedule_mode_custom)) },
                             modifier = Modifier.weight(1f)
                         )
                     }
 
-                    if (state.settings.scheduleMode == com.personal.cameraalarm.schedule.ScheduleMode.CUSTOM) {
+                    if (state.settings.scheduleMode == ScheduleMode.CUSTOM) {
                         HorizontalDivider()
 
                         val ranges = state.settings.scheduleRanges
@@ -218,7 +205,8 @@ fun SettingsScreen(
                         if (ranges.isEmpty() || enabledCount == 0) {
                             Card(
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(8.dp)
                             ) {
                                 Row(
                                     modifier = Modifier.padding(12.dp),
@@ -231,7 +219,7 @@ fun SettingsScreen(
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
-                                        text = "No active time ranges. Camera alerts will not ring.",
+                                        text = stringResource(R.string.schedule_no_ranges),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onErrorContainer,
                                         fontWeight = FontWeight.Bold
@@ -257,13 +245,13 @@ fun SettingsScreen(
                                     )
                                     if (range.startMinutes > range.endMinutes) {
                                         Text(
-                                            text = "Overnight span",
+                                            text = stringResource(R.string.schedule_overnight_badge),
                                             style = MaterialTheme.typography.labelSmall,
                                             color = MaterialTheme.colorScheme.primary
                                         )
                                     } else if (range.startMinutes == range.endMinutes) {
                                         Text(
-                                            text = "24-hour full day",
+                                            text = stringResource(R.string.schedule_24h_badge),
                                             style = MaterialTheme.typography.labelSmall,
                                             color = MaterialTheme.colorScheme.secondary
                                         )
@@ -276,10 +264,10 @@ fun SettingsScreen(
                                         onCheckedChange = { viewModel.toggleScheduleRange(range.id, it) }
                                     )
                                     IconButton(onClick = { editingRange = range }) {
-                                        Icon(Icons.Default.Edit, contentDescription = "Edit range")
+                                        Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.btn_edit))
                                     }
                                     IconButton(onClick = { viewModel.deleteScheduleRange(range.id) }) {
-                                        Icon(Icons.Default.Delete, contentDescription = "Delete range", tint = MaterialTheme.colorScheme.error)
+                                        Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.btn_delete), tint = MaterialTheme.colorScheme.error)
                                     }
                                 }
                             }
@@ -291,7 +279,7 @@ fun SettingsScreen(
                         ) {
                             Icon(Icons.Default.Add, contentDescription = null)
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("+ Add time range")
+                            Text(stringResource(R.string.schedule_add_range))
                         }
                     }
                 }
@@ -300,7 +288,8 @@ fun SettingsScreen(
             // Alarm Delay Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                shape = RoundedCornerShape(16.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -308,9 +297,9 @@ fun SettingsScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text("Alarm Delay", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.section_alarm_delay), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     Text(
-                        "Time to wait between receiving camera alert and triggering alarm",
+                        stringResource(R.string.desc_alarm_delay),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -333,7 +322,8 @@ fun SettingsScreen(
             // Cooldown Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                shape = RoundedCornerShape(16.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -341,9 +331,9 @@ fun SettingsScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text("Cooldown Window", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.section_cooldown), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     Text(
-                        "Suppresses duplicate alerts for this period after STOP",
+                        stringResource(R.string.desc_cooldown),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -366,7 +356,8 @@ fun SettingsScreen(
             // Vibration & Full-screen Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                shape = RoundedCornerShape(16.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -374,14 +365,16 @@ fun SettingsScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
+                    Text(stringResource(R.string.section_behavior), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("Vibration", fontWeight = FontWeight.Bold)
-                            Text("Vibrate continuously during alarm", style = MaterialTheme.typography.bodySmall)
+                            Text(stringResource(R.string.setting_vibration), fontWeight = FontWeight.Bold)
+                            Text(stringResource(R.string.desc_vibration), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         Switch(
                             checked = state.settings.vibrationEnabled,
@@ -397,8 +390,8 @@ fun SettingsScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("Full-Screen Alarm (Lock Screen)", fontWeight = FontWeight.Bold)
-                            Text("Show alarm activity on lock screen (API 34+)", style = MaterialTheme.typography.bodySmall)
+                            Text(stringResource(R.string.setting_fullscreen), fontWeight = FontWeight.Bold)
+                            Text(stringResource(R.string.desc_fullscreen), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         Switch(
                             checked = state.settings.fullScreenEnabled,
@@ -408,10 +401,11 @@ fun SettingsScreen(
                 }
             }
 
-            // Test Alarm Card
+            // Advanced Settings Section (Diagnostics & Clear History)
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                shape = RoundedCornerShape(16.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -419,68 +413,7 @@ fun SettingsScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text("Test Alarm Runtime", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    Text(
-                        "Directly tests audio playback and vibration without modifying camera monitoring state.",
-                        style = MaterialTheme.typography.bodySmall
-                    )
-
-                    if (!state.volumeStatus.isNonZero) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                Icons.AutoMirrored.Filled.VolumeMute,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.error
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "Warning: Alarm stream volume is currently 0! Increase volume in system settings to hear sound.",
-                                color = MaterialTheme.colorScheme.error,
-                                style = MaterialTheme.typography.bodySmall,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-
-                    Button(
-                        onClick = {
-                            if (state.isTestingAlarm) viewModel.stopAlarm(context)
-                            else viewModel.startTestAlarm(context)
-                        },
-                        colors = if (state.isTestingAlarm) {
-                            ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-                        } else {
-                            ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(52.dp)
-                    ) {
-                        Icon(
-                            if (state.isTestingAlarm) Icons.Default.Stop else Icons.Default.PlayArrow,
-                            contentDescription = null
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = if (state.isTestingAlarm) "STOP TEST ALARM" else "RUN TEST ALARM",
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-            }
-
-            // Data & Diagnostics Card
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text("Data & Troubleshooting", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.section_advanced), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
 
                     OutlinedButton(
                         onClick = onNavigateToDiagnostics,
@@ -488,7 +421,7 @@ fun SettingsScreen(
                     ) {
                         Icon(Icons.Default.BugReport, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Open Diagnostics")
+                        Text(stringResource(R.string.btn_open_diagnostics))
                     }
 
                     OutlinedButton(
@@ -498,7 +431,7 @@ fun SettingsScreen(
                     ) {
                         Icon(Icons.Default.DeleteForever, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Clear Alert History (${state.historyCount} entries)")
+                        Text(stringResource(R.string.btn_clear_history, state.historyCount))
                     }
                 }
             }
@@ -508,7 +441,7 @@ fun SettingsScreen(
 
 @Composable
 private fun TimeRangeEditDialog(
-    initialRange: com.personal.cameraalarm.schedule.ActiveTimeRange?,
+    initialRange: ActiveTimeRange?,
     onDismiss: () -> Unit,
     onSave: (startMinutes: Int, endMinutes: Int) -> Unit
 ) {
@@ -519,18 +452,23 @@ private fun TimeRangeEditDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (initialRange != null) "Edit Time Range" else "Add Time Range") },
+        title = {
+            Text(
+                if (initialRange != null) stringResource(R.string.dialog_edit_time_range)
+                else stringResource(R.string.dialog_add_time_range)
+            )
+        },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(
-                    text = "Configure start and end clock times in current device timezone.",
+                    text = stringResource(R.string.dialog_time_desc),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 // Start Time
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text("Start Time (Inclusive):", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                    Text(stringResource(R.string.time_start), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -541,7 +479,7 @@ private fun TimeRangeEditDialog(
                             onValueChange = { str ->
                                 str.toIntOrNull()?.let { if (it in 0..23) startHour = it }
                             },
-                            label = { Text("Hour (0-23)") },
+                            label = { Text(stringResource(R.string.time_hour)) },
                             modifier = Modifier.weight(1f)
                         )
                         Text(":", fontWeight = FontWeight.Bold)
@@ -550,7 +488,7 @@ private fun TimeRangeEditDialog(
                             onValueChange = { str ->
                                 str.toIntOrNull()?.let { if (it in 0..59) startMinute = it }
                             },
-                            label = { Text("Min (0-59)") },
+                            label = { Text(stringResource(R.string.time_minute)) },
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -558,7 +496,7 @@ private fun TimeRangeEditDialog(
 
                 // End Time
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text("End Time (Exclusive):", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                    Text(stringResource(R.string.time_end), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -569,7 +507,7 @@ private fun TimeRangeEditDialog(
                             onValueChange = { str ->
                                 str.toIntOrNull()?.let { if (it in 0..23) endHour = it }
                             },
-                            label = { Text("Hour (0-23)") },
+                            label = { Text(stringResource(R.string.time_hour)) },
                             modifier = Modifier.weight(1f)
                         )
                         Text(":", fontWeight = FontWeight.Bold)
@@ -578,7 +516,7 @@ private fun TimeRangeEditDialog(
                             onValueChange = { str ->
                                 str.toIntOrNull()?.let { if (it in 0..59) endMinute = it }
                             },
-                            label = { Text("Min (0-59)") },
+                            label = { Text(stringResource(R.string.time_minute)) },
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -586,13 +524,13 @@ private fun TimeRangeEditDialog(
 
                 if (startHour * 60 + startMinute > endHour * 60 + endMinute) {
                     Text(
-                        text = "ℹ Overnight range: active from %02d:%02d through midnight until %02d:%02d".format(startHour, startMinute, endHour, endMinute),
+                        text = stringResource(R.string.time_overnight_info, startHour, startMinute, endHour, endMinute),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary
                     )
                 } else if (startHour * 60 + startMinute == endHour * 60 + endMinute) {
                     Text(
-                        text = "ℹ Equal start & end: active full 24 hours continuously",
+                        text = stringResource(R.string.time_24h_info),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.secondary
                     )
@@ -605,12 +543,12 @@ private fun TimeRangeEditDialog(
                 val endM = endHour * 60 + endMinute
                 onSave(startM, endM)
             }) {
-                Text("Save")
+                Text(stringResource(R.string.btn_save))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.btn_cancel))
             }
         }
     )

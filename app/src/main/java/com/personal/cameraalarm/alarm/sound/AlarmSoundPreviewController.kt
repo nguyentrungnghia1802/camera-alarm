@@ -29,7 +29,13 @@ class AlarmSoundPreviewController(private val context: Context) {
                     .build()
             )
             afd = context.resources.openRawResourceFd(sound.rawResourceId)
-            created.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+                ?: return Result.failure(IllegalStateException("Resource ${sound.rawResourceId} unavailable"))
+
+            if (afd.declaredLength < 0) {
+                created.setDataSource(afd.fileDescriptor)
+            } else {
+                created.setDataSource(afd.fileDescriptor, afd.startOffset, afd.declaredLength)
+            }
             created.isLooping = true
             created.prepare()
             created.setVolume(1f, 1f)

@@ -1,49 +1,196 @@
 <resources>
-    <string name="app_name">Camera Alarm</string>
-    <string name="status_ready">READY</string>
-    <string name="status_needs_setup">NEEDS SETUP</string>
-    <string name="status_alarming">ALARMING</string>
-    
-    <string name="title_monitoring">Monitoring</string>
-    <string name="desc_monitoring">Auto trigger exact alarm when camera alert matches rules</string>
-    <string name="monitoring_active">Active</string>
-    <string name="monitoring_inactive">Inactive</string>
-    
-    <string name="section_setup">Setup Checklist</string>
-    <string name="setup_notif_access">Notification Access</string>
-    <string name="setup_exact_alarm">Exact Alarm Permission</string>
-    <string name="setup_post_notif">App Notifications</string>
-    <string name="setup_source_app">Source App</string>
-    <string name="setup_trigger_rules">Trigger Rules</string>
-    <string name="setup_listener">Listener Service</string>
-    <string name="setup_alarm_volume">Alarm Stream Volume</string>
-    
-    <string name="status_granted">Granted</string>
-    <string name="status_required">Required</string>
-    <string name="status_connected">Connected</string>
-    <string name="status_disconnected">Disconnected</string>
-    <string name="status_configured">Configured</string>
-    <string name="status_not_configured">Not Configured</string>
-    
-    <string name="warning_volume_zero">Alarm volume is 0! Alarms will not produce sound.</string>
-    <string name="warning_blocking_requirements">All required setup items must be completed before enabling monitoring.</string>
-    
-    <string name="section_alarm_config">Alarm Configuration</string>
-    <string name="alarm_delay">Alarm Delay</string>
-    <string name="alarm_cooldown">Cooldown</string>
-    <string name="alarm_vibration">Vibration</string>
-    <string name="alarm_full_screen">Full-screen Alarm</string>
-    
-    <string name="btn_test_alarm">TEST ALARM</string>
-    <string name="btn_stop_alarm">STOP ALARM</string>
-    <string name="btn_open_settings">Settings</string>
-    <string name="btn_grant">Grant</string>
-    <string name="btn_select">Select</string>
-    <string name="btn_configure">Configure</string>
-    
-    <string name="nav_dashboard">Dashboard</string>
-    <string name="nav_rules">Rules</string>
-    <string name="nav_history">History</string>
-    <string name="nav_settings">Settings</string>
-    <string name="nav_diagnostics">Diagnostics</string>
+    <!-- App & Navigation -->
+    <string name="app_name">Báo Động Camera</string>
+    <string name="nav_dashboard">Bảo vệ</string>
+    <string name="nav_rules">Quy tắc</string>
+    <string name="nav_history">Lịch sử</string>
+    <string name="nav_settings">Cài đặt</string>
+    <string name="nav_diagnostics">Chẩn đoán</string>
+
+    <!-- System Status -->
+    <string name="status_ready">ĐANG BẢO VỆ</string>
+    <string name="status_standby">CHẾ ĐỘ CHỜ</string>
+    <string name="status_needs_setup">CẦN THIẾT LẬP</string>
+    <string name="status_alarming">ĐANG BÁO ĐỘNG</string>
+    <string name="system_status_title">Trạng thái bảo vệ</string>
+    <string name="monitoring_active">Đang kích hoạt giám sát</string>
+    <string name="monitoring_inactive">Đã tắt bảo vệ</string>
+    <string name="monitoring_standby">Đang trong chế độ chờ (ngoài giờ)</string>
+    <string name="standby_desc">Ngoài khung giờ hoạt động. Vẫn theo dõi camera nhưng chuông báo được tạm tắt.</string>
+    <string name="next_active_time">Khung giờ tiếp theo: %s</string>
+    <string name="info_camera_label">Camera:</string>
+    <string name="info_sound_label">Âm báo:</string>
+    <string name="info_schedule_label">Lịch hoạt động:</string>
+    <string name="schedule_always_active">Cả ngày (24/24)</string>
+    <string name="camera_not_selected">Chưa chọn camera</string>
+
+    <!-- Monitoring Switch -->
+    <string name="title_monitoring">Giám sát camera</string>
+    <string name="desc_monitoring_ready">Tự động phát chuông báo động khi camera phát hiện cảnh báo</string>
+    <string name="desc_monitoring_not_ready">Vui lòng hoàn thành các mục bên dưới để bật bảo vệ</string>
+
+    <!-- Setup Checklist -->
+    <string name="section_setup">Thiết lập hệ thống</string>
+    <string name="setup_notif_access">Quyền nhận thông báo camera</string>
+    <string name="setup_exact_alarm">Quyền báo thức chính xác</string>
+    <string name="setup_post_notif">Quyền thông báo ứng dụng</string>
+    <string name="setup_source_app">Ứng dụng camera</string>
+    <string name="setup_trigger_rules">Quy tắc cảnh báo</string>
+    <string name="setup_listener">Dịch vụ nhận thông báo</string>
+
+    <string name="status_granted">Đã cấp</string>
+    <string name="status_required">Chưa cấp</string>
+    <string name="status_connected">Đã kết nối</string>
+    <string name="status_disconnected">Mất kết nối</string>
+    <string name="status_rules_count">%1$d quy tắc bật</string>
+    <string name="status_rules_none">Chưa có quy tắc</string>
+
+    <!-- Action Buttons -->
+    <string name="btn_test_alarm">Kiểm tra chuông</string>
+    <string name="btn_test_alarm_desc">Bấm để thử âm thanh và độ rung. Không tạo cảnh báo camera thật.</string>
+    <string name="btn_stop_alarm">TẮT BÁO ĐỘNG</string>
+    <string name="btn_open_settings">Cài đặt</string>
+    <string name="btn_grant">Cấp quyền</string>
+    <string name="btn_select">Chọn</string>
+    <string name="btn_rules">Quy tắc</string>
+    <string name="btn_save">Lưu</string>
+    <string name="btn_cancel">Hủy</string>
+    <string name="btn_delete">Xóa</string>
+    <string name="btn_edit">Chỉnh sửa</string>
+    <string name="btn_add">Thêm mới</string>
+    <string name="btn_clear">Xóa nhật ký</string>
+
+    <!-- Volume & Alerts -->
+    <string name="warning_volume_zero">Âm lượng chuông đang ở mức 0! Bạn sẽ không nghe thấy tiếng chuông nếu có cảnh báo.</string>
+    <string name="alarm_active_banner">🚨 ĐANG BÁO ĐỘNG!</string>
+
+    <!-- Sound Selection -->
+    <string name="title_sound_picker">Âm báo</string>
+    <string name="current_sound_label">Âm thanh hiện tại:</string>
+    <string name="sound_preview_play">Nghe thử</string>
+    <string name="sound_preview_stop">Dừng</string>
+    <string name="sound_list_title">Danh sách âm báo</string>
+    <string name="sound_default">Chuông mặc định</string>
+    <string name="sound_siren">Còi báo động</string>
+    <string name="sound_warning">Cảnh báo khẩn cấp</string>
+    <string name="sound_loud">Cảnh báo lớn</string>
+
+    <!-- Settings Screen -->
+    <string name="title_settings">Cài đặt ứng dụng</string>
+    <string name="section_sound">Âm thanh báo động</string>
+    <string name="desc_sound">Chọn âm thanh phát khi camera phát hiện cảnh báo</string>
+    <string name="section_schedule">Lịch hoạt động</string>
+    <string name="desc_schedule">Chỉ phát chuông báo động trong các khung giờ được cài đặt</string>
+    <string name="schedule_mode_always">Luôn hoạt động (24/24)</string>
+    <string name="schedule_mode_custom">Khung giờ tự chọn</string>
+    <string name="schedule_no_ranges">Chưa có khung giờ nào được bật. Chuông sẽ không kêu.</string>
+    <string name="schedule_add_range">+ Thêm khung giờ</string>
+    <string name="schedule_overnight_badge">Qua đêm</string>
+    <string name="schedule_24h_badge">Suốt 24 giờ</string>
+    <string name="dialog_add_time_range">Thêm khung giờ hoạt động</string>
+    <string name="dialog_edit_time_range">Chỉnh sửa khung giờ</string>
+    <string name="dialog_time_desc">Cài đặt thời gian bắt đầu và kết thúc theo múi giờ thiết bị.</string>
+    <string name="time_start">Giờ bắt đầu:</string>
+    <string name="time_end">Giờ kết thúc:</string>
+    <string name="time_hour">Giờ (0-23)</string>
+    <string name="time_minute">Phút (0-59)</string>
+    <string name="time_overnight_info">ℹ Khung giờ qua đêm: Hoạt động từ %1$02d:%2$02d qua nửa đêm đến %3$02d:%4$02d sáng hôm sau.</string>
+    <string name="time_24h_info">ℹ Bắt đầu và kết thúc trùng nhau: Hoạt động liên tục cả ngày 24/24.</string>
+
+    <string name="section_alarm_delay">Độ trễ báo động</string>
+    <string name="desc_alarm_delay">Thời gian chờ sau khi nhận thông báo camera rồi mới phát chuông</string>
+    <string name="section_cooldown">Thời gian chờ sau khi tắt (Cooldown)</string>
+    <string name="desc_cooldown">Bỏ qua các thông báo camera tiếp theo trong khoảng thời gian này sau khi bấm TẮT chuông</string>
+    <string name="section_behavior">Phản hồi thiết bị</string>
+    <string name="setting_vibration">Rung khi báo động</string>
+    <string name="desc_vibration">Rung điện thoại liên tục khi chuông đang kêu</string>
+    <string name="setting_fullscreen">Hiển thị khi khóa màn hình</string>
+    <string name="desc_fullscreen">Bật sáng màn hình và hiện nút tắt ngay khi máy đang khóa</string>
+
+    <string name="section_advanced">Cài đặt nâng cao</string>
+    <string name="btn_open_diagnostics">Chẩn đoán hệ thống</string>
+    <string name="desc_open_diagnostics">Xem trạng thái quyền, kết nối listener và thông số kỹ thuật</string>
+    <string name="btn_clear_history">Xóa lịch sử cảnh báo (%1$d mục)</string>
+    <string name="dialog_clear_history_title">Xóa lịch sử cảnh báo</string>
+    <string name="dialog_clear_history_message">Bạn có chắc chắn muốn xóa toàn bộ lịch sử cảnh báo không? Dữ liệu đã xóa không thể khôi phục.</string>
+
+    <!-- Rules Screen -->
+    <string name="title_rules">Quy tắc cảnh báo</string>
+    <string name="desc_rules">Chỉ phát chuông khi thông báo từ camera chứa các từ khóa sau</string>
+    <string name="rule_empty">Chưa có quy tắc nào. Bấm nút Thêm để tạo quy tắc đầu tiên.</string>
+    <string name="rule_name">Tên quy tắc</string>
+    <string name="rule_keywords">Từ khóa (cách nhau bởi dấu phẩy)</string>
+    <string name="rule_keywords_hint">Ví dụ: person, human, người, chuyển động</string>
+    <string name="rule_match_mode">Cách so khớp từ khóa</string>
+    <string name="rule_match_any">Khớp bất kỳ từ nào (Khuyên dùng)</string>
+    <string name="rule_match_all">Khớp tất cả các từ</string>
+    <string name="rule_enabled">Kích hoạt quy tắc này</string>
+    <string name="rule_priority">Mức độ ưu tiên</string>
+    <string name="rule_priority_desc">Số nhỏ hơn sẽ được kiểm tra trước (1, 2, 3...)</string>
+
+    <!-- History Screen -->
+    <string name="title_history">Lịch sử cảnh báo</string>
+    <string name="history_empty">Chưa có sự kiện cảnh báo nào.</string>
+    <string name="history_filter_all">Tất cả</string>
+    <string name="history_filter_triggered">Kích hoạt</string>
+    <string name="history_filter_suppressed">Bỏ qua</string>
+    <string name="history_filter_errors">Lỗi</string>
+    <string name="decision_scheduled">Đã kích hoạt chuông</string>
+    <string name="decision_suppressed_pending">Bỏ qua (chuông đang kêu)</string>
+    <string name="decision_suppressed_ringing">Bỏ qua (chuông đang reo)</string>
+    <string name="decision_suppressed_cooldown">Bỏ qua (trong thời gian chờ)</string>
+    <string name="decision_suppressed_outside_hours">Bỏ qua (ngoài giờ hoạt động)</string>
+    <string name="decision_ignored_no_match">Bỏ qua (không khớp từ khóa)</string>
+    <string name="decision_ignored_wrong_package">Bỏ qua (ứng dụng khác)</string>
+    <string name="decision_ignored_duplicate">Bỏ qua (thông báo trùng lặp)</string>
+    <string name="decision_ignored_monitoring_off">Bỏ qua (đã tắt bảo vệ)</string>
+
+    <!-- Fullscreen Alarm Screen -->
+    <string name="alarm_screen_badge">🚨 CẢNH BÁO CAMERA</string>
+    <string name="alarm_screen_triggered_at">Kích hoạt lúc %s</string>
+
+    <!-- Source Picker Screen -->
+    <string name="title_source_picker">Chọn ứng dụng camera</string>
+    <string name="source_picker_search_hint">Tìm kiếm tên ứng dụng...</string>
+    <string name="source_picker_manual_title">Hoặc nhập mã gói ứng dụng (Package Name):</string>
+    <string name="source_picker_manual_hint">Ví dụ: com.mcu.cameraview</string>
+    <string name="source_picker_confirm">Xác nhận</string>
+
+    <!-- Diagnostics Screen -->
+    <string name="title_diagnostics">Chẩn đoán hệ thống</string>
+    <string name="diag_environment">Môi trường thiết bị</string>
+    <string name="diag_app_version">Phiên bản ứng dụng</string>
+    <string name="diag_android_version">Phiên bản Android</string>
+    <string name="diag_device">Thiết bị</string>
+    <string name="diag_manufacturer">Nhà sản xuất / Hãng</string>
+    <string name="diag_xiaomi_advisor">Tối ưu hóa Xiaomi / OEM</string>
+    <string name="diag_xiaomi_detected">Đã phát hiện (Kích hoạt)</string>
+    <string name="diag_generic_android">Android tiêu chuẩn</string>
+    <string name="diag_permissions_services">Quyền &amp; Dịch vụ</string>
+    <string name="diag_notif_access">Quyền nhận thông báo</string>
+    <string name="diag_listener_conn">Dịch vụ nhận thông báo</string>
+    <string name="diag_exact_alarm">Quyền báo thức chính xác</string>
+    <string name="diag_app_notif">Quyền thông báo ứng dụng</string>
+    <string name="diag_fullscreen">Quyền hiển thị khi khóa màn hình</string>
+    <string name="diag_volume">Âm lượng chuông báo</string>
+    <string name="diag_volume_detail">Hiện tại: %1$d (Tối thiểu: %2$d, Tối đa: %3$d)</string>
+    <string name="diag_oem_title_xiaomi">Độ ổn định Xiaomi / HyperOS</string>
+    <string name="diag_oem_title_generic">Độ ổn định chạy nền</string>
+    <string name="diag_oem_desc_xiaomi">Cấu hình tự khởi chạy và pin để chuông hoạt động không bị gián đoạn.</string>
+    <string name="diag_oem_desc_generic">Thiết bị này không yêu cầu cài đặt chạy nền đặc biệt.</string>
+    <string name="diag_core_state">Trạng thái báo động</string>
+    <string name="diag_alarm_state">Trạng thái chuông</string>
+    <string name="diag_monitoring_enabled">Bảo vệ camera</string>
+    <string name="diag_active_source">Gói camera đã chọn</string>
+    <string name="diag_none_configured">Chưa cấu hình</string>
+    <string name="diag_active_rules">Số quy tắc đang bật</string>
+    <string name="diag_rules_count_format">%1$d quy tắc</string>
+    <string name="diag_last_error">Lỗi gần nhất</string>
+    <string name="diag_none">Không có</string>
+    <string name="diag_copy_btn">Sao chép thông tin chẩn đoán</string>
+    <string name="diag_run_test_btn">Kiểm tra chuông báo</string>
+    <string name="diag_yes">Bật</string>
+    <string name="diag_no">Tắt</string>
+    <string name="diag_allowed">Cho phép</string>
+    <string name="diag_disallowed">Chưa cho phép</string>
 </resources>
