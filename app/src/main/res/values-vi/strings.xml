@@ -125,6 +125,7 @@
     <string name="cooldown_input_label">Thời gian chờ (giây)</string>
     <string name="cooldown_input_placeholder">Nhập số giây (VD: 10, 60, 600...)</string>
     <string name="btn_save_cooldown">Lưu</string>
+    <string name="btn_edit_cooldown">Sửa</string>
     <string name="cooldown_zero_explanation">0 giây — Cảnh báo ngay mỗi lần phát hiện (không chờ)</string>
     <string name="cooldown_format_hours_mins_secs">%1$d giờ %2$d phút %3$d giây (%4$d giây)</string>
     <string name="cooldown_format_hours_mins">%1$d giờ %2$d phút (%3$d giây)</string>

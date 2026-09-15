@@ -125,6 +125,7 @@
     <string name="cooldown_input_label">Wait time (seconds)</string>
     <string name="cooldown_input_placeholder">Enter seconds (e.g. 10, 60, 600...)</string>
     <string name="btn_save_cooldown">Save</string>
+    <string name="btn_edit_cooldown">Edit</string>
     <string name="cooldown_zero_explanation">0 seconds — Trigger immediately on every detection (no wait)</string>
     <string name="cooldown_format_hours_mins_secs">%1$d hr %2$d min %3$d sec (%4$d sec)</string>
     <string name="cooldown_format_hours_mins">%1$d hr %2$d min (%3$d sec)</string>

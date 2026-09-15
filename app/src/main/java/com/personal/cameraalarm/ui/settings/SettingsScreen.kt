@@ -18,7 +18,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -435,11 +438,20 @@ fun SettingsScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
+                    var isEditingCooldown by remember { mutableStateOf(false) }
                     var cooldownSecText by remember(state.settings.cooldownMs) {
                         mutableStateOf((state.draftSettings.cooldownMs / 1000L).toString())
                     }
                     val keyboardController = LocalSoftwareKeyboardController.current
+                    val focusManager = LocalFocusManager.current
+                    val focusRequester = remember { FocusRequester() }
                     val enteredSec = cooldownSecText.toLongOrNull() ?: 0L
+
+                    LaunchedEffect(isEditingCooldown) {
+                        if (isEditingCooldown) {
+                            try { focusRequester.requestFocus() } catch (_: Exception) {}
+                        }
+                    }
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -449,39 +461,77 @@ fun SettingsScreen(
                         OutlinedTextField(
                             value = cooldownSecText,
                             onValueChange = { input ->
-                                val digits = input.filter { it.isDigit() }.take(6)
-                                cooldownSecText = digits
-                                val sec = digits.toLongOrNull() ?: 0L
-                                viewModel.setCooldown(sec * 1000L)
+                                if (isEditingCooldown) {
+                                    val digits = input.filter { it.isDigit() }.take(6)
+                                    cooldownSecText = digits
+                                    val sec = digits.toLongOrNull() ?: 0L
+                                    viewModel.setCooldown(sec * 1000L)
+                                }
                             },
-                            modifier = Modifier.weight(1f),
+                            enabled = isEditingCooldown,
+                            modifier = Modifier
+                                .weight(1f)
+                                .focusRequester(focusRequester),
                             label = { Text(stringResource(R.string.cooldown_input_label)) },
                             placeholder = { Text(stringResource(R.string.cooldown_input_placeholder)) },
                             suffix = { Text(stringResource(R.string.cooldown_seconds_unit)) },
                             singleLine = true,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                                disabledBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                                disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                disabledSuffixColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                            )
                         )
-                        Button(
-                            onClick = {
-                                keyboardController?.hide()
-                                val sec = cooldownSecText.toLongOrNull() ?: 0L
-                                viewModel.saveCooldown(sec * 1000L)
-                            },
-                            shape = RoundedCornerShape(10.dp),
-                            modifier = Modifier.defaultMinSize(minHeight = 56.dp)
-                        ) {
-                            Icon(
-                                Icons.Default.Save,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(
-                                stringResource(R.string.btn_save_cooldown),
-                                fontWeight = FontWeight.Bold,
-                                maxLines = 1,
-                                softWrap = false
-                            )
+
+                        if (isEditingCooldown) {
+                            Button(
+                                onClick = {
+                                    keyboardController?.hide()
+                                    focusManager.clearFocus()
+                                    val sec = cooldownSecText.toLongOrNull() ?: 0L
+                                    viewModel.saveCooldown(sec * 1000L)
+                                    isEditingCooldown = false
+                                },
+                                shape = RoundedCornerShape(10.dp),
+                                modifier = Modifier.defaultMinSize(minHeight = 56.dp)
+                            ) {
+                                Icon(
+                                    Icons.Default.Save,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    stringResource(R.string.btn_save_cooldown),
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    softWrap = false
+                                )
+                            }
+                        } else {
+                            OutlinedButton(
+                                onClick = {
+                                    isEditingCooldown = true
+                                },
+                                shape = RoundedCornerShape(10.dp),
+                                modifier = Modifier.defaultMinSize(minHeight = 56.dp)
+                            ) {
+                                Icon(
+                                    Icons.Default.Edit,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    stringResource(R.string.btn_edit_cooldown),
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    softWrap = false
+                                )
+                            }
                         }
                     }
 
