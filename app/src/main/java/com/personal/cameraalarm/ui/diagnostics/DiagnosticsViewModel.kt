@@ -157,6 +157,15 @@ class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
         container.testAlarmToken.value = testToken
         try {
             ContextCompat.startForegroundService(context, intent)
+            val directIntent = Intent(context, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                data = android.net.Uri.parse("cameraalarm://alarm_full/${testToken.value}")
+                putExtra(AlarmReceiver.EXTRA_TOKEN, testToken.value)
+                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TITLE, context.getString(com.personal.cameraalarm.R.string.test_alarm_title))
+                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_PREVIEW, context.getString(com.personal.cameraalarm.R.string.test_alarm_preview))
+                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, System.currentTimeMillis())
+            }
+            context.startActivity(directIntent)
         } catch (error: RuntimeException) {
             container.testAlarmToken.compareAndSet(testToken, null)
             copyMessage.value = "Unable to start Test Alarm: ${error.message ?: error.javaClass.simpleName}"

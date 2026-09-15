@@ -256,22 +256,33 @@ class CameraAlarmService : Service() {
     }
 
     private fun launchAlarmActivity(token: AlarmToken, trigger: TriggerSnapshot?) {
-        val pending = createFullScreenPendingIntent(token, trigger) ?: return
-        Log.i("CameraAlarm", "FULLSCREEN_INTENT_SENT: token=${token.value}")
-
-        // Attempt direct launch when screen is on / unlocked
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                val launchOpts = android.app.ActivityOptions.makeBasic().apply {
-                    setPendingIntentBackgroundActivityStartMode(
-                        android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
-                    )
+        val pending = createFullScreenPendingIntent(token, trigger)
+        if (pending != null) {
+            Log.i("CameraAlarm", "FULLSCREEN_INTENT_SENT: token=${token.value}")
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    val launchOpts = android.app.ActivityOptions.makeBasic().apply {
+                        setPendingIntentBackgroundActivityStartMode(
+                            android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+                        )
+                    }
+                    pending.send(this, 0, null, null, null, null, launchOpts.toBundle())
+                } else {
+                    pending.send()
                 }
-                pending.send(this, 0, null, null, null, null, launchOpts.toBundle())
-            } else {
-                pending.send()
+            } catch (e: Exception) {
+                if (com.personal.cameraalarm.BuildConfig.DEBUG) {
+                    Log.d("CameraAlarm", "pending.send skipped: ${e.message}")
+                }
             }
-        } catch (e: Exception) {
+        }
+
+        // Direct startActivity launch: ensures full-screen display when screen is on / unlocked
+        val canFullScreen = app.container.readiness.canUseFullScreenIntent()
+        val fullScreenEnabled = kotlinx.coroutines.runBlocking {
+            try { app.container.settingsRepository.current().fullScreenEnabled } catch (_: Exception) { true }
+        }
+        if (canFullScreen && fullScreenEnabled) {
             try {
                 val directIntent = Intent(this, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -282,7 +293,14 @@ class CameraAlarmService : Service() {
                     putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_PREVIEW, trigger?.textPreview)
                     putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, trigger?.receivedAtEpochMs ?: System.currentTimeMillis())
                 }
-                startActivity(directIntent)
+                val options = android.app.ActivityOptions.makeBasic()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    options.setPendingIntentBackgroundActivityStartMode(
+                        android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+                    )
+                }
+                startActivity(directIntent, options.toBundle())
+                Log.i("CameraAlarm", "Direct startActivity called for token=${token.value}")
             } catch (e2: Exception) {
                 if (com.personal.cameraalarm.BuildConfig.DEBUG) {
                     Log.d("CameraAlarm", "Direct activity start fallback skipped: ${e2.message}")

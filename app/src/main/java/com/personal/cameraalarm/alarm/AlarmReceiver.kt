@@ -43,6 +43,34 @@ class AlarmReceiver : BroadcastReceiver() {
                         .putExtra(CameraAlarmService.EXTRA_KEY, trigger.notificationKey)
                     ContextCompat.startForegroundService(context, service)
                     if (com.personal.cameraalarm.BuildConfig.DEBUG) Log.d("CameraAlarm", "receiver started alarm service token=$token")
+
+                    val fullScreenEnabled = try {
+                        app.container.settingsRepository.current().fullScreenEnabled
+                    } catch (_: Exception) { true }
+
+                    if (fullScreenEnabled && app.container.readiness.canUseFullScreenIntent()) {
+                        val directIntent = Intent(context, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                            data = android.net.Uri.parse("cameraalarm://alarm_full/${token}")
+                            putExtra(EXTRA_TOKEN, token)
+                            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_SOURCE, trigger.sourcePackage)
+                            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TITLE, trigger.title)
+                            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_PREVIEW, trigger.textPreview)
+                            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, trigger.receivedAtEpochMs)
+                        }
+                        val options = android.app.ActivityOptions.makeBasic()
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                            options.setPendingIntentBackgroundActivityStartMode(
+                                android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+                            )
+                        }
+                        try {
+                            context.startActivity(directIntent, options.toBundle())
+                            Log.i("CameraAlarm", "AlarmReceiver direct startActivity succeeded for token=$token")
+                        } catch (e: Exception) {
+                            Log.w("CameraAlarm", "AlarmReceiver direct startActivity failed: ${e.message}")
+                        }
+                    }
                 }
             } catch (e: Exception) {
                 Log.e("CameraAlarm", "Alarm receiver failed for token=$token", e)
