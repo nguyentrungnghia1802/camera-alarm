@@ -39,8 +39,9 @@ class AppContainer(context: Context) {
 
     val scheduler = AndroidAlarmScheduler(context)
     val readiness = ReadinessRepository(context, exactAlarmAccess, listenerConnection) { triggerConfiguration }
+    val advisorRegistry = com.personal.cameraalarm.reliability.DeviceReliabilityAdvisorRegistry(readiness)
     val deviceAdvisor: com.personal.cameraalarm.reliability.DeviceReliabilityAdvisor =
-        com.personal.cameraalarm.reliability.XiaomiReliabilityAdvisor(readiness)
+        advisorRegistry.activeAdvisor
 
     private val appScope = (context.applicationContext as? CameraAlarmApp)?.scope
         ?: CoroutineScope(SupervisorJob() + Dispatchers.Default)

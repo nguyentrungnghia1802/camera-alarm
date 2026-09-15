@@ -193,4 +193,10 @@
     <string name="diag_no">No</string>
     <string name="diag_allowed">Allowed</string>
     <string name="diag_disallowed">Disallowed</string>
+    <string name="diag_battery_unrestricted">Battery: Unrestricted</string>
+    <string name="diag_battery_status_ok">Unrestricted (No background restrictions)</string>
+    <string name="diag_battery_status_needed">Optimized (May be suspended when screen is locked)</string>
+    <string name="diag_oem_section_title">OEM Reliability Guidance</string>
+    <string name="diag_oem_detected_badge">Detected</string>
+    <string name="diag_oem_select_hint">Select device manufacturer to view background setup steps:</string>
 </resources>

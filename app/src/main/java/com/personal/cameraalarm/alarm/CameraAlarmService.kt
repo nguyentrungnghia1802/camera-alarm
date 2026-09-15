@@ -89,24 +89,40 @@ class CameraAlarmService : Service() {
     }
     private fun promote(token: AlarmToken, trigger: TriggerSnapshot?) {
         val manager = getSystemService(NotificationManager::class.java)
-        val channel = NotificationChannel(CHANNEL, "Camera alarms", NotificationManager.IMPORTANCE_HIGH)
-        channel.setSound(null, null)
+        val channel = NotificationChannel(CHANNEL, "Camera alarms", NotificationManager.IMPORTANCE_HIGH).apply {
+            setSound(null, null)
+            lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            enableVibration(true)
+        }
         manager.createNotificationChannel(channel)
+
+        // Wake screen from black when alarm triggers
+        val pm = getSystemService(android.os.PowerManager::class.java)
+        val screenLock = pm?.newWakeLock(
+            android.os.PowerManager.SCREEN_BRIGHT_WAKE_LOCK or android.os.PowerManager.ACQUIRE_CAUSES_WAKEUP,
+            "CameraAlarm:ScreenWakeLock"
+        )
+        screenLock?.acquire(3_000)
+
         val stop = PendingIntent.getBroadcast(this, 1,
             Intent(this, StopAlarmReceiver::class.java).setAction(StopAlarmReceiver.ACTION_STOP)
                 .putExtra(AlarmReceiver.EXTRA_TOKEN, token.value),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val builder = Notification.Builder(this, CHANNEL)
-            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+            .setSmallIcon(com.personal.cameraalarm.R.mipmap.ic_launcher)
             .setContentTitle("Camera Alert")
             .setContentText(trigger?.title ?: trigger?.textPreview ?: "Camera notification detected")
             .setWhen(trigger?.receivedAtEpochMs ?: System.currentTimeMillis())
-            .setCategory(Notification.CATEGORY_ALARM).setOngoing(true).setAutoCancel(false)
+            .setCategory(Notification.CATEGORY_ALARM)
+            .setOngoing(true)
+            .setAutoCancel(false)
+            .setVisibility(Notification.VISIBILITY_PUBLIC)
+            .setPriority(Notification.PRIORITY_MAX)
             .addAction(Notification.Action.Builder(Icon.createWithResource(this, android.R.drawable.ic_menu_close_clear_cancel), "STOP", stop).build())
 
         val canFullScreen = app.container.readiness.canUseFullScreenIntent()
         val fullScreenEnabled = kotlinx.coroutines.runBlocking {
-            try { app.container.settingsRepository.current().fullScreenEnabled } catch (_: Exception) { false }
+            try { app.container.settingsRepository.current().fullScreenEnabled } catch (_: Exception) { true }
         }
         if (canFullScreen && fullScreenEnabled) {
             val fullScreenIntent = Intent(this, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
@@ -124,6 +140,11 @@ class CameraAlarmService : Service() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             builder.setFullScreenIntent(pendingFullScreen, true)
+            try {
+                startActivity(fullScreenIntent)
+            } catch (e: Exception) {
+                if (com.personal.cameraalarm.BuildConfig.DEBUG) Log.d("CameraAlarm", "Direct startActivity skipped: ${e.message}")
+            }
         }
         val notification = builder.build()
         if (Build.VERSION.SDK_INT >= 34) startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SYSTEM_EXEMPTED)

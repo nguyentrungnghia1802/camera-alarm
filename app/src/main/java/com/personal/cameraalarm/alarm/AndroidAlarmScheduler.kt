@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import com.personal.cameraalarm.ui.MainActivity
 
 class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
     private val manager = context.getSystemService(AlarmManager::class.java)
@@ -15,8 +16,30 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
         if (!canScheduleExactAlarms()) return ScheduleResult.ExactAlarmPermissionMissing
         return try {
             val intent = intent().putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
-            val pending = PendingIntent.getBroadcast(context, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-            manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtEpochMs, pending)
+            val pending = PendingIntent.getBroadcast(
+                context,
+                REQUEST_CODE,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            // Primary: Use setAlarmClock for critical alarm delivery that wakes CPU and bypasses Doze throttling
+            try {
+                val showIntent = PendingIntent.getActivity(
+                    context,
+                    0,
+                    Intent(context, MainActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    },
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+                val clockInfo = AlarmManager.AlarmClockInfo(triggerAtEpochMs, showIntent)
+                manager.setAlarmClock(clockInfo, pending)
+            } catch (_: SecurityException) {
+                // Fallback if setAlarmClock restricted by platform policy
+                manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtEpochMs, pending)
+            }
+
             ScheduleResult.Scheduled
         } catch (e: SecurityException) {
             ScheduleResult.ExactAlarmPermissionMissing
@@ -26,10 +49,21 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
     }
 
     override fun cancel(token: AlarmToken) {
-        val pending = PendingIntent.getBroadcast(context, REQUEST_CODE, intent(), PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE)
-        if (pending != null) { manager.cancel(pending); pending.cancel() }
+        val pending = PendingIntent.getBroadcast(
+            context,
+            REQUEST_CODE,
+            intent(),
+            PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
+        )
+        if (pending != null) {
+            manager.cancel(pending)
+            pending.cancel()
+        }
     }
 
     private fun intent() = Intent(context, AlarmReceiver::class.java).setAction(AlarmReceiver.ACTION_FIRE)
-    companion object { private const val REQUEST_CODE = 1 }
+
+    companion object {
+        private const val REQUEST_CODE = 1
+    }
 }

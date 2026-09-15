@@ -193,4 +193,10 @@
     <string name="diag_no">Tắt</string>
     <string name="diag_allowed">Cho phép</string>
     <string name="diag_disallowed">Chưa cho phép</string>
+    <string name="diag_battery_unrestricted">Không tối ưu hóa pin (Unrestricted)</string>
+    <string name="diag_battery_status_ok">Đã bỏ tối ưu (Hoạt động không giới hạn)</string>
+    <string name="diag_battery_status_needed">Cần bỏ tối ưu để tránh bị đóng băng khi tắt màn hình</string>
+    <string name="diag_oem_section_title">Hướng dẫn độ tin cậy theo hãng máy</string>
+    <string name="diag_oem_detected_badge">Đang dùng</string>
+    <string name="diag_oem_select_hint">Chọn hãng máy để xem hướng dẫn cài đặt nền chi tiết:</string>
 </resources>

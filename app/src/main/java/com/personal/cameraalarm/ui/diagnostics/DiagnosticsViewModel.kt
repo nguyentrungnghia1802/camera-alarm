@@ -10,25 +10,35 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.personal.cameraalarm.alarm.*
+import com.personal.cameraalarm.alarm.AlarmReceiver
+import com.personal.cameraalarm.alarm.AlarmToken
+import com.personal.cameraalarm.alarm.CameraAlarmService
 import com.personal.cameraalarm.app.AppContainer
 import com.personal.cameraalarm.permission.AlarmVolumeStatus
 import com.personal.cameraalarm.permission.ReadinessState
 import com.personal.cameraalarm.reliability.DeviceReliabilityAdvisor
-import com.personal.cameraalarm.reliability.XiaomiReliabilityAdvisor
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 data class DiagnosticsInfo(
-    val appVersion: String = "1.0 (1)",
+    val appVersion: String = "1.0",
     val sdkInt: Int = Build.VERSION.SDK_INT,
     val manufacturer: String = Build.MANUFACTURER,
     val brand: String = Build.BRAND,
     val deviceModel: String = "${Build.MANUFACTURER} ${Build.MODEL}",
-    val isXiaomiFamily: Boolean = false,
-    val batteryOptimizationsIgnored: Boolean? = null,
-    val readiness: ReadinessState,
-    val volumeStatus: AlarmVolumeStatus,
+    val activeOemName: String = "Generic Android",
+    val selectedOemKey: String = "generic",
+    val isOemMatch: Boolean = true,
+    val batteryOptimizationsIgnored: Boolean = false,
+    val readiness: ReadinessState = ReadinessState(
+        notificationAccessGranted = false,
+        listenerConnected = false,
+        exactAlarmGranted = false,
+        postNotificationsGranted = false,
+        sourceConfigured = false,
+        ruleConfigured = false,
+        alarmVolumeNonZero = false
+    ),
+    val volumeStatus: AlarmVolumeStatus = AlarmVolumeStatus(0, 0, 0),
     val monitoringEnabled: Boolean = false,
     val sourcePackage: String? = null,
     val enabledRuleCount: Int = 0,
@@ -39,9 +49,16 @@ data class DiagnosticsInfo(
 
 class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
     private val copyMessage = MutableStateFlow<String?>(null)
-    val reliabilityAdvisor: DeviceReliabilityAdvisor = container.deviceAdvisor
+    val advisorRegistry = container.advisorRegistry
+    private val selectedOemKey = MutableStateFlow<String>(advisorRegistry.activeAdvisor.oemKey)
 
-    val uiState: StateFlow<Pair<DiagnosticsInfo, String?>> = combine(
+    fun selectOem(key: String) {
+        selectedOemKey.value = key
+    }
+
+    fun currentAdvisor(): DeviceReliabilityAdvisor = advisorRegistry.getAdvisorByKey(selectedOemKey.value)
+
+    private val baseDiagnostics = combine(
         container.settingsRepository.settings,
         container.ruleRepository.rules,
         container.coordinator.state,
@@ -52,7 +69,21 @@ class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
         val volume = container.readiness.volumeStatus()
         val enabledRules = rules.filter { it.enabled && it.sourcePackage == settings.sourcePackage }
         val canFullScreen = container.readiness.canUseFullScreenIntent()
-        val isXiaomi = reliabilityAdvisor.isApplicable
+
+        Tuple5(settings, enabledRules.size, alarmState, lastError, msg to Pair(readiness, Pair(volume, canFullScreen)))
+    }
+
+    val uiState: StateFlow<Pair<DiagnosticsInfo, String?>> = combine(
+        baseDiagnostics,
+        selectedOemKey
+    ) { base, oemKey ->
+        val (settings, ruleCount, alarmState, lastError, rest) = base
+        val (msg, readPair) = rest
+        val (readiness, volPair) = readPair
+        val (volume, canFullScreen) = volPair
+
+        val activeAdvisor = advisorRegistry.activeAdvisor
+        val currentAdvisor = advisorRegistry.getAdvisorByKey(oemKey)
 
         val info = DiagnosticsInfo(
             appVersion = "1.0 (1)",
@@ -60,16 +91,15 @@ class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
             manufacturer = Build.MANUFACTURER,
             brand = Build.BRAND,
             deviceModel = "${Build.MANUFACTURER} ${Build.MODEL}",
-            isXiaomiFamily = isXiaomi,
-            batteryOptimizationsIgnored = (reliabilityAdvisor as? XiaomiReliabilityAdvisor)?.let {
-                // queryable via context if needed, fallback false
-                null
-            },
+            activeOemName = activeAdvisor.deviceFamilyName,
+            selectedOemKey = oemKey,
+            isOemMatch = currentAdvisor.isApplicable,
+            batteryOptimizationsIgnored = false,
             readiness = readiness,
             volumeStatus = volume,
             monitoringEnabled = settings.monitoringEnabled,
             sourcePackage = settings.sourcePackage,
-            enabledRuleCount = enabledRules.size,
+            enabledRuleCount = ruleCount,
             alarmState = alarmState::class.simpleName ?: "Unknown",
             lastRuntimeError = lastError,
             fullScreenIntentAllowed = canFullScreen
@@ -89,13 +119,14 @@ class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
         val batteryIgnored = pm?.isIgnoringBatteryOptimizations(context.packageName)
 
         val report = buildString {
-            appendLine("=== CAMERA ALARM DIAGNOSTICS ===")
+            appendLine("=== CAMERA ALARM DIAGNOSTICS & RELIABILITY ===")
             appendLine("App Version: ${info.appVersion}")
             appendLine("Android SDK: API ${info.sdkInt} (${Build.VERSION.RELEASE})")
             appendLine("Device: ${info.deviceModel}")
             appendLine("Manufacturer: ${info.manufacturer}")
             appendLine("Brand: ${info.brand}")
-            appendLine("Xiaomi Advisor Detected: ${if (info.isXiaomiFamily) "YES" else "NO"}")
+            appendLine("Detected OEM Family: ${info.activeOemName}")
+            appendLine("Selected Guide: ${info.selectedOemKey}")
             appendLine("Battery Optimizations Ignored: ${batteryIgnored ?: "UNKNOWN"}")
             appendLine("Notification Access: ${if (info.readiness.notificationAccessGranted) "GRANTED" else "REQUIRED"}")
             appendLine("Listener Connection: ${if (info.readiness.listenerConnected) "CONNECTED" else "DISCONNECTED"}")
@@ -108,7 +139,7 @@ class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
             appendLine("Enabled Rules: ${info.enabledRuleCount}")
             appendLine("Current State: ${info.alarmState}")
             appendLine("Last Runtime Error: ${info.lastRuntimeError ?: "None"}")
-            appendLine("================================")
+            appendLine("==============================================")
         }
         val clipboard = context.getSystemService(ClipboardManager::class.java)
         clipboard.setPrimaryClip(ClipData.newPlainText("Camera Alarm Diagnostics", report))
@@ -135,6 +166,8 @@ class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
     fun clearCopyMessage() {
         copyMessage.value = null
     }
+
+    private data class Tuple5<A, B, C, D, E>(val a: A, val b: B, val c: C, val d: D, val e: E)
 
     companion object {
         fun provideFactory(container: AppContainer): ViewModelProvider.Factory =

@@ -5,171 +5,76 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.os.PowerManager
 import android.provider.Settings
 import com.personal.cameraalarm.permission.ReadinessRepository
-import com.personal.cameraalarm.permission.ReadinessState
 
 class XiaomiReliabilityAdvisor(
-    private val readinessRepo: ReadinessRepository? = null,
+    readinessRepo: ReadinessRepository? = null,
     manufacturer: String = Build.MANUFACTURER,
     brand: String = Build.BRAND
-) : DeviceReliabilityAdvisor {
+) : AndroidDefaultAdvisor(readinessRepo, manufacturer, brand) {
 
     private val isXiaomiDevice = isXiaomiFamily(manufacturer, brand)
 
     override val isApplicable: Boolean get() = isXiaomiDevice
     override val deviceFamilyName: String get() = if (isXiaomiDevice) "Xiaomi / Redmi / POCO" else "Generic Android"
+    override val oemKey: String get() = "xiaomi"
 
-    override fun getReliabilityItems(context: Context): List<ReliabilityItem> {
-        val readiness = readinessRepo?.snapshot() ?: ReadinessState(
-            notificationAccessGranted = false,
-            listenerConnected = false,
-            exactAlarmGranted = false,
-            postNotificationsGranted = false,
-            sourceConfigured = false,
-            ruleConfigured = false,
-            alarmVolumeNonZero = false
-        )
+    override fun getOemItems(context: Context): List<ReliabilityItem> {
         val items = mutableListOf<ReliabilityItem>()
 
-        // 1. Notification Access
-        items.add(
-            ReliabilityItem(
-                id = "notification_access",
-                title = "Notification Access",
-                description = "Required to detect camera alert notifications from your selected app.",
-                status = if (readiness.notificationAccessGranted) ReliabilityStatus.READY else ReliabilityStatus.MISSING,
-                actionLabel = if (!readiness.notificationAccessGranted) "Grant Access" else null,
-                actionIntent = readinessRepo?.notificationAccessSettingsIntent()
-            )
-        )
-
-        // 2. Exact Alarm
-        items.add(
-            ReliabilityItem(
-                id = "exact_alarm",
-                title = "Exact Alarm Permission",
-                description = "Required to schedule precise countdown alarms.",
-                status = if (readiness.exactAlarmGranted) ReliabilityStatus.READY else ReliabilityStatus.MISSING,
-                actionLabel = if (!readiness.exactAlarmGranted) "Grant" else null,
-                actionIntent = readinessRepo?.exactAlarmSettingsIntent()
-            )
-        )
-
-        // 3. App Notifications
-        items.add(
-            ReliabilityItem(
-                id = "post_notifications",
-                title = "App Notifications",
-                description = "Allows Camera Alarm to show foreground notifications and stop actions.",
-                status = if (readiness.postNotificationsGranted) ReliabilityStatus.READY else ReliabilityStatus.MISSING,
-                actionLabel = if (!readiness.postNotificationsGranted) "Settings" else null,
-                actionIntent = readinessRepo?.appNotificationSettingsIntent()
-            )
-        )
-
-        // 4. Full-screen Alarm
-        val canFullScreen = readinessRepo?.canUseFullScreenIntent() ?: false
-        items.add(
-            ReliabilityItem(
-                id = "full_screen",
-                title = "Full-Screen Alarm (Lock Screen)",
-                description = "Displays ringing activity over lock screen when alarm fires.",
-                status = if (canFullScreen) ReliabilityStatus.READY else ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
-                actionLabel = if (!canFullScreen && readinessRepo?.fullScreenIntentSettingsIntent() != null) "Settings" else null,
-                actionIntent = readinessRepo?.fullScreenIntentSettingsIntent()
-            )
-        )
-
-        // OEM specific items
-        if (!isXiaomiDevice) {
-            items.add(
-                ReliabilityItem(
-                    id = "xiaomi_autostart",
-                    title = "Background Autostart",
-                    description = "OEM autostart protection.",
-                    status = ReliabilityStatus.NOT_APPLICABLE
-                )
-            )
-            items.add(
-                ReliabilityItem(
-                    id = "xiaomi_battery",
-                    title = "Battery: No Restrictions",
-                    description = "OEM background battery optimization.",
-                    status = ReliabilityStatus.NOT_APPLICABLE
-                )
-            )
-            items.add(
-                ReliabilityItem(
-                    id = "xiaomi_lock_recents",
-                    title = "Lock App in Recents",
-                    description = "Prevent task killer from terminating app.",
-                    status = ReliabilityStatus.NOT_APPLICABLE
-                )
-            )
-            items.add(
-                ReliabilityItem(
-                    id = "xiaomi_popup",
-                    title = "Lock-screen & Pop-up Windows",
-                    description = "Display pop-up windows in background.",
-                    status = ReliabilityStatus.NOT_APPLICABLE
-                )
-            )
-            return items
-        }
-
-        // 5. Background Autostart (Xiaomi)
+        // 1. Background Autostart (Xiaomi)
         items.add(
             ReliabilityItem(
                 id = "xiaomi_autostart",
-                title = "Background Autostart",
-                description = "Enable Background Autostart to ensure Camera Alarm receives notifications when closed.",
+                title = "Tự khởi động chạy nền (Autostart)",
+                description = "Bắt buộc trên HyperOS/MIUI để dịch vụ nhận thông báo camera không bị tắt khi đóng app.",
                 status = ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
                 isOemSpecific = true,
-                actionLabel = "Open Autostart",
+                actionLabel = "Mở Tự khởi động",
                 actionIntent = getAutostartIntent(context),
-                userInstruction = "1. Tap 'Open Autostart'.\n2. Locate 'Camera Alarm'.\n3. Turn ON the switch to allow autostart."
+                userInstruction = "1. Bấm 'Mở Tự khởi động'.\n2. Tìm 'Camera Alarm'.\n3. BẬT công tắc cho phép tự khởi chạy."
             )
         )
 
-        // 6. Battery: No Restrictions (Xiaomi)
+        // 2. Battery: No Restrictions (Xiaomi)
+        val isIgnoringBattery = DeviceReliabilityAdvisor.isIgnoringBatteryOptimizations(context)
         items.add(
             ReliabilityItem(
                 id = "xiaomi_battery",
-                title = "Battery: No Restrictions",
-                description = "Set MIUI / HyperOS Battery Saver to 'No restrictions' so the system won't kill the listener.",
-                status = ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
+                title = "Tiết kiệm pin: Không giới hạn (No restrictions)",
+                description = "Đặt cấu hình Tiết kiệm pin của MIUI/HyperOS thành 'Không giới hạn'.",
+                status = if (isIgnoringBattery) ReliabilityStatus.READY else ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
                 isOemSpecific = true,
-                actionLabel = "Open Battery Settings",
+                actionLabel = "Mở Cài đặt Pin",
                 actionIntent = getBatterySettingsIntent(context),
-                userInstruction = "1. Tap 'Open Battery Settings'.\n2. Select 'No restrictions' for Camera Alarm."
+                userInstruction = "1. Bấm 'Mở Cài đặt Pin'.\n2. Chọn 'Không giới hạn' (No restrictions) cho Camera Alarm."
             )
         )
 
-        // 7. Lock App in Recents (Xiaomi)
+        // 3. Lock App in Recents (Xiaomi)
         items.add(
             ReliabilityItem(
                 id = "xiaomi_lock_recents",
-                title = "Lock App in Recents",
-                description = "Lock Camera Alarm in the Recent Apps screen so clearing apps will not kill it.",
+                title = "Khóa ứng dụng trong Đa nhiệm (Recents)",
+                description = "Khóa Camera Alarm trong màn hình ứng dụng gần đây để không bị tính năng dọn dẹp tắt mất.",
                 status = ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
                 isOemSpecific = true,
-                userInstruction = "1. Open Recent Apps (swipe up & hold).\n2. Long-press Camera Alarm card or pull down.\n3. Tap the Padlock icon to lock."
+                userInstruction = "1. Vuốt giữ mở màn hình Recent Apps.\n2. Nhấn và giữ thẻ Camera Alarm hoặc kéo nhẹ xuống.\n3. Bấm biểu tượng Ổ khóa (Padlock) để khóa."
             )
         )
 
-        // 8. Lock-screen & Pop-up Windows (Xiaomi)
+        // 4. Lock-screen & Pop-up Windows (Xiaomi)
         items.add(
             ReliabilityItem(
                 id = "xiaomi_popup",
-                title = "Lock-screen & Background Pop-up Windows",
-                description = "Allow Camera Alarm to 'Show on Lock screen' and 'Display pop-up windows while in background'.",
+                title = "Hiển thị trên Màn hình khóa & Cửa sổ pop-up",
+                description = "Cho phép 'Hiển thị trên màn hình khóa' và 'Hiển thị cửa sổ pop-up khi chạy dưới nền'.",
                 status = ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
                 isOemSpecific = true,
-                actionLabel = "Open Permissions",
+                actionLabel = "Mở Quyền khác",
                 actionIntent = getOtherPermissionsIntent(context),
-                userInstruction = "1. Tap 'Open Permissions'.\n2. Enable 'Show on Lock screen'.\n3. Enable 'Display pop-up windows while running in the background'."
+                userInstruction = "1. Bấm 'Mở Quyền khác'.\n2. Bật 'Hiển thị trên Màn hình khóa'.\n3. Bật 'Hiển thị cửa sổ pop-up khi chạy dưới nền'."
             )
         )
 
@@ -226,11 +131,6 @@ class XiaomiReliabilityAdvisor(
         return Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
             data = Uri.fromParts("package", context.packageName, null)
         }
-    }
-
-    fun isIgnoringBatteryOptimizations(context: Context): Boolean {
-        val pm = context.getSystemService(PowerManager::class.java) ?: return false
-        return pm.isIgnoringBatteryOptimizations(context.packageName)
     }
 
     companion object {

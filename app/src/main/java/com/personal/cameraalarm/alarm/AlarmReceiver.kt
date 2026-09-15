@@ -3,6 +3,7 @@ package com.personal.cameraalarm.alarm
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.PowerManager
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.personal.cameraalarm.app.CameraAlarmApp
@@ -15,6 +16,11 @@ class AlarmReceiver : BroadcastReceiver() {
         val token = intent.getStringExtra(EXTRA_TOKEN)?.takeIf(String::isNotBlank) ?: return
         val pending = goAsync()
         val app = context.applicationContext as CameraAlarmApp
+
+        val pm = context.getSystemService(PowerManager::class.java)
+        val wakeLock = pm?.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "CameraAlarm:AlarmReceiverWakeLock")
+        wakeLock?.acquire(10_000)
+
         app.scope.launch {
             try {
                 withTimeout(8_000) {
@@ -36,7 +42,12 @@ class AlarmReceiver : BroadcastReceiver() {
                 try { app.container.coordinator.onStopRequested(AlarmToken(token)) } catch (cleanup: Exception) {
                     Log.e("CameraAlarm", "Alarm receiver cleanup failed for token=$token", cleanup)
                 }
-            } finally { pending.finish() }
+            } finally {
+                if (wakeLock?.isHeld == true) {
+                    try { wakeLock.release() } catch (_: Exception) {}
+                }
+                pending.finish()
+            }
         }
     }
     companion object {
