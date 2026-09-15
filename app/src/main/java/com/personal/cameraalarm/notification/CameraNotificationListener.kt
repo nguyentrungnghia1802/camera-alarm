@@ -1,5 +1,6 @@
 package com.personal.cameraalarm.notification
 
+import android.content.ComponentName
 import android.os.PowerManager
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
@@ -20,10 +21,17 @@ class CameraNotificationListener : NotificationListenerService() {
         app.container.listenerConnection.disconnected()
         if (com.personal.cameraalarm.BuildConfig.DEBUG) Log.d("CameraAlarm", "listener disconnected")
         super.onListenerDisconnected()
+        // Auto-heal / reconnect if system unexpectedly unbinds
+        try {
+            requestRebind(ComponentName(this, CameraNotificationListener::class.java))
+        } catch (_: Throwable) {}
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
-        if (app.container.listenerConnection.status.value != ListenerStatus.CONNECTED || sbn == null) return
+        if (sbn == null) return
+        if (app.container.listenerConnection.status.value != ListenerStatus.CONNECTED) {
+            app.container.listenerConnection.connected()
+        }
         Log.i("CameraAlarm", "NOTIFICATION_RECEIVED: pkg=${sbn.packageName} id=${sbn.id}")
         val incoming = NotificationExtractor.from(sbn)
 

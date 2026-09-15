@@ -11,13 +11,15 @@ import com.personal.cameraalarm.permission.ExactAlarmAccess
 import com.personal.cameraalarm.permission.ReadinessRepository
 import com.personal.cameraalarm.trigger.*
 import com.personal.cameraalarm.util.AndroidClock
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 
 class AppContainer(context: Context) {
     val listenerConnection = ListenerConnectionState()
@@ -37,6 +39,16 @@ class AppContainer(context: Context) {
     @Volatile
     var alarmPolicy = AlarmPolicy()
 
+    val initialConfigLoaded = CompletableDeferred<Unit>()
+
+    suspend fun awaitConfigLoaded(timeoutMs: Long = 3000L) {
+        if (!initialConfigLoaded.isCompleted) {
+            withTimeoutOrNull(timeoutMs) {
+                initialConfigLoaded.await()
+            }
+        }
+    }
+
     val scheduler = AndroidAlarmScheduler(context)
     val readiness = ReadinessRepository(context, exactAlarmAccess, listenerConnection) { triggerConfiguration }
     val advisorRegistry = com.personal.cameraalarm.reliability.DeviceReliabilityAdvisorRegistry(readiness)
@@ -47,22 +59,27 @@ class AppContainer(context: Context) {
         ?: CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     init {
-        combine(settingsRepository.settings, ruleRepository.rules) { settings, rules ->
-            triggerConfiguration = TriggerConfiguration(
-                monitoringEnabled = settings.monitoringEnabled,
-                sourcePackage = settings.sourcePackage,
-                rules = rules,
-                scheduleConfiguration = com.personal.cameraalarm.schedule.ScheduleConfiguration(
-                    mode = settings.scheduleMode,
-                    ranges = settings.scheduleRanges
+        appScope.launch {
+            combine(settingsRepository.settings, ruleRepository.rules) { settings, rules ->
+                triggerConfiguration = TriggerConfiguration(
+                    monitoringEnabled = settings.monitoringEnabled,
+                    sourcePackage = settings.sourcePackage,
+                    rules = rules,
+                    scheduleConfiguration = com.personal.cameraalarm.schedule.ScheduleConfiguration(
+                        mode = settings.scheduleMode,
+                        ranges = settings.scheduleRanges
+                    )
                 )
-            )
-            alarmPolicy = AlarmPolicy(
-                delayMs = settings.alarmDelayMs,
-                cooldownMs = settings.cooldownMs,
-                vibrationEnabled = settings.vibrationEnabled
-            )
-        }.launchIn(appScope)
+                alarmPolicy = AlarmPolicy(
+                    delayMs = settings.alarmDelayMs,
+                    cooldownMs = settings.cooldownMs,
+                    vibrationEnabled = settings.vibrationEnabled
+                )
+                if (!initialConfigLoaded.isCompleted) {
+                    initialConfigLoaded.complete(Unit)
+                }
+            }.collect()
+        }
     }
 
     val coordinator = AlarmCoordinator(
@@ -112,7 +129,10 @@ class AppContainer(context: Context) {
 
     val pipeline = TriggerPipeline(
         AndroidClock,
-        { triggerConfiguration },
+        TriggerConfigurationSource {
+            awaitConfigLoaded()
+            triggerConfiguration
+        },
         TtlDuplicateGuard(),
         coordinator,
         TriggerHistory { notification, decision, token ->

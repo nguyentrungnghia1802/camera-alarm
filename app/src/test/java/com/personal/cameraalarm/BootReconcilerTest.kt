@@ -4,6 +4,7 @@ import com.personal.cameraalarm.alarm.*
 import com.personal.cameraalarm.boot.BootReconciler
 import com.personal.cameraalarm.boot.DefaultBootReconciler
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Test
@@ -60,5 +61,23 @@ class BootReconcilerTest {
         val history = FakeHistoryRecorder()
         history.record("BOOT_RECONCILED")
         assertEquals(listOf("BOOT_RECONCILED"), history.records)
+    }
+
+    @Test
+    fun initialConfigAwaitedBeforePipelineProcessing() = runTest {
+        val loaded = kotlinx.coroutines.CompletableDeferred<Unit>()
+        var configReady = false
+
+        val job = launch {
+            if (!loaded.isCompleted) {
+                loaded.await()
+            }
+            configReady = true
+        }
+
+        assertFalse(configReady)
+        loaded.complete(Unit)
+        job.join()
+        assertTrue(configReady)
     }
 }

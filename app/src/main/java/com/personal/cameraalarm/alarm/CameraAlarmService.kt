@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
@@ -114,16 +115,7 @@ class CameraAlarmService : Service() {
     }
 
     private fun promote(token: AlarmToken, trigger: TriggerSnapshot?) {
-        val manager = getSystemService(NotificationManager::class.java)
-        val channelName = getString(com.personal.cameraalarm.R.string.notification_channel_alarm)
-        val channelDesc = getString(com.personal.cameraalarm.R.string.notification_channel_alarm_desc)
-        val channel = NotificationChannel(CHANNEL, channelName, NotificationManager.IMPORTANCE_HIGH).apply {
-            description = channelDesc
-            setSound(null, null)
-            lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-            enableVibration(true)
-        }
-        manager.createNotificationChannel(channel)
+        createNotificationChannel(this)
 
         // Wake screen from black when alarm triggers
         val pm = getSystemService(android.os.PowerManager::class.java)
@@ -301,5 +293,20 @@ class CameraAlarmService : Service() {
         const val EXTRA_KEY = "extra_key"
         const val CHANNEL = "alarm_runtime"
         private const val NOTIFICATION_ID = 1
+
+        fun createNotificationChannel(context: Context) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val manager = context.getSystemService(NotificationManager::class.java) ?: return
+                val channelName = context.getString(com.personal.cameraalarm.R.string.notification_channel_alarm)
+                val channelDesc = context.getString(com.personal.cameraalarm.R.string.notification_channel_alarm_desc)
+                val channel = NotificationChannel(CHANNEL, channelName, NotificationManager.IMPORTANCE_HIGH).apply {
+                    description = channelDesc
+                    setSound(null, null)
+                    lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                    enableVibration(true)
+                }
+                manager.createNotificationChannel(channel)
+            }
+        }
     }
 }

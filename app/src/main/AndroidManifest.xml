@@ -27,9 +27,11 @@
         <receiver android:name=".alarm.AlarmReceiver" android:exported="false" />
         <receiver android:name=".alarm.StopAlarmReceiver" android:exported="false" />
         <receiver android:name=".boot.BootReceiver" android:exported="true">
-            <intent-filter>
+            <intent-filter android:priority="999">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
         <service android:name=".alarm.CameraAlarmService" android:exported="false" android:foregroundServiceType="systemExempted" />
