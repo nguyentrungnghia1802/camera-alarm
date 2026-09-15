@@ -63,8 +63,14 @@ class AlarmActivity : ComponentActivity() {
         val time = intent?.getLongExtra(EXTRA_TIME, System.currentTimeMillis()) ?: System.currentTimeMillis()
 
         val app = application as? CameraAlarmApp
-        val targetPackage = sourcePackage ?: app?.container?.triggerConfiguration?.sourcePackage
+        val configuredSource = app?.container?.triggerConfiguration?.sourcePackage
+        val targetPackage = when {
+            !sourcePackage.isNullOrBlank() && sourcePackage != packageName -> sourcePackage
+            !configuredSource.isNullOrBlank() -> configuredSource
+            else -> null
+        }
 
+        val defaultCameraLabel = getString(R.string.alarm_screen_default_camera)
         val cameraLabel = targetPackage?.let { pkg ->
             try {
                 val appInfo = packageManager.getApplicationInfo(pkg, 0)
@@ -72,7 +78,77 @@ class AlarmActivity : ComponentActivity() {
             } catch (_: Exception) {
                 pkg
             }
-        } ?: "Camera"
+        } ?: defaultCameraLabel
+
+        fun launchCameraApp() {
+            // 1. Stop audio, vibration, foreground service and clear alarm state
+            sendStopBroadcast(token)
+
+            // 2. Open source camera app
+            var launched = false
+            if (!targetPackage.isNullOrBlank()) {
+                val launchIntent = packageManager.getLaunchIntentForPackage(targetPackage)?.apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+                }
+                if (launchIntent != null) {
+                    val km = getSystemService(android.app.KeyguardManager::class.java)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && km?.isKeyguardLocked == true) {
+                        km.requestDismissKeyguard(this, object : android.app.KeyguardManager.KeyguardDismissCallback() {
+                            override fun onDismissSucceeded() {
+                                try {
+                                    startActivity(launchIntent)
+                                } catch (e: Exception) {
+                                    Log.w("CameraAlarm", "Failed to launch camera app $targetPackage after keyguard dismiss: ${e.message}")
+                                }
+                                finish()
+                            }
+                            override fun onDismissCancelled() {
+                                finish()
+                            }
+                            override fun onDismissError() {
+                                try { startActivity(launchIntent) } catch (_: Exception) {}
+                                finish()
+                            }
+                        })
+                        return
+                    } else {
+                        try {
+                            startActivity(launchIntent)
+                            launched = true
+                        } catch (e: Exception) {
+                            Log.w("CameraAlarm", "Failed to launch camera app $targetPackage: ${e.message}")
+                        }
+                        finish()
+                        return
+                    }
+                }
+            }
+
+            // Fallback: If open fails, open camera App Info and record diagnostic
+            if (!launched) {
+                val diag = "Failed to launch camera app package: $targetPackage"
+                Log.w("CameraAlarm", diag)
+                app?.container?.runtimeDiagnostics?.record(diag)
+                if (!targetPackage.isNullOrBlank()) {
+                    try {
+                        val appInfoIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                            data = Uri.fromParts("package", targetPackage, null)
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
+                        startActivity(appInfoIntent)
+                    } catch (e: Exception) {
+                        Log.e("CameraAlarm", "Failed to open App Info for $targetPackage", e)
+                    }
+                }
+            }
+
+            finish()
+        }
+
+        if (intent?.getBooleanExtra(EXTRA_AUTO_OPEN_CAMERA, false) == true) {
+            launchCameraApp()
+            return
+        }
 
         setContent {
             MaterialTheme {
@@ -81,45 +157,7 @@ class AlarmActivity : ComponentActivity() {
                     title = title,
                     preview = preview,
                     timestamp = time,
-                    onOpenCamera = {
-                        // 1. Stop audio, vibration, foreground service and clear alarm state
-                        sendStopBroadcast(token)
-
-                        // 2. Open source camera app
-                        var launched = false
-                        if (!targetPackage.isNullOrBlank()) {
-                            val launchIntent = packageManager.getLaunchIntentForPackage(targetPackage)
-                            if (launchIntent != null) {
-                                launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                                try {
-                                    startActivity(launchIntent)
-                                    launched = true
-                                } catch (e: Exception) {
-                                    Log.w("CameraAlarm", "Failed to launch camera app $targetPackage: ${e.message}")
-                                }
-                            }
-                        }
-
-                        // Fallback: If open fails, open camera App Info and record diagnostic
-                        if (!launched) {
-                            val diag = "Failed to launch camera app package: $targetPackage"
-                            Log.w("CameraAlarm", diag)
-                            app?.container?.runtimeDiagnostics?.record(diag)
-                            if (!targetPackage.isNullOrBlank()) {
-                                try {
-                                    val appInfoIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                        data = Uri.fromParts("package", targetPackage, null)
-                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    }
-                                    startActivity(appInfoIntent)
-                                } catch (e: Exception) {
-                                    Log.e("CameraAlarm", "Failed to open App Info for $targetPackage", e)
-                                }
-                            }
-                        }
-
-                        finish()
-                    },
+                    onOpenCamera = { launchCameraApp() },
                     onStop = {
                         sendStopBroadcast(token)
                         finish()
@@ -142,6 +180,7 @@ class AlarmActivity : ComponentActivity() {
         const val EXTRA_TITLE = "extra_title"
         const val EXTRA_PREVIEW = "extra_preview"
         const val EXTRA_TIME = "extra_time"
+        const val EXTRA_AUTO_OPEN_CAMERA = "extra_auto_open_camera"
     }
 }
 
@@ -157,16 +196,17 @@ fun AlarmScreen(
     val timeFormat = remember { SimpleDateFormat("HH:mm:ss", Locale.getDefault()) }
     val formattedTime = remember(timestamp) { timeFormat.format(Date(timestamp)) }
 
+    val defaultHeadline = stringResource(R.string.alarm_screen_default_headline)
     val displayHeadline = when {
         title.isNotBlank() -> title
         preview.isNotBlank() -> preview
-        else -> "Human detected"
+        else -> defaultHeadline
     }
 
     val displaySubtitle = when {
         preview.isNotBlank() && preview != displayHeadline -> preview
         cameraLabel.isNotBlank() -> cameraLabel
-        else -> "Front Door Camera"
+        else -> stringResource(R.string.alarm_screen_default_camera)
     }
 
     Surface(

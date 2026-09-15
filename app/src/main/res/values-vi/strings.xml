@@ -48,8 +48,8 @@
     <!-- Action Buttons -->
     <string name="btn_test_alarm">Kiểm tra chuông</string>
     <string name="btn_test_alarm_desc">Bấm để thử âm thanh và độ rung. Không tạo cảnh báo camera thật.</string>
-    <string name="btn_stop_alarm">TẮT CẢNH BÁO</string>
-    <string name="btn_open_camera">MỞ CAMERA</string>
+    <string name="btn_stop_alarm">Tắt cảnh báo</string>
+    <string name="btn_open_camera">Xem Camera</string>
     <string name="btn_open_settings">Cài đặt</string>
     <string name="btn_grant">Cấp quyền</string>
     <string name="btn_select">Chọn</string>
@@ -204,9 +204,17 @@
     <string name="decision_ignored_duplicate">Đã bỏ qua (thông báo trùng lặp)</string>
     <string name="decision_ignored_monitoring_off">Đã bỏ qua (chưa bật bảo vệ)</string>
 
-    <!-- Fullscreen Alarm Screen -->
+    <!-- Fullscreen Alarm Screen & Notification -->
     <string name="alarm_screen_badge">🚨 CẢNH BÁO CAMERA</string>
     <string name="alarm_screen_triggered_at">Phát hiện lúc %s</string>
+    <string name="alarm_screen_default_headline">Phát hiện chuyển động</string>
+    <string name="alarm_screen_default_camera">Camera giám sát</string>
+    <string name="notification_channel_alarm">Cảnh báo khẩn cấp từ Camera</string>
+    <string name="notification_channel_alarm_desc">Hiển thị thông báo nổi và phát chuông khi phát hiện cảnh báo camera</string>
+    <string name="notification_alarm_title">🚨 CẢNH BÁO CAMERA</string>
+    <string name="notification_alarm_fallback_text">Phát hiện chuyển động / đối tượng từ camera</string>
+    <string name="test_alarm_title">Báo động thử nghiệm</string>
+    <string name="test_alarm_preview">Đang thử nghiệm âm thanh và rung</string>
 
     <!-- Source Picker Screen -->
     <string name="title_source_picker">Chọn ứng dụng camera</string>

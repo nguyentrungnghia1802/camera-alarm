@@ -70,6 +70,16 @@ class FakeAlertEventDao : AlertEventDao {
         return countBefore - items.size
     }
 
+    override suspend fun deleteExcessSuppressed(maxSuppressed: Int): Int {
+        val suppressed = items.filter { it.decision.startsWith("SUPPRESSED_") || it.decision.startsWith("IGNORED_") }
+        if (suppressed.size <= maxSuppressed) return 0
+        val toKeep = suppressed.sortedByDescending { it.createdAtEpochMs }.take(maxSuppressed).toSet()
+        val countBefore = items.size
+        items.removeAll { (it.decision.startsWith("SUPPRESSED_") || it.decision.startsWith("IGNORED_")) && it !in toKeep }
+        emit()
+        return countBefore - items.size
+    }
+
     override suspend fun clearAll() {
         items.clear()
         emit()
@@ -215,5 +225,31 @@ class HistoryRepositoryTest {
         assertEquals(10, page3.size)
         assertEquals("Alert #10", page3[0].title)
         assertEquals("Alert #1", page3[9].title)
+    }
+
+    @Test
+    fun suppressedEventsAreLimitedTo10Newest() = runBlocking {
+        val dao = FakeAlertEventDao()
+        val repo = HistoryRepository(dao)
+
+        for (i in 1..25) {
+            repo.recordEvent(
+                createdAtEpochMs = 1000L * i,
+                sourcePackage = "com.camera",
+                notificationKey = "key-$i",
+                title = "Motion $i",
+                textPreview = "At front porch",
+                normalizedHash = "hash-$i",
+                decision = "SUPPRESSED_COOLDOWN",
+                ruleId = "rule-1",
+                alarmToken = null,
+                details = null
+            )
+        }
+
+        val suppressed = repo.observePaged("SUPPRESSED", page = 1).first()
+        assertEquals(10, suppressed.size)
+        assertEquals("Motion 25", suppressed.first().title)
+        assertEquals("Motion 16", suppressed.last().title)
     }
 }

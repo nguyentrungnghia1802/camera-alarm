@@ -44,13 +44,14 @@ class CameraAlarmService : Service() {
 
         val isTest = intent.getBooleanExtra(EXTRA_IS_TEST, false)
         val initialTrigger = if (isTest) {
+            val configuredSource = app.container.triggerConfiguration.sourcePackage
             TriggerSnapshot(
                 token,
-                "com.personal.cameraalarm",
+                configuredSource ?: "com.personal.fakecamera",
                 "test_key",
                 "test_rule",
-                "Test Alarm",
-                "Testing camera alarm sound & vibration",
+                getString(com.personal.cameraalarm.R.string.test_alarm_title),
+                getString(com.personal.cameraalarm.R.string.test_alarm_preview),
                 System.currentTimeMillis()
             )
         } else {
@@ -114,7 +115,10 @@ class CameraAlarmService : Service() {
 
     private fun promote(token: AlarmToken, trigger: TriggerSnapshot?) {
         val manager = getSystemService(NotificationManager::class.java)
-        val channel = NotificationChannel(CHANNEL, "Camera alarms", NotificationManager.IMPORTANCE_HIGH).apply {
+        val channelName = getString(com.personal.cameraalarm.R.string.notification_channel_alarm)
+        val channelDesc = getString(com.personal.cameraalarm.R.string.notification_channel_alarm_desc)
+        val channel = NotificationChannel(CHANNEL, channelName, NotificationManager.IMPORTANCE_HIGH).apply {
+            description = channelDesc
             setSound(null, null)
             lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             enableVibration(true)
@@ -138,17 +142,55 @@ class CameraAlarmService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        val openCameraIntent = Intent(this, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            data = android.net.Uri.parse("cameraalarm://alarm_open/${token.value}")
+            putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
+            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_SOURCE, trigger?.sourcePackage)
+            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TITLE, trigger?.title)
+            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_PREVIEW, trigger?.textPreview)
+            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, trigger?.receivedAtEpochMs ?: System.currentTimeMillis())
+            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_AUTO_OPEN_CAMERA, true)
+        }
+        val openCameraPending = PendingIntent.getActivity(
+            this,
+            (token.value + "_open").hashCode(),
+            openCameraIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val notifTitle = getString(com.personal.cameraalarm.R.string.notification_alarm_title)
+        val notifText = trigger?.title?.takeIf { it.isNotBlank() }
+            ?: trigger?.textPreview?.takeIf { it.isNotBlank() }
+            ?: getString(com.personal.cameraalarm.R.string.notification_alarm_fallback_text)
+
+        val stopActionTitle = getString(com.personal.cameraalarm.R.string.btn_stop_alarm)
+        val openCameraTitle = getString(com.personal.cameraalarm.R.string.btn_open_camera)
+
         val builder = Notification.Builder(this, CHANNEL)
             .setSmallIcon(com.personal.cameraalarm.R.mipmap.ic_launcher)
-            .setContentTitle("Camera Alert")
-            .setContentText(trigger?.title ?: trigger?.textPreview ?: "Camera notification detected")
+            .setContentTitle(notifTitle)
+            .setContentText(notifText)
             .setWhen(trigger?.receivedAtEpochMs ?: System.currentTimeMillis())
             .setCategory(Notification.CATEGORY_ALARM)
             .setOngoing(true)
             .setAutoCancel(false)
             .setVisibility(Notification.VISIBILITY_PUBLIC)
             .setPriority(Notification.PRIORITY_MAX)
-            .addAction(Notification.Action.Builder(Icon.createWithResource(this, android.R.drawable.ic_menu_close_clear_cancel), "STOP", stop).build())
+            .addAction(
+                Notification.Action.Builder(
+                    Icon.createWithResource(this, android.R.drawable.ic_menu_camera),
+                    openCameraTitle,
+                    openCameraPending
+                ).build()
+            )
+            .addAction(
+                Notification.Action.Builder(
+                    Icon.createWithResource(this, android.R.drawable.ic_menu_close_clear_cancel),
+                    stopActionTitle,
+                    stop
+                ).build()
+            )
 
         val pendingFullScreen = createFullScreenPendingIntent(token, trigger)
         if (pendingFullScreen != null) {

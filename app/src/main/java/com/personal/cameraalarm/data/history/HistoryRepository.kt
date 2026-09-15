@@ -31,13 +31,13 @@ class HistoryRepository(private val dao: AlertEventDao) {
         )
         val id = dao.insert(entity)
         val cutoff = createdAtEpochMs - RETENTION_WINDOW_MS
-        dao.pruneRetention(cutoff, MAX_RETAINED)
+        dao.pruneRetention(cutoff, MAX_RETAINED, MAX_SUPPRESSED_RETAINED)
         return id
     }
 
     suspend fun prune(nowEpochMs: Long = System.currentTimeMillis()) {
         val cutoff = nowEpochMs - RETENTION_WINDOW_MS
-        dao.pruneRetention(cutoff, MAX_RETAINED)
+        dao.pruneRetention(cutoff, MAX_RETAINED, MAX_SUPPRESSED_RETAINED)
     }
 
     fun observePaged(filter: String, page: Int, pageSize: Int = PAGE_SIZE): Flow<List<AlertEventEntity>> {
@@ -57,6 +57,7 @@ class HistoryRepository(private val dao: AlertEventDao) {
     companion object {
         const val PAGE_SIZE = 25
         const val MAX_RETAINED = 100
+        const val MAX_SUPPRESSED_RETAINED = 10
         const val RETENTION_WINDOW_MS = 3 * 24 * 60 * 60 * 1000L // 3 days
     }
 }

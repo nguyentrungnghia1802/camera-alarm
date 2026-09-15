@@ -40,10 +40,23 @@ interface AlertEventDao {
     @Query("DELETE FROM alert_events WHERE id NOT IN (SELECT id FROM alert_events ORDER BY createdAtEpochMs DESC LIMIT :maxRetained)")
     suspend fun deleteExcess(maxRetained: Int): Int
 
+    @Query("""
+        DELETE FROM alert_events 
+        WHERE (decision LIKE 'SUPPRESSED_%' OR decision LIKE 'IGNORED_%')
+          AND id NOT IN (
+              SELECT id FROM alert_events 
+              WHERE (decision LIKE 'SUPPRESSED_%' OR decision LIKE 'IGNORED_%')
+              ORDER BY createdAtEpochMs DESC 
+              LIMIT :maxSuppressed
+          )
+    """)
+    suspend fun deleteExcessSuppressed(maxSuppressed: Int = 10): Int
+
     @Transaction
-    suspend fun pruneRetention(cutoffEpochMs: Long, maxRetained: Int = 100) {
+    suspend fun pruneRetention(cutoffEpochMs: Long, maxRetained: Int = 100, maxSuppressed: Int = 10) {
         deleteOlderThan(cutoffEpochMs)
         deleteExcess(maxRetained)
+        deleteExcessSuppressed(maxSuppressed)
     }
 
     @Query("DELETE FROM alert_events")

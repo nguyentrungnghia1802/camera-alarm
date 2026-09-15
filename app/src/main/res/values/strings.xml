@@ -48,8 +48,8 @@
     <!-- Action Buttons -->
     <string name="btn_test_alarm">Test Alarm</string>
     <string name="btn_test_alarm_desc">Press to test sound and vibration. Does not trigger real camera alerts.</string>
-    <string name="btn_stop_alarm">STOP ALARM</string>
-    <string name="btn_open_camera">OPEN CAMERA</string>
+    <string name="btn_stop_alarm">Stop Alarm</string>
+    <string name="btn_open_camera">View Camera</string>
     <string name="btn_open_settings">Settings</string>
     <string name="btn_grant">Grant</string>
     <string name="btn_select">Select</string>
@@ -204,9 +204,17 @@
     <string name="decision_ignored_duplicate">Ignored (duplicate notification)</string>
     <string name="decision_ignored_monitoring_off">Ignored (monitoring off)</string>
 
-    <!-- Fullscreen Alarm Screen -->
+    <!-- Fullscreen Alarm Screen & Notification -->
     <string name="alarm_screen_badge">🚨 CAMERA ALERT</string>
     <string name="alarm_screen_triggered_at">Triggered at %s</string>
+    <string name="alarm_screen_default_headline">Motion detected</string>
+    <string name="alarm_screen_default_camera">Security Camera</string>
+    <string name="notification_channel_alarm">Emergency Camera Alarms</string>
+    <string name="notification_channel_alarm_desc">Displays heads-up banner and sounds alarm on camera alert</string>
+    <string name="notification_alarm_title">🚨 CAMERA ALERT</string>
+    <string name="notification_alarm_fallback_text">Motion or person detected by camera</string>
+    <string name="test_alarm_title">Test Alarm</string>
+    <string name="test_alarm_preview">Testing camera alarm sound &amp; vibration</string>
 
     <!-- Source Picker Screen -->
     <string name="title_source_picker">Select Camera App</string>
