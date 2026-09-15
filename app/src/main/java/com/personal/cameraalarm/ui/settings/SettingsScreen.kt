@@ -6,7 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
@@ -422,17 +425,103 @@ fun SettingsScreen(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Row(
+
+                    val presets = listOf(
+                        0L to stringResource(R.string.cooldown_none),
+                        10_000L to stringResource(R.string.cooldown_10s),
+                        30_000L to stringResource(R.string.cooldown_30s),
+                        60_000L to stringResource(R.string.cooldown_1m),
+                        300_000L to stringResource(R.string.cooldown_5m)
+                    )
+                    val presetValues = remember { listOf(0L, 10_000L, 30_000L, 60_000L, 300_000L) }
+                    val currentMs = state.draftSettings.cooldownMs
+                    val isCustom = currentMs !in presetValues
+                    var customSecText by remember(currentMs) {
+                        mutableStateOf(if (isCustom) (currentMs / 1000L).toString() else "120")
+                    }
+
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
-                        listOf(0L to "0s", 10000L to "10s", 30000L to "30s", 60000L to "60s").forEach { (ms, label) ->
-                            FilterChip(
-                                selected = state.draftSettings.cooldownMs == ms,
-                                onClick = { viewModel.setCooldown(ms) },
-                                label = { Text(label) },
-                                modifier = Modifier.weight(1f)
+                        presets.forEach { (ms, label) ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { viewModel.setCooldown(ms) }
+                                    .padding(vertical = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                RadioButton(
+                                    selected = !isCustom && currentMs == ms,
+                                    onClick = { viewModel.setCooldown(ms) }
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = label,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = if (!isCustom && currentMs == ms) FontWeight.Bold else FontWeight.Normal
+                                )
+                            }
+                        }
+
+                        // Custom option
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    val sec = customSecText.toLongOrNull() ?: 120L
+                                    viewModel.setCooldown(sec * 1000L)
+                                }
+                                .padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = isCustom,
+                                onClick = {
+                                    val sec = customSecText.toLongOrNull() ?: 120L
+                                    viewModel.setCooldown(sec * 1000L)
+                                }
                             )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = stringResource(R.string.cooldown_custom),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = if (isCustom) FontWeight.Bold else FontWeight.Normal
+                            )
+                        }
+
+                        if (isCustom) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 40.dp, top = 4.dp, bottom = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.cooldown_custom_label),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                OutlinedTextField(
+                                    value = customSecText,
+                                    onValueChange = { input ->
+                                        val digits = input.filter { it.isDigit() }.take(5)
+                                        customSecText = digits
+                                        val sec = digits.toLongOrNull() ?: 0L
+                                        viewModel.setCooldown(sec * 1000L)
+                                    },
+                                    modifier = Modifier.width(100.dp),
+                                    singleLine = true,
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center)
+                                )
+                                Text(
+                                    text = stringResource(R.string.cooldown_seconds_unit),
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
                         }
                     }
                 }

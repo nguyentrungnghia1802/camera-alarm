@@ -21,8 +21,6 @@ class StopAlarmReceiver : BroadcastReceiver() {
                     return@launch
                 }
                 app.container.coordinator.onStopRequested(token)
-                val state = app.container.stateStore.read()
-                if (state !is AlarmState.Cooldown || state.lastAlarmToken != token) return@launch
                 startStopService(context, token)
             } catch (e: Exception) { Log.e("CameraAlarm", "STOP failed for token=${token.value}", e) }
             finally { pending.finish() }

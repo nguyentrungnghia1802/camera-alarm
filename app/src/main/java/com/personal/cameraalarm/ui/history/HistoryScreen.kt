@@ -188,7 +188,7 @@ private fun HistoryItemCard(event: AlertEventEntity) {
         "SCHEDULED", "ALARM_FIRED" -> Triple(Color(0xFF2E7D32), Color.White, stringResource(R.string.decision_scheduled))
         "SUPPRESSED_PENDING" -> Triple(Color(0xFFEF6C00), Color.White, stringResource(R.string.decision_suppressed_pending))
         "SUPPRESSED_RINGING" -> Triple(Color(0xFFEF6C00), Color.White, stringResource(R.string.decision_suppressed_ringing))
-        "SUPPRESSED_COOLDOWN" -> Triple(Color(0xFFEF6C00), Color.White, stringResource(R.string.decision_suppressed_cooldown))
+        "SUPPRESSED_COOLDOWN" -> Triple(Color(0xFFEF6C00), Color.White, stringResource(R.string.history_filter_suppressed))
         "SUPPRESSED_OUTSIDE_ACTIVE_HOURS" -> Triple(Color(0xFF0288D1), Color.White, stringResource(R.string.decision_suppressed_outside_hours))
         "IGNORED_NO_RULE_MATCH" -> Triple(Color(0xFF757575), Color.White, stringResource(R.string.decision_ignored_no_match))
         "IGNORED_WRONG_PACKAGE" -> Triple(Color(0xFF757575), Color.White, stringResource(R.string.decision_ignored_wrong_package))
@@ -255,6 +255,50 @@ private fun HistoryItemCard(event: AlertEventEntity) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = if (expanded) Int.MAX_VALUE else 2
                 )
+            }
+
+            if (event.decision == "SUPPRESSED_COOLDOWN") {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = "Lý do:",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = stringResource(R.string.decision_suppressed_cooldown_reason),
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.Medium
+                        )
+                        if (!event.details.isNullOrBlank()) {
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = "Còn lại:",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = event.details,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFFEF6C00)
+                            )
+                        }
+                    }
+                }
             }
 
             AnimatedVisibility(visible = expanded) {

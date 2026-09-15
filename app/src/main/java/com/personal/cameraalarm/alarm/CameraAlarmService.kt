@@ -38,55 +38,80 @@ class CameraAlarmService : Service() {
         }
         if (intent?.action != ACTION_START || token == null) { stopSelf(); return START_NOT_STICKY }
         if (runtime.activeToken != null && runtime.activeToken != token) return START_NOT_STICKY
+
+        Log.i("CameraAlarm", "FOREGROUND_SERVICE_STARTED: token=${token.value}")
         app.container.soundPreviewController.stop()
+
         val isTest = intent.getBooleanExtra(EXTRA_IS_TEST, false)
-        try { promote(token, null) } catch (e: RuntimeException) {
+        val initialTrigger = if (isTest) {
+            TriggerSnapshot(
+                token,
+                "com.personal.cameraalarm",
+                "test_key",
+                "test_rule",
+                "Test Alarm",
+                "Testing camera alarm sound & vibration",
+                System.currentTimeMillis()
+            )
+        } else {
+            val src = intent.getStringExtra(EXTRA_SOURCE)
+            if (src != null) {
+                TriggerSnapshot(
+                    token,
+                    src,
+                    intent.getStringExtra(EXTRA_KEY) ?: "",
+                    intent.getStringExtra(EXTRA_RULE) ?: "",
+                    intent.getStringExtra(EXTRA_TITLE),
+                    intent.getStringExtra(EXTRA_PREVIEW),
+                    intent.getLongExtra(EXTRA_TIME, System.currentTimeMillis())
+                )
+            } else null
+        }
+
+        // 1. Promote to foreground service immediately
+        try {
+            promote(token, initialTrigger)
+        } catch (e: RuntimeException) {
             recordError(token, "foreground: ${e.message ?: e.javaClass.simpleName}")
             if (isTest) app.container.testAlarmToken.compareAndSet(token, null)
             else scope.launch { app.container.coordinator.onStopRequested(token) }
             stopSelf()
             return START_NOT_STICKY
         }
-        if (isTest) {
-            val testTrigger = TriggerSnapshot(token, "com.personal.cameraalarm", "test_key", "test_rule", "Test Alarm", "Testing camera alarm sound & vibration", System.currentTimeMillis())
-            try { promote(token, testTrigger) } catch (e: RuntimeException) {
-                recordError(token, "foreground update: ${e.message ?: e.javaClass.simpleName}")
-                app.container.testAlarmToken.compareAndSet(token, null)
-                stopForeground(STOP_FOREGROUND_REMOVE); stopSelf(); return START_NOT_STICKY
-            }
-            val soundKey = kotlinx.coroutines.runBlocking {
-                try { app.container.settingsRepository.current().alarmSoundKey } catch (_: Exception) { null }
-            }
-            runtime.start(token, app.container.alarmPolicy.vibrationEnabled, soundKey).forEach { recordError(token, it) }
-            return START_NOT_STICKY
+
+        // 2. Start audio & vibration immediately
+        val soundKey = kotlinx.coroutines.runBlocking {
+            try { app.container.settingsRepository.current().alarmSoundKey } catch (_: Exception) { null }
         }
-        scope.launch {
-            val state = try { app.container.stateStore.read() } catch (e: Exception) {
-                recordError(token, "state read: ${e.message ?: e.javaClass.simpleName}"); null
-            }
-            if (state !is AlarmState.Ringing || state.trigger.alarmToken != token) {
-                stopForeground(STOP_FOREGROUND_REMOVE); stopSelf(); return@launch
-            }
-            if (runtime.activeToken == null) {
-                try { promote(token, state.trigger) } catch (e: RuntimeException) {
-                    recordError(token, "foreground update: ${e.message ?: e.javaClass.simpleName}")
-                    app.container.coordinator.onStopRequested(token)
-                    stopForeground(STOP_FOREGROUND_REMOVE); stopSelf(); return@launch
+        runtime.start(token, app.container.alarmPolicy.vibrationEnabled, soundKey).forEach { recordError(token, it) }
+
+        // 3. Launch full-screen AlarmActivity (if enabled and permitted)
+        launchAlarmActivity(token, initialTrigger)
+
+        // 4. Verify state asynchronously if initial trigger was not provided via intent
+        if (!isTest && initialTrigger == null) {
+            scope.launch {
+                val state = try { app.container.stateStore.read() } catch (e: Exception) {
+                    recordError(token, "state read: ${e.message ?: e.javaClass.simpleName}"); null
                 }
-                val soundKey = try { app.container.settingsRepository.current().alarmSoundKey } catch (_: Exception) { null }
-                runtime.start(token, app.container.alarmPolicy.vibrationEnabled, soundKey).forEach { recordError(token, it) }
-                if (com.personal.cameraalarm.BuildConfig.DEBUG) Log.d("CameraAlarm", "runtime started token=${token.value}")
-                val latest = try { app.container.stateStore.read() } catch (e: Exception) {
-                    recordError(token, "state recheck: ${e.message ?: e.javaClass.simpleName}"); null
-                }
-                if (latest !is AlarmState.Ringing || latest.trigger.alarmToken != token) {
+                if (state !is AlarmState.Ringing || state.trigger.alarmToken != token) {
                     runtime.stop(token).forEach { recordError(token, it) }
-                    stopForeground(STOP_FOREGROUND_REMOVE); stopSelf()
+                    stopForeground(STOP_FOREGROUND_REMOVE)
+                    stopSelf()
+                    return@launch
+                }
+                try {
+                    promote(token, state.trigger)
+                    launchAlarmActivity(token, state.trigger)
+                } catch (e: RuntimeException) {
+                    recordError(token, "foreground update: ${e.message ?: e.javaClass.simpleName}")
                 }
             }
         }
+
         return START_NOT_STICKY
     }
+
     private fun promote(token: AlarmToken, trigger: TriggerSnapshot?) {
         val manager = getSystemService(NotificationManager::class.java)
         val channel = NotificationChannel(CHANNEL, "Camera alarms", NotificationManager.IMPORTANCE_HIGH).apply {
@@ -104,10 +129,15 @@ class CameraAlarmService : Service() {
         )
         screenLock?.acquire(3_000)
 
-        val stop = PendingIntent.getBroadcast(this, 1,
-            Intent(this, StopAlarmReceiver::class.java).setAction(StopAlarmReceiver.ACTION_STOP)
+        val stop = PendingIntent.getBroadcast(
+            this,
+            1,
+            Intent(this, StopAlarmReceiver::class.java)
+                .setAction(StopAlarmReceiver.ACTION_STOP)
                 .putExtra(AlarmReceiver.EXTRA_TOKEN, token.value),
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         val builder = Notification.Builder(this, CHANNEL)
             .setSmallIcon(com.personal.cameraalarm.R.mipmap.ic_launcher)
             .setContentTitle("Camera Alert")
@@ -120,35 +150,87 @@ class CameraAlarmService : Service() {
             .setPriority(Notification.PRIORITY_MAX)
             .addAction(Notification.Action.Builder(Icon.createWithResource(this, android.R.drawable.ic_menu_close_clear_cancel), "STOP", stop).build())
 
+        val pendingFullScreen = createFullScreenPendingIntent(token, trigger)
+        if (pendingFullScreen != null) {
+            builder.setFullScreenIntent(pendingFullScreen, true)
+            builder.setContentIntent(pendingFullScreen)
+        }
+
+        val notification = builder.build()
+        if (Build.VERSION.SDK_INT >= 34) {
+            startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SYSTEM_EXEMPTED)
+        } else {
+            startForeground(NOTIFICATION_ID, notification)
+        }
+    }
+
+    private fun createFullScreenPendingIntent(token: AlarmToken, trigger: TriggerSnapshot?): PendingIntent? {
         val canFullScreen = app.container.readiness.canUseFullScreenIntent()
         val fullScreenEnabled = kotlinx.coroutines.runBlocking {
             try { app.container.settingsRepository.current().fullScreenEnabled } catch (_: Exception) { true }
         }
-        if (canFullScreen && fullScreenEnabled) {
-            val fullScreenIntent = Intent(this, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
-                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_SOURCE, trigger?.sourcePackage)
-                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TITLE, trigger?.title)
-                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_PREVIEW, trigger?.textPreview)
-                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, trigger?.receivedAtEpochMs ?: System.currentTimeMillis())
-            }
-            val pendingFullScreen = PendingIntent.getActivity(
-                this,
-                2,
-                fullScreenIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        if (!canFullScreen || !fullScreenEnabled) return null
+
+        val fullScreenIntent = Intent(this, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            data = android.net.Uri.parse("cameraalarm://alarm/${token.value}")
+            putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
+            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_SOURCE, trigger?.sourcePackage)
+            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TITLE, trigger?.title)
+            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_PREVIEW, trigger?.textPreview)
+            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, trigger?.receivedAtEpochMs ?: System.currentTimeMillis())
+        }
+
+        val options = android.app.ActivityOptions.makeBasic()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            options.setPendingIntentBackgroundActivityStartMode(
+                android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
             )
-            builder.setFullScreenIntent(pendingFullScreen, true)
+        }
+
+        return PendingIntent.getActivity(
+            this,
+            token.value.hashCode(),
+            fullScreenIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            options.toBundle()
+        )
+    }
+
+    private fun launchAlarmActivity(token: AlarmToken, trigger: TriggerSnapshot?) {
+        val pending = createFullScreenPendingIntent(token, trigger) ?: return
+        Log.i("CameraAlarm", "FULLSCREEN_INTENT_SENT: token=${token.value}")
+
+        // Attempt direct launch when screen is on / unlocked
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                val launchOpts = android.app.ActivityOptions.makeBasic().apply {
+                    setPendingIntentBackgroundActivityStartMode(
+                        android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+                    )
+                }
+                pending.send(this, 0, null, null, null, null, launchOpts.toBundle())
+            } else {
+                pending.send()
+            }
+        } catch (e: Exception) {
             try {
-                startActivity(fullScreenIntent)
-            } catch (e: Exception) {
-                if (com.personal.cameraalarm.BuildConfig.DEBUG) Log.d("CameraAlarm", "Direct startActivity skipped: ${e.message}")
+                val directIntent = Intent(this, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    data = android.net.Uri.parse("cameraalarm://alarm/${token.value}")
+                    putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
+                    putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_SOURCE, trigger?.sourcePackage)
+                    putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TITLE, trigger?.title)
+                    putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_PREVIEW, trigger?.textPreview)
+                    putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, trigger?.receivedAtEpochMs ?: System.currentTimeMillis())
+                }
+                startActivity(directIntent)
+            } catch (e2: Exception) {
+                if (com.personal.cameraalarm.BuildConfig.DEBUG) {
+                    Log.d("CameraAlarm", "Direct activity start fallback skipped: ${e2.message}")
+                }
             }
         }
-        val notification = builder.build()
-        if (Build.VERSION.SDK_INT >= 34) startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SYSTEM_EXEMPTED)
-        else startForeground(NOTIFICATION_ID, notification)
     }
     private fun recordError(token: AlarmToken?, error: String) {
         Log.e("CameraAlarm", "alarm runtime error token=${token?.value}: $error")
@@ -169,6 +251,12 @@ class CameraAlarmService : Service() {
         const val ACTION_START = "com.personal.cameraalarm.action.START_ALARM"
         const val ACTION_STOP = "com.personal.cameraalarm.action.STOP_ALARM"
         const val EXTRA_IS_TEST = "extra_is_test"
+        const val EXTRA_SOURCE = "extra_source"
+        const val EXTRA_TITLE = "extra_title"
+        const val EXTRA_PREVIEW = "extra_preview"
+        const val EXTRA_TIME = "extra_time"
+        const val EXTRA_RULE = "extra_rule"
+        const val EXTRA_KEY = "extra_key"
         const val CHANNEL = "alarm_runtime"
         private const val NOTIFICATION_ID = 1
     }

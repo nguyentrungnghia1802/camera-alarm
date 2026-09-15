@@ -49,6 +49,7 @@
     <string name="btn_test_alarm">Test Alarm</string>
     <string name="btn_test_alarm_desc">Press to test sound and vibration. Does not trigger real camera alerts.</string>
     <string name="btn_stop_alarm">STOP ALARM</string>
+    <string name="btn_open_camera">OPEN CAMERA</string>
     <string name="btn_open_settings">Settings</string>
     <string name="btn_grant">Grant</string>
     <string name="btn_select">Select</string>
@@ -113,6 +114,16 @@
     <string name="desc_alarm_delay">Time to wait between receiving camera alert and sounding alarm</string>
     <string name="section_cooldown">Cooldown Window</string>
     <string name="desc_cooldown">Suppresses duplicate alerts for this period after pressing STOP</string>
+    <string name="cooldown_none">No wait</string>
+    <string name="cooldown_10s">10 seconds</string>
+    <string name="cooldown_30s">30 seconds</string>
+    <string name="cooldown_1m">1 minute</string>
+    <string name="cooldown_5m">5 minutes</string>
+    <string name="cooldown_custom">Custom</string>
+    <string name="cooldown_custom_label">Cooldown:</string>
+    <string name="cooldown_seconds_unit">seconds</string>
+    <string name="decision_suppressed_cooldown_reason">Currently in cooldown period</string>
+    <string name="decision_suppressed_cooldown_remaining">Remaining: %s</string>
     <string name="section_behavior">Device Feedback</string>
     <string name="setting_vibration">Vibration</string>
     <string name="desc_vibration">Vibrate continuously during alarm</string>

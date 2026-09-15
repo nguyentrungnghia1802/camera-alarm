@@ -91,6 +91,7 @@ class AndroidAlarmPlayer(private val context: Context) : AlarmPlayer {
             }
 
             player = created
+            Log.i("CameraAlarm", "AUDIO_STARTED: key=$key resId=$rawResId")
             if (BuildConfig.DEBUG) {
                 Log.d(
                     "CameraAlarm",
@@ -145,6 +146,7 @@ class AndroidAlarmPlayer(private val context: Context) : AlarmPlayer {
             }
 
             player = created
+            Log.i("CameraAlarm", "AUDIO_STARTED: system_uri=$uri")
             if (BuildConfig.DEBUG) {
                 Log.d(
                     "CameraAlarm",

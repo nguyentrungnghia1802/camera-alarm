@@ -9,7 +9,11 @@ class AlarmRuntimeController(private val player: AlarmPlayer, private val vibrat
         if (activeToken != null) return emptyList()
         activeToken = token
         val errors = mutableListOf<String>()
-        player.start(soundKey).exceptionOrNull()?.let { errors += "audio: ${it.message ?: it.javaClass.simpleName}" }
+        val audioResult = player.start(soundKey)
+        audioResult.exceptionOrNull()?.let { errors += "audio: ${it.message ?: it.javaClass.simpleName}" }
+        if (audioResult.isSuccess) {
+            try { android.util.Log.i("CameraAlarm", "AUDIO_STARTED: token=${token.value}") } catch (_: Throwable) {}
+        }
         if (vibrationEnabled) try {
             vibration.startRepeating()
         } catch (e: RuntimeException) {

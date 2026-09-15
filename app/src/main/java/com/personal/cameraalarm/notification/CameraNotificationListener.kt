@@ -24,6 +24,7 @@ class CameraNotificationListener : NotificationListenerService() {
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         if (app.container.listenerConnection.status.value != ListenerStatus.CONNECTED || sbn == null) return
+        Log.i("CameraAlarm", "NOTIFICATION_RECEIVED: pkg=${sbn.packageName} id=${sbn.id}")
         val incoming = NotificationExtractor.from(sbn)
 
         val pm = getSystemService(PowerManager::class.java)

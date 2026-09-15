@@ -119,6 +119,18 @@ class AppContainer(context: Context) {
             if (com.personal.cameraalarm.BuildConfig.DEBUG) {
                 android.util.Log.d("CameraAlarm", "decision=$decision source=${notification.packageName}")
             }
+            val details = if (decision == TriggerDecision.SUPPRESSED_COOLDOWN) {
+                val state = try {
+                    kotlinx.coroutines.runBlocking { stateStore.read() }
+                } catch (_: Exception) { null }
+                if (state is AlarmState.Cooldown) {
+                    val remainingMs = (state.untilEpochMs - System.currentTimeMillis()).coerceAtLeast(0)
+                    val min = (remainingMs / 1000) / 60
+                    val sec = (remainingMs / 1000) % 60
+                    String.format(java.util.Locale.getDefault(), "%02d:%02d", min, sec)
+                } else null
+            } else null
+
             historyRepository.recordEvent(
                 createdAtEpochMs = notification.postTimeEpochMs.takeIf { it > 0 } ?: System.currentTimeMillis(),
                 sourcePackage = notification.packageName,
@@ -129,7 +141,7 @@ class AppContainer(context: Context) {
                 decision = decision.name,
                 ruleId = null,
                 alarmToken = token?.value,
-                details = null
+                details = details
             )
         },
         historyFailure = { error ->

@@ -40,6 +40,7 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
                 manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtEpochMs, pending)
             }
 
+            android.util.Log.i("CameraAlarm", "EXACT_ALARM_SCHEDULED: token=${token.value} triggerAtEpochMs=$triggerAtEpochMs")
             ScheduleResult.Scheduled
         } catch (e: SecurityException) {
             ScheduleResult.ExactAlarmPermissionMissing

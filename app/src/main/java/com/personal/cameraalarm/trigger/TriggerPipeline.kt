@@ -59,6 +59,9 @@ class TriggerPipeline(
         val searchable = NotificationNormalizer.normalize(notification)
         val rule = TriggerMatcher.match(notification.packageName, searchable, config.rules)
             ?: return TriggerDecision.IGNORED_NO_RULE_MATCH to null
+        try {
+            android.util.Log.i("CameraAlarm", "TRIGGER_MATCHED: rule=${rule.name} pkg=${notification.packageName}")
+        } catch (_: Throwable) {}
 
         val eventTime = notification.postTimeEpochMs.takeIf { it > 0 } ?: clock.nowEpochMs()
         val scheduleDecision = ActiveScheduleGate.evaluate(config.scheduleConfiguration, eventTime)

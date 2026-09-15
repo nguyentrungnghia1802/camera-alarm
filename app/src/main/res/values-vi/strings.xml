@@ -48,7 +48,8 @@
     <!-- Action Buttons -->
     <string name="btn_test_alarm">Kiểm tra chuông</string>
     <string name="btn_test_alarm_desc">Bấm để thử âm thanh và độ rung. Không tạo cảnh báo camera thật.</string>
-    <string name="btn_stop_alarm">TẮT BÁO ĐỘNG</string>
+    <string name="btn_stop_alarm">TẮT CẢNH BÁO</string>
+    <string name="btn_open_camera">MỞ CAMERA</string>
     <string name="btn_open_settings">Cài đặt</string>
     <string name="btn_grant">Cấp quyền</string>
     <string name="btn_select">Chọn</string>
@@ -111,8 +112,18 @@
 
     <string name="section_alarm_delay">Độ trễ báo động</string>
     <string name="desc_alarm_delay">Thời gian chờ từ khi nhận thông báo camera đến khi chuông reo</string>
-    <string name="section_cooldown">Thời gian nghỉ</string>
+    <string name="section_cooldown">Thời gian cảnh báo lại</string>
     <string name="desc_cooldown">Bỏ qua thông báo lặp lại trong khoảng thời gian này sau khi bấm TẮT</string>
+    <string name="cooldown_none">Không chờ</string>
+    <string name="cooldown_10s">10 giây</string>
+    <string name="cooldown_30s">30 giây</string>
+    <string name="cooldown_1m">1 phút</string>
+    <string name="cooldown_5m">5 phút</string>
+    <string name="cooldown_custom">Tùy chỉnh</string>
+    <string name="cooldown_custom_label">Cooldown:</string>
+    <string name="cooldown_seconds_unit">giây</string>
+    <string name="decision_suppressed_cooldown_reason">Đang trong thời gian chờ cảnh báo lại</string>
+    <string name="decision_suppressed_cooldown_remaining">Còn lại: %s</string>
     <string name="section_behavior">Phản hồi thiết bị</string>
     <string name="setting_vibration">Rung</string>
     <string name="desc_vibration">Rung liên tục trong lúc chuông báo động reo</string>

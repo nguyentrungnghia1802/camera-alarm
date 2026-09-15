@@ -137,4 +137,19 @@ class TriggerPipelineTest {
         // Event was scheduled based on event time 06:59:59
         assertEquals(boundaryEpoch, scheduledSnapshot?.receivedAtEpochMs)
     }
+
+    @Test fun cooldownSuppressionIsMappedToSuppressedCooldownDecision() = runTest {
+        val history = mutableListOf<TriggerDecision>()
+        val pipeline = TriggerPipeline(
+            Clock { 1000 },
+            { TriggerConfiguration(true, "camera.app", listOf(rule)) },
+            TtlDuplicateGuard(),
+            ValidTriggerSink { AlarmOutcome.SUPPRESSED_COOLDOWN },
+            TriggerHistory { _, decision, _ -> history += decision }
+        )
+
+        val decision = pipeline.process(incoming("cooldown-notif"))
+        assertEquals(TriggerDecision.SUPPRESSED_COOLDOWN, decision)
+        assertEquals(listOf(TriggerDecision.SUPPRESSED_COOLDOWN), history)
+    }
 }

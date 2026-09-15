@@ -14,6 +14,7 @@ class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent?.action != ACTION_FIRE) return
         val token = intent.getStringExtra(EXTRA_TOKEN)?.takeIf(String::isNotBlank) ?: return
+        Log.i("CameraAlarm", "ALARM_RECEIVER_FIRED: token=$token")
         val pending = goAsync()
         val app = context.applicationContext as CameraAlarmApp
 
@@ -27,12 +28,19 @@ class AlarmReceiver : BroadcastReceiver() {
                     if (!app.container.exactAlarmAccess.isGranted()) return@withTimeout
                     val state = app.container.stateStore.read()
                     if (state !is AlarmState.Pending || state.trigger.alarmToken.value != token) return@withTimeout
-                    app.container.coordinator.onExactAlarmFired(state.trigger)
+                    val trigger = state.trigger
+                    app.container.coordinator.onExactAlarmFired(trigger)
                     val current = app.container.stateStore.read()
                     if (current !is AlarmState.Ringing || current.trigger.alarmToken.value != token) return@withTimeout
                     val service = Intent(context, CameraAlarmService::class.java)
                         .setAction(CameraAlarmService.ACTION_START)
                         .putExtra(EXTRA_TOKEN, token)
+                        .putExtra(CameraAlarmService.EXTRA_SOURCE, trigger.sourcePackage)
+                        .putExtra(CameraAlarmService.EXTRA_TITLE, trigger.title)
+                        .putExtra(CameraAlarmService.EXTRA_PREVIEW, trigger.textPreview)
+                        .putExtra(CameraAlarmService.EXTRA_TIME, trigger.receivedAtEpochMs)
+                        .putExtra(CameraAlarmService.EXTRA_RULE, trigger.ruleId)
+                        .putExtra(CameraAlarmService.EXTRA_KEY, trigger.notificationKey)
                     ContextCompat.startForegroundService(context, service)
                     if (com.personal.cameraalarm.BuildConfig.DEBUG) Log.d("CameraAlarm", "receiver started alarm service token=$token")
                 }
