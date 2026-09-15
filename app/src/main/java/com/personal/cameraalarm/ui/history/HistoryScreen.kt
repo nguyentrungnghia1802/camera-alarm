@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.personal.cameraalarm.R
 import com.personal.cameraalarm.data.history.AlertEventEntity
+import com.personal.cameraalarm.ui.AppScreen
+import com.personal.cameraalarm.ui.navigation.AppBottomNavigationBar
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -32,7 +34,8 @@ import java.util.Locale
 @Composable
 fun HistoryScreen(
     viewModel: HistoryViewModel,
-    onBack: () -> Unit
+    onBack: (() -> Unit)? = null,
+    onNavigate: ((AppScreen) -> Unit)? = null
 ) {
     val state by viewModel.uiState.collectAsState()
     var showClearDialog by remember { mutableStateOf(false) }
@@ -64,11 +67,6 @@ fun HistoryScreen(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.title_history), fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.btn_cancel))
-                    }
-                },
                 actions = {
                     if (state.events.isNotEmpty()) {
                         IconButton(onClick = { showClearDialog = true }) {
@@ -76,6 +74,12 @@ fun HistoryScreen(
                         }
                     }
                 }
+            )
+        },
+        bottomBar = {
+            AppBottomNavigationBar(
+                currentScreen = AppScreen.HISTORY,
+                onNavigate = { onNavigate?.invoke(it) }
             )
         }
     ) { padding ->

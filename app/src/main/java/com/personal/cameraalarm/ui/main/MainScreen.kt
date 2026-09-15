@@ -81,32 +81,18 @@ fun MainScreen(
             )
         },
         bottomBar = {
-            NavigationBar {
-                NavigationBarItem(
-                    selected = true,
-                    onClick = { },
-                    icon = { Icon(Icons.Default.Shield, contentDescription = stringResource(R.string.nav_dashboard)) },
-                    label = { Text(stringResource(R.string.nav_dashboard)) }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = onNavigateToRules,
-                    icon = { Icon(Icons.AutoMirrored.Filled.Rule, contentDescription = stringResource(R.string.nav_rules)) },
-                    label = { Text(stringResource(R.string.nav_rules)) }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = onNavigateToHistory,
-                    icon = { Icon(Icons.Default.History, contentDescription = stringResource(R.string.nav_history)) },
-                    label = { Text(stringResource(R.string.nav_history)) }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = onNavigateToSettings,
-                    icon = { Icon(Icons.Default.Tune, contentDescription = stringResource(R.string.nav_settings)) },
-                    label = { Text(stringResource(R.string.nav_settings)) }
-                )
-            }
+            com.personal.cameraalarm.ui.navigation.AppBottomNavigationBar(
+                currentScreen = com.personal.cameraalarm.ui.AppScreen.DASHBOARD,
+                onNavigate = { screen ->
+                    when (screen) {
+                        com.personal.cameraalarm.ui.AppScreen.DASHBOARD -> {}
+                        com.personal.cameraalarm.ui.AppScreen.RULES -> onNavigateToRules()
+                        com.personal.cameraalarm.ui.AppScreen.HISTORY -> onNavigateToHistory()
+                        com.personal.cameraalarm.ui.AppScreen.SETTINGS -> onNavigateToSettings()
+                        else -> {}
+                    }
+                }
+            )
         }
     ) { padding ->
         Column(

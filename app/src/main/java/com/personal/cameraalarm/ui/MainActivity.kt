@@ -110,6 +110,7 @@ class MainActivity : ComponentActivity() {
                     AppScreen.RULES -> RuleListScreen(
                         viewModel = ruleViewModel,
                         onBack = { currentScreen = AppScreen.DASHBOARD },
+                        onNavigate = { currentScreen = it },
                         onAddRule = { currentScreen = AppScreen.RULE_EDITOR },
                         onEditRule = { currentScreen = AppScreen.RULE_EDITOR }
                     )
@@ -120,6 +121,7 @@ class MainActivity : ComponentActivity() {
                     AppScreen.SETTINGS -> SettingsScreen(
                         viewModel = settingsViewModel,
                         onBack = { currentScreen = AppScreen.DASHBOARD },
+                        onNavigate = { currentScreen = it },
                         onNavigateToSoundPicker = { currentScreen = AppScreen.SOUND_PICKER },
                         onNavigateToDiagnostics = { currentScreen = AppScreen.DIAGNOSTICS }
                     )
@@ -129,7 +131,8 @@ class MainActivity : ComponentActivity() {
                     )
                     AppScreen.HISTORY -> HistoryScreen(
                         viewModel = historyViewModel,
-                        onBack = { currentScreen = AppScreen.DASHBOARD }
+                        onBack = { currentScreen = AppScreen.DASHBOARD },
+                        onNavigate = { currentScreen = it }
                     )
                     AppScreen.DIAGNOSTICS -> DiagnosticsScreen(
                         viewModel = diagnosticsViewModel,

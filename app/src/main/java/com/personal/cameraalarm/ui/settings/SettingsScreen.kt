@@ -11,7 +11,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -31,12 +30,15 @@ import com.personal.cameraalarm.R
 import com.personal.cameraalarm.alarm.sound.AlarmSoundCatalog
 import com.personal.cameraalarm.schedule.ActiveTimeRange
 import com.personal.cameraalarm.schedule.ScheduleMode
+import com.personal.cameraalarm.ui.AppScreen
+import com.personal.cameraalarm.ui.navigation.AppBottomNavigationBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
-    onBack: () -> Unit,
+    onBack: (() -> Unit)? = null,
+    onNavigate: ((AppScreen) -> Unit)? = null,
     onNavigateToSoundPicker: () -> Unit,
     onNavigateToDiagnostics: () -> Unit
 ) {
@@ -45,6 +47,7 @@ fun SettingsScreen(
     var showAddRangeDialog by remember { mutableStateOf(false) }
     var editingRange by remember { mutableStateOf<ActiveTimeRange?>(null) }
     var showUnsavedDialog by remember { mutableStateOf(false) }
+    var pendingNavigation by remember { mutableStateOf<(() -> Unit)?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
 
     val selectedSound = AlarmSoundCatalog.resolve(state.draftSettings.alarmSoundKey)
@@ -54,7 +57,7 @@ fun SettingsScreen(
         if (state.isModified) {
             showUnsavedDialog = true
         } else {
-            onBack()
+            onBack?.invoke()
         }
     }
 
@@ -102,7 +105,9 @@ fun SettingsScreen(
                     onClick = {
                         viewModel.saveSettings {
                             showUnsavedDialog = false
-                            onBack()
+                            val nav = pendingNavigation
+                            pendingNavigation = null
+                            if (nav != null) nav.invoke() else onBack?.invoke()
                         }
                     }
                 ) {
@@ -111,14 +116,19 @@ fun SettingsScreen(
             },
             dismissButton = {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    TextButton(onClick = { showUnsavedDialog = false }) {
+                    TextButton(onClick = {
+                        showUnsavedDialog = false
+                        pendingNavigation = null
+                    }) {
                         Text(stringResource(R.string.btn_stay))
                     }
                     TextButton(
                         onClick = {
                             viewModel.discardChanges()
                             showUnsavedDialog = false
-                            onBack()
+                            val nav = pendingNavigation
+                            pendingNavigation = null
+                            if (nav != null) nav.invoke() else onBack?.invoke()
                         }
                     ) {
                         Text(stringResource(R.string.btn_discard), color = MaterialTheme.colorScheme.error)
@@ -175,13 +185,6 @@ fun SettingsScreen(
                         }
                     }
                 },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        if (state.isModified) showUnsavedDialog = true else onBack()
-                    }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.btn_cancel))
-                    }
-                },
                 actions = {
                     Button(
                         onClick = { viewModel.saveSettings() },
@@ -190,6 +193,19 @@ fun SettingsScreen(
                         modifier = Modifier.padding(end = 8.dp)
                     ) {
                         Text(stringResource(R.string.btn_save), fontWeight = FontWeight.Bold)
+                    }
+                }
+            )
+        },
+        bottomBar = {
+            AppBottomNavigationBar(
+                currentScreen = AppScreen.SETTINGS,
+                onNavigate = { target ->
+                    if (state.isModified) {
+                        pendingNavigation = { onNavigate?.invoke(target) }
+                        showUnsavedDialog = true
+                    } else {
+                        onNavigate?.invoke(target)
                     }
                 }
             )

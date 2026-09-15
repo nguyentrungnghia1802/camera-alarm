@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -18,12 +17,15 @@ import androidx.compose.ui.unit.dp
 import com.personal.cameraalarm.R
 import com.personal.cameraalarm.trigger.MatchMode
 import com.personal.cameraalarm.trigger.TriggerRule
+import com.personal.cameraalarm.ui.AppScreen
+import com.personal.cameraalarm.ui.navigation.AppBottomNavigationBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RuleListScreen(
     viewModel: RuleViewModel,
-    onBack: () -> Unit,
+    onBack: (() -> Unit)? = null,
+    onNavigate: ((AppScreen) -> Unit)? = null,
     onAddRule: () -> Unit,
     onEditRule: (TriggerRule) -> Unit
 ) {
@@ -57,11 +59,6 @@ fun RuleListScreen(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.title_rules), fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.btn_cancel))
-                    }
-                },
                 actions = {
                     IconButton(onClick = {
                         viewModel.initNewRule()
@@ -70,6 +67,12 @@ fun RuleListScreen(
                         Icon(Icons.Default.Add, contentDescription = stringResource(R.string.btn_add))
                     }
                 }
+            )
+        },
+        bottomBar = {
+            AppBottomNavigationBar(
+                currentScreen = AppScreen.RULES,
+                onNavigate = { onNavigate?.invoke(it) }
             )
         },
         floatingActionButton = {
