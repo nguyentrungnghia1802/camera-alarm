@@ -1,5 +1,6 @@
 package com.personal.cameraalarm.ui.settings
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,8 +29,18 @@ fun SoundPickerScreen(
     onBack: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
-    val selectedSound = AlarmSoundCatalog.resolve(state.settings.alarmSoundKey)
+    var selectedDraftKey by remember(state.settings.alarmSoundKey) {
+        mutableStateOf(state.draftSettings.alarmSoundKey)
+    }
+    var showUnsavedDialog by remember { mutableStateOf(false) }
+    val isModified = selectedDraftKey != state.settings.alarmSoundKey
+
+    val selectedSound = AlarmSoundCatalog.resolve(selectedDraftKey)
     val isCurrentSoundPreviewing = state.previewPlayingKey == selectedSound.key
+
+    BackHandler {
+        if (isModified) showUnsavedDialog = true else onBack()
+    }
 
     DisposableEffect(Unit) {
         onDispose {
@@ -37,13 +48,85 @@ fun SoundPickerScreen(
         }
     }
 
+    if (showUnsavedDialog) {
+        AlertDialog(
+            onDismissRequest = { showUnsavedDialog = false },
+            title = { Text(stringResource(R.string.dialog_unsaved_title)) },
+            text = { Text(stringResource(R.string.dialog_unsaved_message)) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.saveAlarmSound(selectedDraftKey) {
+                            showUnsavedDialog = false
+                            onBack()
+                        }
+                    }
+                ) {
+                    Text(stringResource(R.string.btn_save))
+                }
+            },
+            dismissButton = {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    TextButton(onClick = { showUnsavedDialog = false }) {
+                        Text(stringResource(R.string.btn_stay))
+                    }
+                    TextButton(
+                        onClick = {
+                            selectedDraftKey = state.settings.alarmSoundKey
+                            viewModel.selectAlarmSound(state.settings.alarmSoundKey)
+                            showUnsavedDialog = false
+                            onBack()
+                        }
+                    ) {
+                        Text(stringResource(R.string.btn_discard), color = MaterialTheme.colorScheme.error)
+                    }
+                }
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.title_sound_picker), fontWeight = FontWeight.Bold) },
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(stringResource(R.string.title_sound_picker), fontWeight = FontWeight.Bold)
+                        if (isModified) {
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Surface(
+                                color = MaterialTheme.colorScheme.errorContainer,
+                                shape = RoundedCornerShape(6.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.settings_unsaved_badge),
+                                    color = MaterialTheme.colorScheme.onErrorContainer,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
+                },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = {
+                        if (isModified) showUnsavedDialog = true else onBack()
+                    }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.btn_cancel))
+                    }
+                },
+                actions = {
+                    Button(
+                        onClick = {
+                            viewModel.saveAlarmSound(selectedDraftKey) {
+                                onBack()
+                            }
+                        },
+                        enabled = isModified,
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier.padding(end = 8.dp)
+                    ) {
+                        Text(stringResource(R.string.btn_save), fontWeight = FontWeight.Bold)
                     }
                 }
             )
@@ -132,13 +215,16 @@ fun SoundPickerScreen(
             }
 
             items(viewModel.availableSounds) { sound ->
-                val isSelected = state.settings.alarmSoundKey == sound.key
+                val isSelected = selectedDraftKey == sound.key
                 val isThisPreviewing = state.previewPlayingKey == sound.key
 
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { viewModel.selectAlarmSound(sound.key) },
+                        .clickable {
+                            selectedDraftKey = sound.key
+                            viewModel.selectAlarmSound(sound.key)
+                        },
                     colors = CardDefaults.cardColors(
                         containerColor = if (isSelected) MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
                         else MaterialTheme.colorScheme.surface
@@ -158,7 +244,10 @@ fun SoundPickerScreen(
                         ) {
                             RadioButton(
                                 selected = isSelected,
-                                onClick = { viewModel.selectAlarmSound(sound.key) }
+                                onClick = {
+                                    selectedDraftKey = sound.key
+                                    viewModel.selectAlarmSound(sound.key)
+                                }
                             )
                             Spacer(modifier = Modifier.width(12.dp))
                             Column {

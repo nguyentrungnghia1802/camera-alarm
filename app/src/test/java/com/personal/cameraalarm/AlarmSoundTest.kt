@@ -13,12 +13,14 @@ class AlarmSoundTest {
     @Test
     fun catalogContainsAllBundledSounds() {
         val sounds = AlarmSoundCatalog.allSounds
-        assertEquals(4, sounds.size)
+        assertEquals(6, sounds.size)
         val keys = sounds.map { it.key }.toSet()
         assertTrue(keys.contains("alarm_default"))
         assertTrue(keys.contains("alarm_siren"))
         assertTrue(keys.contains("alarm_warning"))
         assertTrue(keys.contains("alarm_loud"))
+        assertTrue(keys.contains("alarm_warning_aloud"))
+        assertTrue(keys.contains("alarm_warning_aloud_2"))
     }
 
     @Test

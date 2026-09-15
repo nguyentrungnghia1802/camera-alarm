@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -122,6 +123,54 @@ fun HistoryScreen(
                 ) {
                     items(state.events, key = { it.id }) { event ->
                         HistoryItemCard(event = event)
+                    }
+                }
+            }
+
+            // Pagination Controls
+            if (state.totalCount > 0) {
+                val startItem = ((state.currentPage - 1) * com.personal.cameraalarm.data.history.HistoryRepository.PAGE_SIZE) + 1
+                val endItem = minOf(state.currentPage * com.personal.cameraalarm.data.history.HistoryRepository.PAGE_SIZE, state.totalCount)
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        IconButton(
+                            onClick = { viewModel.previousPage() },
+                            enabled = state.currentPage > 1
+                        ) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.btn_prev_page))
+                        }
+
+                        Text(
+                            text = stringResource(
+                                R.string.history_page_format,
+                                state.currentPage,
+                                state.totalPages,
+                                startItem,
+                                endItem,
+                                state.totalCount
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.SemiBold
+                        )
+
+                        IconButton(
+                            onClick = { viewModel.nextPage() },
+                            enabled = state.currentPage < state.totalPages
+                        ) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = stringResource(R.string.btn_next_page))
+                        }
                     }
                 }
             }

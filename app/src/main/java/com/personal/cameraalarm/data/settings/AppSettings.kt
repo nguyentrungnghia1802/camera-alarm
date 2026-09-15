@@ -14,5 +14,6 @@ data class AppSettings(
     val fullScreenEnabled: Boolean = false,
     val alarmSoundKey: String = AlarmSoundCatalog.DEFAULT_KEY,
     val scheduleMode: ScheduleMode = ScheduleMode.ALWAYS_ACTIVE,
-    val scheduleRanges: List<ActiveTimeRange> = emptyList()
+    val scheduleRanges: List<ActiveTimeRange> = emptyList(),
+    val language: String = "vi"
 )

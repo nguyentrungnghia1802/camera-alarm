@@ -60,8 +60,24 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            CameraAlarmTheme {
-                var currentScreen by rememberSaveable { mutableStateOf(AppScreen.DASHBOARD) }
+            val settings by app.container.settingsRepository.settings.collectAsState(initial = com.personal.cameraalarm.data.settings.AppSettings())
+            val currentLang = settings.language
+            val locale = remember(currentLang) { java.util.Locale(currentLang) }
+            val configuration = remember(locale) {
+                val conf = android.content.res.Configuration(resources.configuration)
+                conf.setLocale(locale)
+                conf
+            }
+            val localizedContext = remember(locale) {
+                createConfigurationContext(configuration)
+            }
+
+            CompositionLocalProvider(
+                androidx.compose.ui.platform.LocalConfiguration provides configuration,
+                androidx.compose.ui.platform.LocalContext provides localizedContext
+            ) {
+                CameraAlarmTheme {
+                    var currentScreen by rememberSaveable { mutableStateOf(AppScreen.DASHBOARD) }
 
                 if (currentScreen != AppScreen.DASHBOARD) {
                     BackHandler {
@@ -124,6 +140,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
 
     override fun onResume() {
         super.onResume()

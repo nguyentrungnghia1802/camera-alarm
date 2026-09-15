@@ -1,7 +1,9 @@
 package com.personal.cameraalarm.ui.rule
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -23,14 +25,73 @@ fun RuleEditorScreen(
     onBack: () -> Unit
 ) {
     val state by viewModel.editorState.collectAsState()
+    var showUnsavedDialog by remember { mutableStateOf(false) }
+
+    val isModified = remember(state.name, state.keywordsRaw, state.matchMode, state.priority, state.enabled) {
+        state.name.isNotBlank() || state.keywordsRaw.isNotBlank()
+    }
+
+    BackHandler {
+        if (isModified) showUnsavedDialog = true else onBack()
+    }
+
+    if (showUnsavedDialog) {
+        AlertDialog(
+            onDismissRequest = { showUnsavedDialog = false },
+            title = { Text(stringResource(R.string.dialog_unsaved_title)) },
+            text = { Text(stringResource(R.string.dialog_unsaved_message)) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.saveRule {
+                            showUnsavedDialog = false
+                            onBack()
+                        }
+                    }
+                ) {
+                    Text(stringResource(R.string.btn_save))
+                }
+            },
+            dismissButton = {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    TextButton(onClick = { showUnsavedDialog = false }) {
+                        Text(stringResource(R.string.btn_stay))
+                    }
+                    TextButton(
+                        onClick = {
+                            showUnsavedDialog = false
+                            onBack()
+                        }
+                    ) {
+                        Text(stringResource(R.string.btn_discard), color = MaterialTheme.colorScheme.error)
+                    }
+                }
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (state.id != null) stringResource(R.string.dialog_edit_time_range) else stringResource(R.string.btn_add), fontWeight = FontWeight.Bold) },
+                title = {
+                    Text(
+                        if (state.id != null) stringResource(R.string.btn_edit) else stringResource(R.string.btn_add),
+                        fontWeight = FontWeight.Bold
+                    )
+                },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = {
+                        if (isModified) showUnsavedDialog = true else onBack()
+                    }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.btn_cancel))
+                    }
+                },
+                actions = {
+                    Button(
+                        onClick = { viewModel.saveRule(onBack) },
+                        modifier = Modifier.padding(end = 8.dp)
+                    ) {
+                        Text(stringResource(R.string.btn_save), fontWeight = FontWeight.Bold)
                     }
                 }
             )
@@ -49,7 +110,7 @@ fun RuleEditorScreen(
                 value = state.name,
                 onValueChange = viewModel::updateName,
                 label = { Text(stringResource(R.string.rule_name)) },
-                placeholder = { Text("Ví dụ: Phát hiện người") },
+                placeholder = { Text(stringResource(R.string.rule_name_placeholder)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -62,30 +123,38 @@ fun RuleEditorScreen(
                 readOnly = true,
                 supportingText = {
                     Text(
-                        if (state.sourcePackage.isBlank()) "Chưa chọn ứng dụng camera. Vào Bảo vệ -> Ứng dụng camera để chọn."
-                        else "Kế thừa từ ứng dụng camera đang được chọn."
+                        if (state.sourcePackage.isBlank()) stringResource(R.string.rule_source_app_empty_hint)
+                        else stringResource(R.string.rule_source_app_hint)
                     )
                 },
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // Match Mode
-            Text(stringResource(R.string.rule_match_mode), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                FilterChip(
-                    selected = state.matchMode == MatchMode.CONTAINS_ANY,
-                    onClick = { viewModel.updateMatchMode(MatchMode.CONTAINS_ANY) },
-                    label = { Text(stringResource(R.string.rule_match_any)) },
-                    modifier = Modifier.weight(1f)
-                )
-                FilterChip(
-                    selected = state.matchMode == MatchMode.CONTAINS_ALL,
-                    onClick = { viewModel.updateMatchMode(MatchMode.CONTAINS_ALL) },
-                    label = { Text(stringResource(R.string.rule_match_all)) },
-                    modifier = Modifier.weight(1f)
+            // Match Mode Selection
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(stringResource(R.string.rule_match_mode), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    FilterChip(
+                        selected = state.matchMode == MatchMode.CONTAINS_ANY,
+                        onClick = { viewModel.updateMatchMode(MatchMode.CONTAINS_ANY) },
+                        label = { Text(stringResource(R.string.rule_match_any)) },
+                        modifier = Modifier.weight(1f)
+                    )
+                    FilterChip(
+                        selected = state.matchMode == MatchMode.CONTAINS_ALL,
+                        onClick = { viewModel.updateMatchMode(MatchMode.CONTAINS_ALL) },
+                        label = { Text(stringResource(R.string.rule_match_all)) },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                Text(
+                    text = if (state.matchMode == MatchMode.CONTAINS_ANY) stringResource(R.string.rule_match_any_desc)
+                    else stringResource(R.string.rule_match_all_desc),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -95,18 +164,50 @@ fun RuleEditorScreen(
                 onValueChange = viewModel::updateKeywordsRaw,
                 label = { Text(stringResource(R.string.rule_keywords)) },
                 placeholder = { Text(stringResource(R.string.rule_keywords_hint)) },
-                minLines = 4,
-                maxLines = 8,
+                minLines = 3,
+                maxLines = 6,
                 supportingText = {
-                    Text("Nhập từ 1 đến 30 từ khóa (mỗi dòng một từ hoặc cách nhau bằng dấu phẩy).")
+                    Text(stringResource(R.string.rule_keywords_helper))
                 },
                 modifier = Modifier.fillMaxWidth()
             )
 
+            // Guidance & Real-world Example Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f)),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(14.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.rule_example_title),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = stringResource(R.string.rule_example_camera_msg),
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        text = stringResource(R.string.rule_example_keywords),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
             // Real-time Normalized Keywords Preview
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -115,13 +216,13 @@ fun RuleEditorScreen(
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Text(
-                        text = "Từ khóa nhận diện (${state.normalizedKeywords.size}):",
+                        text = stringResource(R.string.rule_normalized_keywords_title, state.normalizedKeywords.size),
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold
                     )
                     if (state.normalizedKeywords.isEmpty()) {
                         Text(
-                            text = "Chưa có từ khóa hợp lệ nào.",
+                            text = stringResource(R.string.rule_no_normalized_keywords),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -132,6 +233,23 @@ fun RuleEditorScreen(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     }
+                }
+            }
+
+            // Short keyword warning if any
+            val shortKeyword = state.normalizedKeywords.firstOrNull { it.length < 2 }
+            if (shortKeyword != null) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.rule_warn_short_keyword, shortKeyword),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onErrorContainer,
+                        modifier = Modifier.padding(10.dp)
+                    )
                 }
             }
 
@@ -163,9 +281,9 @@ fun RuleEditorScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(stringResource(R.string.rule_enabled), fontWeight = FontWeight.Bold)
-                    Text("Quy tắc bật sẽ phát chuông khi thông báo khớp", style = MaterialTheme.typography.bodySmall)
+                    Text(stringResource(R.string.rule_enabled_desc), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Switch(
                     checked = state.enabled,
@@ -188,7 +306,8 @@ fun RuleEditorScreen(
                 onClick = { viewModel.saveRule(onBack) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp)
+                    .height(52.dp),
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Text(stringResource(R.string.btn_save), fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }

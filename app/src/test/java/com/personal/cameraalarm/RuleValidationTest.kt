@@ -85,4 +85,32 @@ class RuleValidationTest {
         assertTrue(state.normalizedKeywords.contains("person"))
         assertTrue(state.normalizedKeywords.contains("phát hiện người"))
     }
+
+    @Test
+    fun commaSeparatedKeywordsAreNormalized() {
+        val state = RuleEditorState(
+            name = "Comma Rule",
+            sourcePackage = "com.camera.app",
+            keywordsRaw = "motion, person, intrusion\nbreak-in"
+        )
+        val error = RuleViewModel.validateRule(state)
+        assertNull(error)
+        assertEquals(4, state.normalizedKeywords.size)
+        assertTrue(state.normalizedKeywords.contains("motion"))
+        assertTrue(state.normalizedKeywords.contains("person"))
+        assertTrue(state.normalizedKeywords.contains("intrusion"))
+        assertTrue(state.normalizedKeywords.contains("break-in"))
+    }
+
+    @Test
+    fun shortKeywordIsRejected() {
+        val state = RuleEditorState(
+            name = "Short Keyword Rule",
+            sourcePackage = "com.camera.app",
+            keywordsRaw = "a, motion"
+        )
+        val error = RuleViewModel.validateRule(state)
+        assertNotNull(error)
+        assertTrue(error!!.contains("too short", ignoreCase = true))
+    }
 }

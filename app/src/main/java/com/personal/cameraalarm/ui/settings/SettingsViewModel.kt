@@ -17,6 +17,9 @@ import kotlinx.coroutines.launch
 
 data class SettingsUiState(
     val settings: AppSettings = AppSettings(),
+    val draftSettings: AppSettings = AppSettings(),
+    val isModified: Boolean = false,
+    val saveSuccess: Boolean = false,
     val volumeStatus: AlarmVolumeStatus = AlarmVolumeStatus(7, 0, 7),
     val isTestingAlarm: Boolean = false,
     val previewPlayingKey: String? = null,
@@ -26,18 +29,34 @@ data class SettingsUiState(
 
 class SettingsViewModel(private val container: AppContainer) : ViewModel() {
     private val userMessage = MutableStateFlow<String?>(null)
+    private val saveSuccess = MutableStateFlow(false)
+    private val draftState = MutableStateFlow<AppSettings?>(null)
     val availableSounds: List<AlarmSound> = AlarmSoundCatalog.allSounds
 
     val uiState: StateFlow<SettingsUiState> = combine(
         container.settingsRepository.settings,
+        draftState,
+        saveSuccess,
         container.historyRepository.events,
         container.testAlarmToken,
         container.soundPreviewController.playingSoundKey,
         userMessage
-    ) { settings, events, testToken, previewKey, message ->
+    ) { args ->
+        val persisted = args[0] as AppSettings
+        val draft = (args[1] as? AppSettings) ?: persisted
+        val saved = args[2] as Boolean
+        val events = args[3] as List<*>
+        val testToken = args[4]
+        val previewKey = args[5] as? String
+        val message = args[6] as? String
         val volume = container.readiness.volumeStatus()
+        val isModified = (draft != persisted)
+
         SettingsUiState(
-            settings = settings,
+            settings = persisted,
+            draftSettings = draft,
+            isModified = isModified,
+            saveSuccess = saved,
             volumeStatus = volume,
             isTestingAlarm = testToken != null,
             previewPlayingKey = previewKey,
@@ -46,68 +65,110 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SettingsUiState())
 
+    init {
+        viewModelScope.launch {
+            container.settingsRepository.settings.collect { persisted ->
+                if (draftState.value == null) {
+                    draftState.value = persisted
+                }
+            }
+        }
+    }
+
+    private fun updateDraft(transform: (AppSettings) -> AppSettings) {
+        val current = draftState.value ?: AppSettings()
+        draftState.value = transform(current)
+        saveSuccess.value = false
+    }
+
     fun setDelay(delayMs: Long) {
-        viewModelScope.launch { container.settingsRepository.setAlarmDelayMs(delayMs) }
+        updateDraft { it.copy(alarmDelayMs = delayMs) }
     }
 
     fun setCooldown(cooldownMs: Long) {
-        viewModelScope.launch { container.settingsRepository.setCooldownMs(cooldownMs) }
+        updateDraft { it.copy(cooldownMs = cooldownMs) }
     }
 
     fun setVibration(enabled: Boolean) {
-        viewModelScope.launch { container.settingsRepository.setVibrationEnabled(enabled) }
+        updateDraft { it.copy(vibrationEnabled = enabled) }
     }
 
     fun setFullScreen(enabled: Boolean) {
-        viewModelScope.launch { container.settingsRepository.setFullScreenEnabled(enabled) }
+        updateDraft { it.copy(fullScreenEnabled = enabled) }
     }
 
     fun selectAlarmSound(soundKey: String) {
-        viewModelScope.launch { container.settingsRepository.setAlarmSound(soundKey) }
+        updateDraft { it.copy(alarmSoundKey = soundKey) }
     }
 
     fun setScheduleMode(mode: com.personal.cameraalarm.schedule.ScheduleMode) {
-        viewModelScope.launch { container.settingsRepository.setScheduleMode(mode) }
+        updateDraft { it.copy(scheduleMode = mode) }
+    }
+
+    fun setLanguage(language: String) {
+        updateDraft { it.copy(language = language) }
     }
 
     fun addScheduleRange(startMinutes: Int, endMinutes: Int) {
-        viewModelScope.launch {
-            val current = container.settingsRepository.current().scheduleRanges
+        updateDraft { current ->
             val newRange = com.personal.cameraalarm.schedule.ActiveTimeRange(
                 startMinutes = startMinutes,
                 endMinutes = endMinutes,
                 enabled = true
             )
-            container.settingsRepository.setScheduleRanges(current + newRange)
+            current.copy(scheduleRanges = current.scheduleRanges + newRange)
         }
     }
 
     fun updateScheduleRange(id: String, startMinutes: Int, endMinutes: Int, enabled: Boolean) {
-        viewModelScope.launch {
-            val current = container.settingsRepository.current().scheduleRanges
-            val updated = current.map {
+        updateDraft { current ->
+            val updated = current.scheduleRanges.map {
                 if (it.id == id) it.copy(startMinutes = startMinutes, endMinutes = endMinutes, enabled = enabled)
                 else it
             }
-            container.settingsRepository.setScheduleRanges(updated)
+            current.copy(scheduleRanges = updated)
         }
     }
 
     fun toggleScheduleRange(id: String, enabled: Boolean) {
-        viewModelScope.launch {
-            val current = container.settingsRepository.current().scheduleRanges
-            val updated = current.map {
+        updateDraft { current ->
+            val updated = current.scheduleRanges.map {
                 if (it.id == id) it.copy(enabled = enabled) else it
             }
-            container.settingsRepository.setScheduleRanges(updated)
+            current.copy(scheduleRanges = updated)
         }
     }
 
     fun deleteScheduleRange(id: String) {
+        updateDraft { current ->
+            val updated = current.scheduleRanges.filterNot { it.id == id }
+            current.copy(scheduleRanges = updated)
+        }
+    }
+
+    fun saveSettings(onSuccess: (() -> Unit)? = null) {
+        val draft = draftState.value ?: return
         viewModelScope.launch {
-            val current = container.settingsRepository.current().scheduleRanges
-            val updated = current.filterNot { it.id == id }
-            container.settingsRepository.setScheduleRanges(updated)
+            container.settingsRepository.updateAll(draft)
+            saveSuccess.value = true
+            onSuccess?.invoke()
+        }
+    }
+
+    fun saveAlarmSound(soundKey: String, onSuccess: (() -> Unit)? = null) {
+        viewModelScope.launch {
+            container.settingsRepository.setAlarmSound(soundKey)
+            updateDraft { it.copy(alarmSoundKey = soundKey) }
+            saveSuccess.value = true
+            onSuccess?.invoke()
+        }
+    }
+
+    fun discardChanges() {
+        viewModelScope.launch {
+            val persisted = container.settingsRepository.current()
+            draftState.value = persisted
+            saveSuccess.value = false
         }
     }
 

@@ -35,7 +35,8 @@ class SettingsRepository(context: Context) {
                 scheduleMode = preferences[SCHEDULE_MODE]?.let {
                     runCatching { ScheduleMode.valueOf(it) }.getOrNull()
                 } ?: ScheduleMode.ALWAYS_ACTIVE,
-                scheduleRanges = ScheduleSerializer.deserialize(preferences[SCHEDULE_RANGES])
+                scheduleRanges = ScheduleSerializer.deserialize(preferences[SCHEDULE_RANGES]),
+                language = preferences[LANGUAGE] ?: "vi"
             )
         }
 
@@ -80,6 +81,26 @@ class SettingsRepository(context: Context) {
         dataStore.edit { it[SCHEDULE_RANGES] = ScheduleSerializer.serialize(ranges) }
     }
 
+    suspend fun setLanguage(language: String) {
+        dataStore.edit { it[LANGUAGE] = language }
+    }
+
+    suspend fun updateAll(newSettings: AppSettings) {
+        dataStore.edit { prefs ->
+            prefs[MONITORING_ENABLED] = newSettings.monitoringEnabled
+            if (newSettings.sourcePackage != null) prefs[SOURCE_PACKAGE] = newSettings.sourcePackage else prefs.remove(SOURCE_PACKAGE)
+            if (newSettings.sourceLabel != null) prefs[SOURCE_LABEL] = newSettings.sourceLabel else prefs.remove(SOURCE_LABEL)
+            prefs[ALARM_DELAY_MS] = newSettings.alarmDelayMs
+            prefs[COOLDOWN_MS] = newSettings.cooldownMs
+            prefs[VIBRATION_ENABLED] = newSettings.vibrationEnabled
+            prefs[FULL_SCREEN_ENABLED] = newSettings.fullScreenEnabled
+            prefs[ALARM_SOUND_KEY] = newSettings.alarmSoundKey
+            prefs[SCHEDULE_MODE] = newSettings.scheduleMode.name
+            prefs[SCHEDULE_RANGES] = ScheduleSerializer.serialize(newSettings.scheduleRanges)
+            prefs[LANGUAGE] = newSettings.language
+        }
+    }
+
     companion object {
         private val MONITORING_ENABLED = booleanPreferencesKey("monitoring_enabled")
         private val SOURCE_PACKAGE = stringPreferencesKey("source_package")
@@ -91,5 +112,6 @@ class SettingsRepository(context: Context) {
         private val ALARM_SOUND_KEY = stringPreferencesKey("alarm_sound_key")
         private val SCHEDULE_MODE = stringPreferencesKey("schedule_mode")
         private val SCHEDULE_RANGES = stringPreferencesKey("schedule_ranges")
+        private val LANGUAGE = stringPreferencesKey("language")
     }
 }

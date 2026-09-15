@@ -23,7 +23,7 @@ data class RuleEditorState(
 ) {
     val normalizedKeywords: List<String>
         get() {
-            return keywordsRaw.split('\n')
+            return keywordsRaw.split(Regex("[\n,]"))
                 .map { it.trim() }
                 .filter { it.isNotEmpty() }
                 .map { NotificationNormalizer.normalize(it) }
@@ -151,11 +151,16 @@ class RuleViewModel(private val container: AppContainer) : ViewModel() {
         fun validateRule(state: RuleEditorState): String? {
             if (state.name.isBlank()) return "Rule name cannot be blank."
             if (state.sourcePackage.isBlank()) return "Source package cannot be blank. Select a source app first."
-            val rawLines = state.keywordsRaw.split('\n').map { it.trim() }.filter { it.isNotEmpty() }
+            val rawLines = state.keywordsRaw.split(Regex("[\n,]")).map { it.trim() }.filter { it.isNotEmpty() }
+            if (rawLines.isEmpty()) return "At least one valid keyword is required."
             if (rawLines.any { it.length > 100 }) return "Each keyword must be 100 characters or fewer."
             val normalized = state.normalizedKeywords
             if (normalized.isEmpty()) return "At least one valid keyword is required."
             if (normalized.size > 30) return "A maximum of 30 keywords is allowed."
+            val shortKw = normalized.firstOrNull { it.length < 2 }
+            if (shortKw != null) {
+                return "Keyword \"$shortKw\" is too short (under 2 characters) and may cause false alarms."
+            }
             return null
         }
 

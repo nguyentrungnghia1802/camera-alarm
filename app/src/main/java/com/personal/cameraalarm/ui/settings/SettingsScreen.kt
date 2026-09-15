@@ -1,5 +1,7 @@
 package com.personal.cameraalarm.ui.settings
 
+import android.app.TimePickerDialog
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -13,6 +15,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -34,14 +37,29 @@ fun SettingsScreen(
     var showClearHistoryDialog by remember { mutableStateOf(false) }
     var showAddRangeDialog by remember { mutableStateOf(false) }
     var editingRange by remember { mutableStateOf<ActiveTimeRange?>(null) }
+    var showUnsavedDialog by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val selectedSound = AlarmSoundCatalog.resolve(state.settings.alarmSoundKey)
+    val selectedSound = AlarmSoundCatalog.resolve(state.draftSettings.alarmSoundKey)
+    val savedSuccessText = stringResource(R.string.settings_saved_success)
+
+    BackHandler {
+        if (state.isModified) {
+            showUnsavedDialog = true
+        } else {
+            onBack()
+        }
+    }
 
     LaunchedEffect(state.message) {
         state.message?.let {
             snackbarHostState.showSnackbar(it)
-            viewModel.clearMessage()
+        }
+    }
+
+    LaunchedEffect(state.saveSuccess) {
+        if (state.saveSuccess) {
+            snackbarHostState.showSnackbar(savedSuccessText)
         }
     }
 
@@ -63,6 +81,42 @@ fun SettingsScreen(
             onSave = { start, end ->
                 viewModel.updateScheduleRange(range.id, start, end, range.enabled)
                 editingRange = null
+            }
+        )
+    }
+
+    if (showUnsavedDialog) {
+        AlertDialog(
+            onDismissRequest = { showUnsavedDialog = false },
+            title = { Text(stringResource(R.string.dialog_unsaved_title)) },
+            text = { Text(stringResource(R.string.dialog_unsaved_message)) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.saveSettings {
+                            showUnsavedDialog = false
+                            onBack()
+                        }
+                    }
+                ) {
+                    Text(stringResource(R.string.btn_save))
+                }
+            },
+            dismissButton = {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    TextButton(onClick = { showUnsavedDialog = false }) {
+                        Text(stringResource(R.string.btn_stay))
+                    }
+                    TextButton(
+                        onClick = {
+                            viewModel.discardChanges()
+                            showUnsavedDialog = false
+                            onBack()
+                        }
+                    ) {
+                        Text(stringResource(R.string.btn_discard), color = MaterialTheme.colorScheme.error)
+                    }
+                }
             }
         )
     }
@@ -94,10 +148,41 @@ fun SettingsScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.title_settings), fontWeight = FontWeight.Bold) },
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(stringResource(R.string.title_settings), fontWeight = FontWeight.Bold)
+                        if (state.isModified) {
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Surface(
+                                color = MaterialTheme.colorScheme.errorContainer,
+                                shape = RoundedCornerShape(6.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.settings_unsaved_badge),
+                                    color = MaterialTheme.colorScheme.onErrorContainer,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
+                },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = {
+                        if (state.isModified) showUnsavedDialog = true else onBack()
+                    }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.btn_cancel))
+                    }
+                },
+                actions = {
+                    Button(
+                        onClick = { viewModel.saveSettings() },
+                        enabled = state.isModified,
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier.padding(end = 8.dp)
+                    ) {
+                        Text(stringResource(R.string.btn_save), fontWeight = FontWeight.Bold)
                     }
                 }
             )
@@ -183,23 +268,23 @@ fun SettingsScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         FilterChip(
-                            selected = state.settings.scheduleMode == ScheduleMode.ALWAYS_ACTIVE,
+                            selected = state.draftSettings.scheduleMode == ScheduleMode.ALWAYS_ACTIVE,
                             onClick = { viewModel.setScheduleMode(ScheduleMode.ALWAYS_ACTIVE) },
                             label = { Text(stringResource(R.string.schedule_mode_always)) },
                             modifier = Modifier.weight(1f)
                         )
                         FilterChip(
-                            selected = state.settings.scheduleMode == ScheduleMode.CUSTOM,
+                            selected = state.draftSettings.scheduleMode == ScheduleMode.CUSTOM,
                             onClick = { viewModel.setScheduleMode(ScheduleMode.CUSTOM) },
                             label = { Text(stringResource(R.string.schedule_mode_custom)) },
                             modifier = Modifier.weight(1f)
                         )
                     }
 
-                    if (state.settings.scheduleMode == ScheduleMode.CUSTOM) {
+                    if (state.draftSettings.scheduleMode == ScheduleMode.CUSTOM) {
                         HorizontalDivider()
 
-                        val ranges = state.settings.scheduleRanges
+                        val ranges = state.draftSettings.scheduleRanges
                         val enabledCount = ranges.count { it.enabled }
 
                         if (ranges.isEmpty() || enabledCount == 0) {
@@ -309,7 +394,7 @@ fun SettingsScreen(
                     ) {
                         listOf(0L to "0s", 1000L to "1s", 3000L to "3s", 5000L to "5s").forEach { (ms, label) ->
                             FilterChip(
-                                selected = state.settings.alarmDelayMs == ms,
+                                selected = state.draftSettings.alarmDelayMs == ms,
                                 onClick = { viewModel.setDelay(ms) },
                                 label = { Text(label) },
                                 modifier = Modifier.weight(1f)
@@ -343,7 +428,7 @@ fun SettingsScreen(
                     ) {
                         listOf(0L to "0s", 10000L to "10s", 30000L to "30s", 60000L to "60s").forEach { (ms, label) ->
                             FilterChip(
-                                selected = state.settings.cooldownMs == ms,
+                                selected = state.draftSettings.cooldownMs == ms,
                                 onClick = { viewModel.setCooldown(ms) },
                                 label = { Text(label) },
                                 modifier = Modifier.weight(1f)
@@ -377,7 +462,7 @@ fun SettingsScreen(
                             Text(stringResource(R.string.desc_vibration), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         Switch(
-                            checked = state.settings.vibrationEnabled,
+                            checked = state.draftSettings.vibrationEnabled,
                             onCheckedChange = { viewModel.setVibration(it) }
                         )
                     }
@@ -394,8 +479,47 @@ fun SettingsScreen(
                             Text(stringResource(R.string.desc_fullscreen), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         Switch(
-                            checked = state.settings.fullScreenEnabled,
+                            checked = state.draftSettings.fullScreenEnabled,
                             onCheckedChange = { viewModel.setFullScreen(it) }
+                        )
+                    }
+                }
+            }
+
+            // Language Selection Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(stringResource(R.string.section_language), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text(
+                        stringResource(R.string.desc_language),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        FilterChip(
+                            selected = state.draftSettings.language == "vi",
+                            onClick = { viewModel.setLanguage("vi") },
+                            label = { Text(stringResource(R.string.lang_vietnamese)) },
+                            modifier = Modifier.weight(1f)
+                        )
+                        FilterChip(
+                            selected = state.draftSettings.language == "en",
+                            onClick = { viewModel.setLanguage("en") },
+                            label = { Text(stringResource(R.string.lang_english)) },
+                            modifier = Modifier.weight(1f)
                         )
                     }
                 }
@@ -445,10 +569,16 @@ private fun TimeRangeEditDialog(
     onDismiss: () -> Unit,
     onSave: (startMinutes: Int, endMinutes: Int) -> Unit
 ) {
+    val context = LocalContext.current
     var startHour by remember { mutableIntStateOf(initialRange?.let { it.startMinutes / 60 } ?: 23) }
     var startMinute by remember { mutableIntStateOf(initialRange?.let { it.startMinutes % 60 } ?: 0) }
     var endHour by remember { mutableIntStateOf(initialRange?.let { it.endMinutes / 60 } ?: 7) }
     var endMinute by remember { mutableIntStateOf(initialRange?.let { it.endMinutes % 60 } ?: 0) }
+
+    var startHourStr by remember { mutableStateOf("%02d".format(startHour)) }
+    var startMinuteStr by remember { mutableStateOf("%02d".format(startMinute)) }
+    var endHourStr by remember { mutableStateOf("%02d".format(endHour)) }
+    var endMinuteStr by remember { mutableStateOf("%02d".format(endMinute)) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -466,7 +596,7 @@ private fun TimeRangeEditDialog(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
-                // Start Time
+                // Start Time Section
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(stringResource(R.string.time_start), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
                     Row(
@@ -475,26 +605,50 @@ private fun TimeRangeEditDialog(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         OutlinedTextField(
-                            value = "%02d".format(startHour),
+                            value = startHourStr,
                             onValueChange = { str ->
-                                str.toIntOrNull()?.let { if (it in 0..23) startHour = it }
+                                val clean = str.filter { it.isDigit() }.take(2)
+                                startHourStr = clean
+                                clean.toIntOrNull()?.let { if (it in 0..23) startHour = it }
                             },
                             label = { Text(stringResource(R.string.time_hour)) },
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            singleLine = true
                         )
-                        Text(":", fontWeight = FontWeight.Bold)
+                        Text(":", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                         OutlinedTextField(
-                            value = "%02d".format(startMinute),
+                            value = startMinuteStr,
                             onValueChange = { str ->
-                                str.toIntOrNull()?.let { if (it in 0..59) startMinute = it }
+                                val clean = str.filter { it.isDigit() }.take(2)
+                                startMinuteStr = clean
+                                clean.toIntOrNull()?.let { if (it in 0..59) startMinute = it }
                             },
                             label = { Text(stringResource(R.string.time_minute)) },
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            singleLine = true
                         )
+                        IconButton(
+                            onClick = {
+                                TimePickerDialog(
+                                    context,
+                                    { _, h, m ->
+                                        startHour = h
+                                        startMinute = m
+                                        startHourStr = "%02d".format(h)
+                                        startMinuteStr = "%02d".format(m)
+                                    },
+                                    startHour,
+                                    startMinute,
+                                    true
+                                ).show()
+                            }
+                        ) {
+                            Icon(Icons.Default.AccessTime, contentDescription = stringResource(R.string.time_select_time))
+                        }
                     }
                 }
 
-                // End Time
+                // End Time Section
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(stringResource(R.string.time_end), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
                     Row(
@@ -503,32 +657,59 @@ private fun TimeRangeEditDialog(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         OutlinedTextField(
-                            value = "%02d".format(endHour),
+                            value = endHourStr,
                             onValueChange = { str ->
-                                str.toIntOrNull()?.let { if (it in 0..23) endHour = it }
+                                val clean = str.filter { it.isDigit() }.take(2)
+                                endHourStr = clean
+                                clean.toIntOrNull()?.let { if (it in 0..23) endHour = it }
                             },
                             label = { Text(stringResource(R.string.time_hour)) },
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            singleLine = true
                         )
-                        Text(":", fontWeight = FontWeight.Bold)
+                        Text(":", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                         OutlinedTextField(
-                            value = "%02d".format(endMinute),
+                            value = endMinuteStr,
                             onValueChange = { str ->
-                                str.toIntOrNull()?.let { if (it in 0..59) endMinute = it }
+                                val clean = str.filter { it.isDigit() }.take(2)
+                                endMinuteStr = clean
+                                clean.toIntOrNull()?.let { if (it in 0..59) endMinute = it }
                             },
                             label = { Text(stringResource(R.string.time_minute)) },
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            singleLine = true
                         )
+                        IconButton(
+                            onClick = {
+                                TimePickerDialog(
+                                    context,
+                                    { _, h, m ->
+                                        endHour = h
+                                        endMinute = m
+                                        endHourStr = "%02d".format(h)
+                                        endMinuteStr = "%02d".format(m)
+                                    },
+                                    endHour,
+                                    endMinute,
+                                    true
+                                ).show()
+                            }
+                        ) {
+                            Icon(Icons.Default.AccessTime, contentDescription = stringResource(R.string.time_select_time))
+                        }
                     }
                 }
 
-                if (startHour * 60 + startMinute > endHour * 60 + endMinute) {
+                val currentStartMinutes = startHour * 60 + startMinute
+                val currentEndMinutes = endHour * 60 + endMinute
+
+                if (currentStartMinutes > currentEndMinutes) {
                     Text(
                         text = stringResource(R.string.time_overnight_info, startHour, startMinute, endHour, endMinute),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary
                     )
-                } else if (startHour * 60 + startMinute == endHour * 60 + endMinute) {
+                } else if (currentStartMinutes == currentEndMinutes) {
                     Text(
                         text = stringResource(R.string.time_24h_info),
                         style = MaterialTheme.typography.labelSmall,
@@ -539,8 +720,10 @@ private fun TimeRangeEditDialog(
         },
         confirmButton = {
             Button(onClick = {
-                val startM = startHour * 60 + startMinute
-                val endM = endHour * 60 + endMinute
+                val startM = (startHourStr.toIntOrNull()?.coerceIn(0, 23) ?: startHour) * 60 +
+                        (startMinuteStr.toIntOrNull()?.coerceIn(0, 59) ?: startMinute)
+                val endM = (endHourStr.toIntOrNull()?.coerceIn(0, 23) ?: endHour) * 60 +
+                        (endMinuteStr.toIntOrNull()?.coerceIn(0, 59) ?: endMinute)
                 onSave(startM, endM)
             }) {
                 Text(stringResource(R.string.btn_save))

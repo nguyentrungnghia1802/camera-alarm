@@ -38,6 +38,18 @@ object AlarmSoundCatalog {
             displayName = "Loud Alarm",
             rawResourceId = R.raw.alarm_loud,
             displayNameResId = R.string.sound_loud
+        ),
+        AlarmSound(
+            key = "alarm_warning_aloud",
+            displayName = "Loud Warning 1",
+            rawResourceId = R.raw.alarm_warning_aloud,
+            displayNameResId = R.string.sound_warning_aloud
+        ),
+        AlarmSound(
+            key = "alarm_warning_aloud_2",
+            displayName = "Loud Warning 2",
+            rawResourceId = R.raw.alarm_warning_aloud_2,
+            displayNameResId = R.string.sound_warning_aloud_2
         )
     )
 
