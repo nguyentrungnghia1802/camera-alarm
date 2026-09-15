@@ -184,10 +184,34 @@ class CameraAlarmService : Service() {
                 ).build()
             )
 
+        val contentIntent = Intent(this, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            data = android.net.Uri.parse("cameraalarm://alarm_view/${token.value}")
+            putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
+            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_SOURCE, trigger?.sourcePackage)
+            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TITLE, trigger?.title)
+            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_PREVIEW, trigger?.textPreview)
+            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, trigger?.receivedAtEpochMs ?: System.currentTimeMillis())
+        }
+        val contentOptions = android.app.ActivityOptions.makeBasic()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            contentOptions.setPendingIntentBackgroundActivityStartMode(
+                android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+            )
+        }
+        val contentPending = PendingIntent.getActivity(
+            this,
+            (token.value + "_view").hashCode(),
+            contentIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            contentOptions.toBundle()
+        )
+
+        builder.setContentIntent(contentPending)
+
         val pendingFullScreen = createFullScreenPendingIntent(token, trigger)
         if (pendingFullScreen != null) {
             builder.setFullScreenIntent(pendingFullScreen, true)
-            builder.setContentIntent(pendingFullScreen)
         }
 
         val notification = builder.build()
@@ -207,7 +231,7 @@ class CameraAlarmService : Service() {
 
         val fullScreenIntent = Intent(this, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            data = android.net.Uri.parse("cameraalarm://alarm/${token.value}")
+            data = android.net.Uri.parse("cameraalarm://alarm_full/${token.value}")
             putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
             putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_SOURCE, trigger?.sourcePackage)
             putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TITLE, trigger?.title)
@@ -224,7 +248,7 @@ class CameraAlarmService : Service() {
 
         return PendingIntent.getActivity(
             this,
-            token.value.hashCode(),
+            (token.value + "_full").hashCode(),
             fullScreenIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             options.toBundle()
@@ -251,7 +275,7 @@ class CameraAlarmService : Service() {
             try {
                 val directIntent = Intent(this, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    data = android.net.Uri.parse("cameraalarm://alarm/${token.value}")
+                    data = android.net.Uri.parse("cameraalarm://alarm_full/${token.value}")
                     putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
                     putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_SOURCE, trigger?.sourcePackage)
                     putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TITLE, trigger?.title)

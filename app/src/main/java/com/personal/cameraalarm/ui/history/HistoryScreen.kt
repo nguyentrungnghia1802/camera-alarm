@@ -197,6 +197,7 @@ private fun HistoryItemCard(event: AlertEventEntity) {
 
     val (badgeText, badgeColor) = when (event.decision) {
         "SCHEDULED", "ALARM_FIRED" -> Pair(stringResource(R.string.history_badge_alarm), Color(0xFF2E7D32))
+        "ALARM_STOPPED", "STOPPED" -> Pair(stringResource(R.string.history_badge_stopped), Color(0xFF546E7A))
         "SUPPRESSED_PENDING", "SUPPRESSED_RINGING", "SUPPRESSED_COOLDOWN", "SUPPRESSED_OUTSIDE_ACTIVE_HOURS" -> Pair(stringResource(R.string.history_badge_suppressed), Color(0xFFEF6C00))
         "IGNORED_NO_RULE_MATCH", "IGNORED_WRONG_PACKAGE", "IGNORED_DUPLICATE", "IGNORED_MONITORING_OFF" -> Pair(stringResource(R.string.history_badge_ignored), Color(0xFF757575))
         else -> Pair(stringResource(R.string.history_badge_error), Color(0xFFC62828))
@@ -204,6 +205,7 @@ private fun HistoryItemCard(event: AlertEventEntity) {
 
     val reasonText = when (event.decision) {
         "SCHEDULED", "ALARM_FIRED" -> stringResource(R.string.decision_scheduled)
+        "ALARM_STOPPED", "STOPPED" -> stringResource(R.string.decision_alarm_stopped)
         "SUPPRESSED_PENDING" -> stringResource(R.string.decision_suppressed_pending)
         "SUPPRESSED_RINGING" -> stringResource(R.string.decision_suppressed_ringing)
         "SUPPRESSED_COOLDOWN" -> stringResource(R.string.decision_suppressed_cooldown_reason)
@@ -213,6 +215,18 @@ private fun HistoryItemCard(event: AlertEventEntity) {
         "IGNORED_DUPLICATE" -> stringResource(R.string.decision_ignored_duplicate)
         "IGNORED_MONITORING_OFF" -> stringResource(R.string.decision_ignored_monitoring_off)
         else -> event.decision
+    }
+
+    val displayTitle = if (event.decision == "ALARM_STOPPED" && (event.title == "Alarm Stopped" || event.title.isNullOrBlank())) {
+        stringResource(R.string.alarm_stopped_event_title)
+    } else {
+        event.title
+    }
+
+    val displayTextPreview = if (event.decision == "ALARM_STOPPED" && (event.textPreview == "Alarm runtime stopped" || event.textPreview.isNullOrBlank())) {
+        stringResource(R.string.alarm_stopped_event_preview)
+    } else {
+        event.textPreview
     }
 
     Card(
@@ -262,17 +276,17 @@ private fun HistoryItemCard(event: AlertEventEntity) {
                 fontWeight = FontWeight.SemiBold
             )
 
-            if (!event.title.isNullOrBlank()) {
+            if (!displayTitle.isNullOrBlank()) {
                 Text(
-                    text = event.title,
+                    text = displayTitle,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium
                 )
             }
 
-            if (!event.textPreview.isNullOrBlank()) {
+            if (!displayTextPreview.isNullOrBlank()) {
                 Text(
-                    text = event.textPreview,
+                    text = displayTextPreview,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = if (expanded) Int.MAX_VALUE else 2

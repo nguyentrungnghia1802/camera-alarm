@@ -145,4 +145,37 @@ class AlarmCoordinatorTest {
         currentTime = 120_000L
         assertEquals(AlarmOutcome.SCHEDULED, coordinator.onValidTrigger(snapshot().copy(alarmToken = AlarmToken("after"))))
     }
+
+    @Test fun resetCooldownClearsActiveCooldownImmediately() = runTest {
+        var currentTime = 1_000L
+        val store = InMemoryAlarmStateStore()
+        val scheduler = object : AlarmScheduler {
+            override fun canScheduleExactAlarms() = true
+            override fun scheduleExact(token: AlarmToken, triggerAtEpochMs: Long) = ScheduleResult.Scheduled
+            override fun cancel(token: AlarmToken) = Unit
+        }
+        val policy = AlarmPolicy(delayMs = 1_000, cooldownMs = 600_000) // 10 minutes
+        val coordinator = AlarmCoordinator(Clock { currentTime }, scheduler, store, { policy })
+
+        // Ring and stop -> enters 10-minute cooldown
+        coordinator.onValidTrigger(snapshot())
+        coordinator.onExactAlarmFired(snapshot())
+        coordinator.onStopRequested(snapshot().alarmToken)
+        assertTrue(store.read() is AlarmState.Cooldown)
+
+        // Mid-cooldown trigger is suppressed
+        currentTime = 10_000L
+        val suppressedOutcome = coordinator.onValidTrigger(snapshot().copy(alarmToken = AlarmToken("t2")))
+        assertEquals(AlarmOutcome.SUPPRESSED_COOLDOWN, suppressedOutcome)
+
+        // Reset cooldown (e.g. user updated cooldown setting)
+        coordinator.resetCooldown()
+        assertEquals(AlarmState.Idle, store.read())
+        assertEquals(AlarmState.Idle, coordinator.state.value)
+
+        // Immediately after reset, new trigger is accepted and scheduled!
+        val scheduledOutcome = coordinator.onValidTrigger(snapshot().copy(alarmToken = AlarmToken("t3")))
+        assertEquals(AlarmOutcome.SCHEDULED, scheduledOutcome)
+        assertTrue(store.read() is AlarmState.Pending)
+    }
 }

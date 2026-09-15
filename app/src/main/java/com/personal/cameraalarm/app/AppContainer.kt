@@ -17,6 +17,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
@@ -126,6 +128,21 @@ class AppContainer(context: Context) {
             }
         }
     )
+
+    init {
+        appScope.launch {
+            var lastCooldown: Long? = null
+            settingsRepository.settings
+                .map { it.cooldownMs }
+                .distinctUntilChanged()
+                .collect { newCooldown ->
+                    if (lastCooldown != null && lastCooldown != newCooldown) {
+                        coordinator.resetCooldown()
+                    }
+                    lastCooldown = newCooldown
+                }
+        }
+    }
 
     val pipeline = TriggerPipeline(
         AndroidClock,

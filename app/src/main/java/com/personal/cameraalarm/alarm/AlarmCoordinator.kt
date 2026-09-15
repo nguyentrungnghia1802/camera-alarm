@@ -66,6 +66,14 @@ class AlarmCoordinator(
     suspend fun onExactAlarmFired(trigger: TriggerSnapshot) = dispatch(AlarmEvent.ExactAlarmFired(trigger))
     suspend fun onStopRequested(token: AlarmToken?) = dispatch(AlarmEvent.StopRequested(token))
 
+    suspend fun resetCooldown() = mutex.withLock {
+        val current = store.read()
+        if (current is AlarmState.Cooldown) {
+            store.write(AlarmState.Idle)
+            mutableState.value = AlarmState.Idle
+        }
+    }
+
     private suspend fun dispatch(event: AlarmEvent) = mutex.withLock {
         val current = store.read()
         val transition = AlarmReducer.reduce(current, event, clock.nowEpochMs(), policy())

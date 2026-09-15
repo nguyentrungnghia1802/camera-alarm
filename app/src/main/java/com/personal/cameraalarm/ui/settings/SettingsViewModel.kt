@@ -91,7 +91,13 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
 
     fun saveCooldown(cooldownMs: Long, onSuccess: (() -> Unit)? = null) {
         setCooldown(cooldownMs)
-        saveSettings(onSuccess)
+        val draft = draftState.value ?: return
+        viewModelScope.launch {
+            container.settingsRepository.updateAll(draft)
+            container.coordinator.resetCooldown()
+            saveSuccess.value = true
+            onSuccess?.invoke()
+        }
     }
 
     fun setVibration(enabled: Boolean) {
@@ -154,7 +160,11 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
     fun saveSettings(onSuccess: (() -> Unit)? = null) {
         val draft = draftState.value ?: return
         viewModelScope.launch {
+            val oldCooldown = try { container.settingsRepository.current().cooldownMs } catch (_: Exception) { null }
             container.settingsRepository.updateAll(draft)
+            if (oldCooldown != null && oldCooldown != draft.cooldownMs) {
+                container.coordinator.resetCooldown()
+            }
             saveSuccess.value = true
             onSuccess?.invoke()
         }
