@@ -103,3 +103,13 @@ Further phase results are appended below only after the corresponding command ac
 - `DefaultBootReconciler` now has an injectable production dependency boundary and is tested directly for stale Ringing cleanup, test-token cleanup, recovery invocation, and history recording.
 - Unit tests cover access denied, already connected, delayed connection, repeated request failure/no callback, and stale boot state.
 - `\.\gradlew.bat test lint assembleDebug :app:assembleAndroidTest`: PASS.
+
+## P1.6 — Full regression gate
+
+Date: 2026-09-21. Commit candidate before the P1.6 milestone commit: `a512e07` plus the consolidated task plan and test-only STOP action selection fix.
+
+- Root cause reproduced in `AlarmStopInstrumentedTest`: production exposes both `View Camera` and `Stop Alarm`, but the test assumed exactly one notification action via `actions.single()`.
+- The test now selects STOP by the localized `btn_stop_alarm` label. Production notification/runtime code was not changed.
+- `.\gradlew.bat test --rerun-tasks lint assembleDebug :app:assembleRelease :app:assembleAndroidTest`: PASS; 211 tasks executed, no unit-test failure, no lint error, debug/release APK and AndroidTest APK built.
+- `.\gradlew.bat connectedDebugAndroidTest` with `ANDROID_SERIAL=emulator-5554`: PASS, 10/10 app instrumentation tests on `CameraAlarm_API_31` / Android 12 (API 31).
+- Connected physical Samsung `SM-A505F` was detected but was not used for this P1.6 emulator gate; Samsung certification belongs to Phase 6 after Rule V2 and Settings V2.

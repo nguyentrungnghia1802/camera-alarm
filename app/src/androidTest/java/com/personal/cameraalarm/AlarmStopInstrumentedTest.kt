@@ -59,7 +59,13 @@ class AlarmStopInstrumentedTest {
             withTimeout(5_000) { while (manager.activeNotifications.none { it.id == 1 }) delay(25) }
             start("test-second")
             instrumentation.waitForIdleSync()
-            manager.activeNotifications.single { it.id == 1 }.notification.actions.single().actionIntent.send()
+            val stopLabel = context.getString(R.string.btn_stop_alarm)
+            val stopAction = manager.activeNotifications
+                .single { it.id == 1 }
+                .notification
+                .actions
+                .single { it.title.toString() == stopLabel }
+            stopAction.actionIntent.send()
             withTimeout(3_000) { while (manager.activeNotifications.any { it.id == 1 }) delay(25) }
             assertTrue(manager.activeNotifications.none { it.id == 1 })
         } finally {

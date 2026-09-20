@@ -1,58 +1,25 @@
-# Camera Alarm — Release Hardening Task Plan
+# Camera Alarm — Consolidated Task Plan
 
-> Source of truth: `docs/review/report.md`.
+> **Source of truth mới:** file này.
 >
-> Mục tiêu của file này là biến toàn bộ finding trong report thành kế hoạch triển khai A-Z có thứ tự, acceptance criteria, test gate và điều kiện chuyển phase rõ ràng.
+> `docs/agent/task-01.md` và các task cũ chỉ còn giá trị lịch sử/tham khảo.
 >
-> Không tự thêm feature ngoài scope report. Không refactor rộng nếu chưa cần cho issue cụ thể.
+> Mục tiêu: hoàn tất release hardening đang dang dở, sau đó triển khai Rule V2 + Settings UX mới, rồi mới chạy device certification và release.
 
 ---
 
-# 0. Nguyên tắc làm việc
+## 0. Nguyên tắc chung
 
-## 0.1 Đọc trước khi code
-
-Agent phải đọc:
-
-- `docs/agent/agent.md`
-- `docs/agent/task.md` hiện tại nếu còn dùng cho lịch sử dự án
-- `docs/review/report.md`
-- các file verification hiện có
-- tài liệu liên quan trong `docs/project/`
-- source/test trực tiếp liên quan task hiện tại
-
-## 0.2 Thứ tự ưu tiên
-
-Thực hiện theo thứ tự:
-
-```text
-Phase 0  Baseline + safety
-   ↓
-Phase 1  Release gate + High-risk fixes
-   ↓
-Phase 2  Runtime/device certification
-   ↓
-Phase 3  Data / Privacy / UX / Maintainability
-   ↓
-Phase 4  Release engineering + final review
-```
-
-Không chuyển phase nếu gate cuối phase chưa đạt, trừ trường hợp có giới hạn môi trường đã được ghi rõ.
-
-## 0.3 Quy tắc sửa code
-
-- Fix root cause, không che lỗi.
-- Mỗi issue phải có regression test nếu khả thi.
-- Không đổi core alarm architecture nếu không thật sự cần thiết.
-- Không nâng dependency hàng loạt trong hotfix phase.
+- Làm trực tiếp trên `main` theo workflow hiện tại.
+- Không reset/revert thay đổi đang dang dở của P1.6; trước tiên kiểm tra `git status` và hoàn tất đúng root cause.
+- Không đổi core alarm architecture nếu không cần.
 - Không thêm permanent foreground service.
+- Không đổi matcher ANY/ALL hiện tại.
 - Không đánh dấu PASS cho test chưa chạy thật.
-- Không coi emulator là bằng chứng cho OEM-specific behavior.
-- Không commit screenshot/log/ADB dump tạm.
-
-## 0.4 Build gate chung
-
-Sau mỗi task quan trọng:
+- Emulator không thay thế bằng chứng OEM-specific.
+- Mỗi thay đổi behavior/schema phải có regression test nếu khả thi.
+- Không nâng dependency hàng loạt cùng feature work.
+- Sau task quan trọng chạy tối thiểu:
 
 ```bash
 ./gradlew test
@@ -60,19 +27,46 @@ Sau mỗi task quan trọng:
 ./gradlew assembleDebug
 ```
 
-Khi task liên quan Android instrumentation:
+- Khi liên quan instrumentation:
 
 ```bash
 ./gradlew :app:assembleAndroidTest
 ```
 
-Khi có emulator/device phù hợp:
+---
 
-```bash
-./gradlew connectedDebugAndroidTest
-```
+# 1. Trạng thái kế thừa
 
-Trước final release review:
+Các milestone đã hoàn thành từ plan trước:
+
+- Phase 0 baseline: `a227080`
+- P1.1 instrumentation release gate: `d7e9e27`
+- P1.2 privacy wrong-package: `495c7ee`
+- P1.3 non-blocking FGS startup: `903170b`
+- P1.4 boot listener recovery: `571c4b0`
+- P1.5 Test Alarm isolation: `a512e07`
+
+Hiện tại đang ở **P1.6 full regression gate**.
+
+Trong API 31 instrumentation đã phát hiện test cũ giả định notification chỉ có một action bằng `actions.single()`, trong khi production hiện có `Open Camera` + `STOP`.
+
+Yêu cầu:
+
+- Hoàn tất fix test theo đúng production behavior.
+- Chọn STOP action theo semantic/label/action id, không theo số lượng action.
+- Chạy lại toàn bộ instrumentation API 31.
+- Không coi lỗi test assumption là lỗi production nếu runtime đã đúng.
+- Commit milestone P1.6 chỉ sau khi gate pass.
+
+---
+
+# Phase 1 — Đóng Release Gate hiện tại
+
+## P1.6 — Full regression gate
+
+Status: **COMPLETE** on 2026-09-21 (`connectedDebugAndroidTest` 10/10 on `CameraAlarm_API_31`).
+
+Chạy:
 
 ```bash
 ./gradlew test --rerun-tasks
@@ -82,1040 +76,650 @@ Trước final release review:
 ./gradlew :app:assembleAndroidTest
 ```
 
----
+Nếu API 31 emulator đang có:
 
-# Phase 0 — Baseline, Inventory và Safety Net
-
-## P0.1 — Chụp baseline repository
-
-### Mục tiêu
-
-Có bằng chứng chính xác về trạng thái trước hardening để tránh sửa nhầm hoặc đánh mất behavior đã verified.
-
-### Checklist
-
-- [x] `git status` sạch hoặc ghi rõ thay đổi tồn tại.
-- [x] Ghi commit SHA hiện tại.
-- [x] `git log --oneline -10` để hiểu các fix gần nhất.
-- [x] Xác nhận branch làm việc là `main`.
-- [x] Xác định current target/compile/min SDK.
-- [x] Liệt kê test source sets hiện có.
-- [x] Liệt kê emulator/device hiện có bằng `adb devices -l`.
-- [x] Liệt kê AVD/API có thể chạy.
-- [x] Ghi baseline trong `docs/review/hardening-verification.md`.
-
-### Verification
-
-- [x] `./gradlew test lint assembleDebug` chạy và kết quả được ghi lại.
-- [x] `./gradlew :app:assembleRelease` chạy và kết quả được ghi lại.
-- [x] `./gradlew :app:assembleAndroidTest` chạy để xác nhận ISSUE-01 còn tồn tại hoặc đã được sửa bởi code mới hơn.
-
-### Gate
-
-Không sửa gì khác trước khi baseline được ghi lại.
-
----
-
-# Phase 1 — Khôi phục Release Gate và đóng rủi ro High
-
-> Phase này xử lý ISSUE-01 → ISSUE-05 và ISSUE-07 vì đây là nhóm ảnh hưởng trực tiếp release gate, privacy và reliability.
-
----
-
-## P1.1 — ISSUE-01: Sửa instrumentation release gate
-
-### Problem
-
-`DatabaseInstrumentedTest` gọi DAO API cũ và retention expectation cũ, làm `assembleAndroidTest` fail compile.
-
-### Mục tiêu
-
-Khôi phục toàn bộ instrumentation pipeline trước khi làm device certification.
-
-### Checklist
-
-- [x] Mở `DatabaseInstrumentedTest` và DAO production hiện tại.
-- [x] Xác định contract retention đang được production sử dụng thật.
-- [x] Chốt contract duy nhất cho release candidate.
-- [x] Đồng bộ test với API DAO hiện tại, không thêm compatibility method giả chỉ để test pass.
-- [x] Nếu retention contract là `100 event / 3 ngày / max suppressed policy`, cập nhật test đúng contract đó.
-- [x] Nếu report/docs khác production, cập nhật docs sau khi contract được chốt.
-- [x] Thêm test cho:
-  - [x] prune theo thời gian;
-  - [x] prune theo max count;
-  - [x] suppressed cap nếu production vẫn có;
-  - [x] pagination không vỡ sau prune.
-- [x] Chạy `:app:assembleAndroidTest`.
-- [x] Chạy instrumentation DB test thật trên emulator nếu có.
-
-### Acceptance
-
-- [x] `:app:assembleAndroidTest` PASS.
-- [x] Không còn reference tới DAO API đã xoá.
-- [x] Test phản ánh production contract thật, không phải contract lịch sử.
-
-### Commit gợi ý
-
-```text
-test: restore database instrumentation release gate
+```bash
+./gradlew connectedDebugAndroidTest
 ```
 
+Acceptance:
+
+- [x] Unit PASS.
+- [x] Lint không có error.
+- [x] Debug/Release build PASS.
+- [x] AndroidTest compile PASS.
+- [x] API 31 instrumentation PASS.
+- [x] Cập nhật `docs/review/hardening-verification.md`.
+- [x] Commit sạch trước khi sang Phase 2.
+
 ---
 
-## P1.2 — ISSUE-02: Không lưu nội dung notification ngoài source đã chọn
+# Phase 2 — Data Contract Prerequisite cho Rule V2
 
-### Problem
+Rule V2 sẽ thêm source app theo từng rule và thay invariant priority, vì vậy phải chuẩn bị migration trước khi sửa UI.
 
-Pipeline đang ghi title/text preview của wrong-package notification vào history.
+## P2.1 — Room schema + migration safety
 
-### Mục tiêu
+- Bật `exportSchema = true` nếu chưa có.
+- Thiết lập migration test infrastructure.
+- Không dùng destructive migration.
+- Review schema Rule hiện tại trước khi thêm field.
+- Giữ nguyên dữ liệu rule cũ.
+- Nếu cần schema version mới, migration phải có test upgrade từ database hiện tại.
 
-Đảm bảo app chỉ persist dữ liệu notification cần thiết cho chức năng camera alarm.
+## P2.2 — Rule data contract mới
 
-### Required behavior
+Mỗi Rule có tối thiểu:
 
 ```text
-Notification từ selected camera package
-    -> có thể lưu preview theo policy hiện tại
-
-Notification từ package khác
-    -> không lưu title/text/body
-    -> không tạo history row chứa nội dung nhạy cảm
+id
+name
+enabled
+priority        // 1, 2, 3
+sourcePackage
+keywords
+matchMode       // ANY hoặc ALL, giữ nguyên logic hiện tại
+createdAt
+updatedAt       // nếu cần
 ```
 
-### Checklist
+Invariant:
 
-- [x] Audit `TriggerPipeline.process()` và history callback trong `AppContainer`.
-- [x] Xác định chính xác nơi `IGNORED_WRONG_PACKAGE` được persist.
-- [x] Sửa để wrong-package không persist nội dung notification.
-- [x] Nếu vẫn cần diagnostic count: không áp dụng; không giữ counter cho notification ngoài source.
-  - [x] chỉ dùng in-memory counter hoặc metadata tối thiểu; không áp dụng vì không giữ counter.
-  - [x] không lưu title/text/subtext.
-  - [x] không log raw text ở release build.
-- [x] Review history schema để chắc không có hidden/raw payload field chứa text ngoài source.
-- [x] Thêm regression test:
-  - [x] wrong package không tạo DB row có content;
-  - [x] selected package vẫn ghi history đúng;
-  - [x] debug/release logging path chỉ ghi decision/package, không ghi raw text.
-- [x] Kiểm tra History UI không phụ thuộc vào wrong-package rows cũ.
-- [x] Nếu cần migration/cleanup existing wrong-package data, tạo cleanup an toàn.
+- Tối đa 3 rule ở trạng thái bình thường.
+- Priority chỉ thuộc `1..3`.
+- Không có hai rule cùng priority.
+- Priority `1` cao nhất.
+- Edit rule không đổi `createdAt`.
+- Không dùng `createdAt` để xử lý duplicate priority nữa.
+- `matchMode` vẫn áp dụng cho toàn bộ keywords của rule.
 
-### Acceptance
+### Migration rule cũ
 
-- [x] Room không lưu preview từ package ngoài source đã chọn.
-- [x] Core trigger behavior không đổi.
-- [x] Privacy regression test PASS.
+- Giữ nguyên ANY/ALL và toàn bộ keyword.
+- Mỗi rule cũ nhận `sourcePackage` từ camera source global hiện tại.
+- Chuẩn hóa priority theo thứ tự evaluation cũ để không làm đổi behavior ngoài ý muốn.
+- Nếu dữ liệu cũ có duplicate priority, normalize thành priority duy nhất theo thứ tự cũ.
+- Không silently delete rule.
 
-### Commit gợi ý
+Nếu thực tế có hơn 3 rule đã lưu:
+
+- Không xóa dữ liệu.
+- Giữ behavior cũ tạm thời cho các legacy rule.
+- Chặn tạo rule mới.
+- Hiển thị trạng thái yêu cầu người dùng giảm còn tối đa 3.
+- Khi số rule <= 3, invariant mới được áp dụng hoàn toàn.
+
+Acceptance:
+
+- Migration không mất rule/keyword.
+- Existing matcher behavior giữ nguyên.
+- Upgrade test PASS.
+
+---
+
+# Phase 3 — Rule System V2
+
+## P3.1 — Tối đa 3 rule + priority duy nhất
+
+Behavior:
+
+- Khi chưa đủ 3 rule, cho phép thêm.
+- Đủ 3 rule thì disable/hide khả năng tạo thêm và giải thích ngắn gọn.
+- Không cho hai rule cùng priority.
+- Khi user đổi Rule B sang priority đang thuộc Rule A, **tự swap priority** trong một transaction.
+- Delete rule không được làm hỏng các priority còn lại.
+- Có thể giữ khoảng priority trống nếu chỉ còn 1–2 rule; không cần tự renumber nếu không cần.
+
+Test:
+
+- max 3;
+- create/delete;
+- swap 1↔2, 1↔3, 2↔3;
+- edit giữ `createdAt`;
+- process restart giữ priority.
+
+## P3.2 — Keyword editor dạng chip/card
+
+**Không thay đổi matcher.**
+
+Giữ:
 
 ```text
-fix: stop persisting unrelated notification content
+ANY = chỉ cần một keyword match
+ALL = tất cả keyword phải match
 ```
 
----
+Chỉ thay UI nhập keyword.
 
-## P1.3 — ISSUE-03: Loại bỏ blocking DataStore khỏi critical FGS startup
-
-### Problem
-
-`CameraAlarmService` dùng `runBlocking` trên main thread để đọc settings trước/giữa đường `startForeground()`.
-
-### Mục tiêu
-
-Foreground promotion và alarm startup không phụ thuộc I/O chậm.
-
-### Target architecture
+Thay textbox CSV bằng:
 
 ```text
-AlarmReceiver / schedule-time snapshot
-        ↓
-immutable alarm runtime config
-        ↓
-CameraAlarmService.onStartCommand()
-        ↓
-startForeground() NGAY
-        ↓
-start audio/vibration
-        ↓
-async/non-blocking optional work
+Từ khóa
+
+┌──────────────────────────────┐
+│ [Phát hiện người]            │
+│ [Phát hiện chuyển động]      │
+│ [Phát hiện phương tiện]      │
+│ ...                          │
+└──────────────────────────────┘
+
+[ + Thêm từ khóa ]
 ```
 
-### Checklist
+Yêu cầu:
 
-- [x] Tìm tất cả `runBlocking` trong `CameraAlarmService` và critical alarm path.
-- [x] Phân loại setting nào bắt buộc ngay:
-  - [x] sound key;
-  - [x] vibration;
-  - [x] full-screen preference;
-  - [x] source/package metadata;
-  - [x] alarm token.
-- [x] Chọn một strategy rõ ràng:
-  - [x] cached immutable settings snapshot;
-  - [x] immutable trigger metadata extras tại schedule/start time;
-  - [x] application-level cache được warm bởi settings flow.
-- [x] Không đọc DataStore blocking trước `startForeground()`.
-- [x] `startForeground()` phải hoàn tất bằng data sẵn có.
-- [x] Audio fallback vẫn tồn tại nếu selected sound config unavailable.
-- [x] Full-screen config unavailable không được chặn audio alarm.
-- [x] Settings read chậm/fail không crash service.
-- [x] Thêm test settings source delay lớn.
-- [x] Thêm test cold process/service startup bằng safe-default cache trước khi settings load.
-- [x] Đo/ghi timestamp:
-  - [x] receiver fired;
-  - [x] service start requested;
-  - [x] startForeground completed;
-  - [x] audio started.
+- Mỗi keyword là một chip/card riêng.
+- Danh sách dài nằm trong vùng scroll có chiều cao giới hạn.
+- Bấm keyword -> dialog/bottom sheet sửa.
+- Có `Lưu` và `Xóa`.
+- `+ Thêm từ khóa` -> nhập một keyword mới.
+- Không dùng dấu phẩy làm UI nhập chính nữa.
+- Trim whitespace.
+- Không cho keyword rỗng.
+- Không duplicate keyword sau normalize case/space.
+- Match mode ANY/ALL vẫn là lựa chọn cấp Rule, không phải cấp keyword.
+- Migration/UI hiển thị keyword cũ thành từng chip/card mà không thay nội dung.
 
-### Acceptance
+## P3.3 — Mỗi Rule chọn app camera riêng
 
-- [x] Không còn `runBlocking` trên service main-thread critical path.
-- [x] startForeground không chờ DataStore.
-- [x] Slow-settings regression test PASS.
-- [x] Alarm vẫn dùng đúng setting trong normal path.
-
-### Commit gợi ý
+Trong editor Rule:
 
 ```text
-fix: remove blocking settings io from alarm startup
+Ứng dụng áp dụng
+[ Icon ] Imou Life        >
 ```
 
----
-
-## P1.4 — ISSUE-04: Hardening boot listener recovery
-
-### Problem
-
-Boot reconciliation request rebind rồi toggle component gần như ngay lập tức, có khả năng race với NotificationManager/OEM.
-
-### Mục tiêu
-
-Listener recovery có state rõ ràng, retry có giới hạn và không thay đổi user-granted state ngoài ý muốn.
-
-### Checklist
-
-- [x] Audit `DefaultBootReconciler` production path.
-- [x] Audit component toggle workaround hiện tại.
-- [x] Xác định behavior chuẩn:
-  - [x] requestRebind;
-  - [x] wait/retry bounded;
-  - [x] no infinite polling;
-  - [x] no permanent FGS watchdog.
-- [x] Không toggle component ngay chỉ vì listener chưa CONNECTED tức thời.
-- [x] OEM component-toggle workaround đã được loại bỏ vì chưa có bằng chứng cần thiết.
-  - [x] chỉ activate trên OEM/version đã chứng minh cần; không áp dụng.
-  - [x] timeout rõ; bounded retry tối đa 3 lần.
-  - [x] fallback an toàn; kết thúc `DISCONNECTED` và giữ nguyên permission state.
-  - [x] diagnostics rõ.
-- [x] Không disable/enable listener theo cách làm mất user permission.
-- [x] Thêm production-path tests cho BootReconciler, không replica logic.
-- [x] Test:
-  - [x] access granted + delayed connect;
-  - [x] access denied;
-  - [x] listener already connected;
-  - [x] requestRebind failure/no callback;
-  - [x] reboot with stale runtime state.
-- [x] Cập nhật diagnostics để phân biệt:
-  - [x] access granted;
-  - [x] connected;
-  - [x] reconnecting;
-  - [x] disconnected.
-
-### Acceptance
-
-- [x] Không có immediate component toggle race.
-- [x] Boot recovery deterministic và bounded.
-- [x] Production reconciler được test trực tiếp.
-
-### Commit gợi ý
+Bấm vào -> app picker:
 
 ```text
-fix: harden notification listener recovery after boot
+Tìm kiếm ứng dụng...
+[ danh sách app ]
 ```
 
----
+Yêu cầu:
 
-## P1.5 — ISSUE-07: Chặn Test Alarm xung đột production alarm
+- Reuse source/app picker hiện tại nếu có thể.
+- Search theo app label; có thể fallback package name.
+- Hiển thị icon + app name; package name nhỏ nếu cần phân biệt.
+- Rule không được enable/save hợp lệ nếu chưa chọn source app.
+- Nhiều rule được phép dùng cùng một app.
 
-### Problem
+### Trigger pipeline mới
 
-Test Alarm có thể tạo test token trong khi production Pending/Ringing; STOP có thể ưu tiên nhầm test token.
+Global camera source không còn là hard gate duy nhất.
 
-### Mục tiêu
-
-Production alarm luôn có ưu tiên tuyệt đối.
-
-### Required rules
+Nguồn hợp lệ được suy ra từ các Rule đang bật:
 
 ```text
-Production Pending/Ringing
-    -> Test Alarm disabled
-
-Production starts while Test Alarm preview/runtime exists
-    -> Test Alarm stops
-    -> Production owns runtime
-
-STOP
-    -> always stops active production token first
+allowedPackages =
+enabledRules.map(sourcePackage).toSet()
 ```
 
-### Checklist
-
-- [x] Audit test alarm token lifecycle.
-- [x] Audit MainViewModel / Diagnostics / Settings STOP behavior.
-- [x] Không publish test token trước khi service chấp nhận test start.
-- [x] Disable Test Alarm UI khi production `Pending` hoặc `Ringing`.
-- [x] Nếu production trigger xuất hiện khi test runtime active:
-  - [x] stop test runtime;
-  - [x] clear test token;
-  - [x] start production path.
-- [x] STOP ưu tiên production active token.
-- [x] Repeated STOP idempotent.
-- [x] Thêm regression tests cho tất cả interleavings chính.
-
-### Acceptance
-
-- [x] Test Alarm không thể chặn production alarm.
-- [x] STOP không gửi stale test token khi production đang active.
-- [x] Regression suite PASS.
-
-### Commit gợi ý
+Notification đến:
 
 ```text
-fix: isolate test alarm from production runtime
+package
+  -> tìm enabled rule có cùng sourcePackage
+  -> sort priority 1 -> 3
+  -> evaluate matcher ANY/ALL hiện tại
+  -> rule đầu tiên match -> trigger
 ```
 
----
+Privacy invariant bắt buộc:
 
-## P1.6 — Phase 1 full regression gate
+- Package không thuộc bất kỳ enabled Rule nào:
+  - không persist title/text/body;
+  - không tạo history chứa notification content;
+  - không log raw content ở release.
+- Không regression privacy fix của P1.2.
 
-### Checklist
+Global source setting cũ:
 
-- [ ] `./gradlew test --rerun-tasks`
-- [ ] `./gradlew lint`
-- [ ] `./gradlew assembleDebug`
-- [ ] `./gradlew :app:assembleRelease`
-- [ ] `./gradlew :app:assembleAndroidTest`
-- [ ] instrumentation tests chạy được trên ít nhất một emulator.
-- [ ] Không còn High issue nào của P1 chưa xử lý.
-- [ ] Cập nhật `docs/review/hardening-verification.md`.
+- Không được tiếp tục block notification của rule khác.
+- Nếu còn giữ trong UI/data, chỉ dùng làm default/preselect cho rule mới hoặc migrate legacy data.
+- Xóa/deprecate hard dependency nếu không còn cần.
 
-### Phase 1 Gate
+Test:
 
-Chỉ chuyển Phase 2 khi:
+- 3 rule / 3 app khác nhau;
+- 2 rule cùng app;
+- wrong-package không persist;
+- disabled rule source không trigger;
+- priority evaluation deterministic.
+
+## P3.4 — Nút `+`: Rule mới hoặc Template
+
+Khi bấm `+`:
 
 ```text
-Unit PASS
-Lint PASS
-Debug build PASS
-Release build PASS
-AndroidTest compile PASS
-Privacy fix PASS
-FGS startup fix PASS
-Boot recovery tests PASS
-Test Alarm conflict tests PASS
+Tạo điều kiện cảnh báo
+- Tạo mới
+- Dùng mẫu đề xuất
 ```
 
----
+### Tạo mới
 
-# Phase 2 — Runtime / Device Certification
+Blank rule, user tự chọn app, priority, ANY/ALL và keywords.
 
-> Mục tiêu: chứng minh đúng release candidate hoạt động trên runtime Android thật, không dựa vào PASS lịch sử của commit cũ.
+### Dùng mẫu đề xuất
 
----
+Template tiếng Việt:
 
-## P2.1 — Chuẩn bị release candidate verification
+```text
+Tên: Camera an ninh phổ biến
+Match mode: ANY
 
-### Checklist
+Keywords:
+- phát hiện người
+- đã phát hiện người
+- phát hiện con người
+- phát hiện chuyển động
+- phát hiện chuyển động người
+- phát hiện phương tiện
+- phát hiện người/phương tiện
+- phát hiện vượt ranh giới
+- phát hiện xâm nhập
+```
 
-- [ ] Chọn một commit SHA duy nhất làm candidate.
-- [ ] Không sửa source trong khi đang chạy matrix trừ bug được phát hiện.
-- [ ] Nếu có fix, tạo commit mới và chạy lại toàn bộ affected matrix.
-- [ ] Ghi mỗi device/emulator:
-  - [ ] manufacturer/model;
-  - [ ] API;
-  - [ ] Android version;
-  - [ ] build fingerprint;
-  - [ ] commit SHA;
-  - [ ] permission state;
-  - [ ] test result.
+Flow:
 
----
+1. Chọn template.
+2. Chọn app áp dụng.
+3. Chọn/nhận priority còn trống.
+4. Cho user review/chỉnh sửa trước khi Save.
 
-## P2.2 — API 31 matrix
-
-### Test
-
-- [ ] install/fresh start.
-- [ ] Notification Access grant/deny.
-- [ ] Exact alarm behavior phù hợp API.
-- [ ] foreground trigger.
-- [ ] background trigger.
-- [ ] screen locked.
-- [ ] screen off.
-- [ ] repeated notifications.
-- [ ] cooldown.
-- [ ] STOP từ AlarmActivity.
-- [ ] STOP từ notification.
-- [ ] STOP từ main screen.
-- [ ] process kill/recreation.
-- [ ] Doze/idle nếu môi trường hỗ trợ.
-- [ ] reboot/listener reconnect.
-
-### Gate
-
-- [ ] Không crash.
-- [ ] Không duplicate runtime.
-- [ ] Alarm/STOP semantics đúng.
+Template chỉ là dữ liệu khởi tạo, không có matcher riêng.
 
 ---
 
-## P2.3 — API 33 matrix
+# Phase 4 — Settings UX + Default Profile
 
-Ngoài toàn bộ P2.2, thêm:
+## P4.1 — Default profile mới
 
-- [ ] POST_NOTIFICATIONS granted.
-- [ ] POST_NOTIFICATIONS denied.
-- [ ] app vẫn không crash nếu denied.
-- [ ] STOP path còn khả dụng qua UI phù hợp.
+Chỉ thay các default sau:
+
+```text
+Alarm sound = Âm cảnh báo lớn 1
+Cooldown = 600 giây
+Schedule = mỗi ngày 22:30 -> 06:00 hôm sau
+```
+
+Schedule giữ semantics hiện tại:
+
+- start inclusive;
+- end exclusive;
+- overnight interval;
+- device local time/timezone.
+
+**Tất cả default/behavior khác giữ nguyên như production hiện tại.**
+
+Không tự đổi cấu hình của user hiện tại sau app update.
+
+Fresh install dùng default mới.
+
+Nếu settings cũ có field chưa persist và đang phụ thuộc default code, phải có migration/versioning để **preserve effective value của user hiện tại**, không để update âm thầm thay behavior.
+
+## P4.2 — Nút `Đặt lại mặc định`
+
+Settings có:
+
+```text
+[ Đặt lại mặc định ]
+```
+
+Bấm -> confirmation.
+
+Sau xác nhận:
+
+- Reset toàn bộ settings về default profile chính thức.
+- Trong profile đó chỉ có 3 thay đổi mới ở trên; các setting khác dùng default cũ.
+- Persist atomically.
+- Refresh UI ngay.
+
+Không được:
+
+- xóa Rules;
+- xóa History;
+- revoke/reset system permissions;
+- xóa sourcePackage trong Rule;
+- tạo/xóa notification access;
+- tạo phantom alarm.
+
+Test reset sau process restart.
+
+## P4.3 — Tổ chức Settings thành Cơ bản / Nâng cao
+
+Không đổi semantics của setting hiện có.
+
+Gợi ý:
+
+```text
+Cơ bản
+- Âm báo
+- Rung
+- Cooldown
+- Lịch hoạt động
+- các setting phổ thông hiện có
+
+Nâng cao
+- Full-screen / reliability
+- quyền hệ thống
+- battery/OEM guidance
+- diagnostics
+- các setting kỹ thuật hiện có
+```
+
+- Giữ language switch hiện tại.
+- Không xóa setting cũ.
+- Không tự đổi giá trị khi chỉ di chuyển UI.
+- EN/VI phải cùng cấu trúc.
+- Test small screen + font scale lớn.
 
 ---
 
-## P2.4 — API 34 matrix
+# Phase 5 — Product Update Integration Gate
 
-Ngoài toàn bộ baseline:
+Trước device certification phải có một commit candidate sạch.
 
-- [ ] FGS type `systemExempted` đúng.
-- [ ] full-screen capability allowed.
-- [ ] full-screen capability denied.
-- [ ] locked-screen UI.
-- [ ] unlocked-screen UI.
-- [ ] audio/vibration không phụ thuộc AlarmActivity.
-- [ ] full-screen denied vẫn alarm được.
+## P5.1 — Regression
+
+Bắt buộc test:
+
+### Rule
+- 0/1/2/3 rules.
+- Không tạo rule thứ 4.
+- Unique priority.
+- Priority swap.
+- ANY matcher.
+- ALL matcher.
+- Keyword add/edit/delete.
+- Keyword scroll UI.
+- Rule source picker/search.
+- Multiple source apps.
+- Template creation.
+- Edit không đổi `createdAt`.
+- Migration từ rule cũ.
+
+### Privacy
+- Wrong-package content không vào Room.
+- Package thuộc enabled rule được xử lý.
+- Disabled-rule package không trigger.
+- Release log không chứa raw unrelated notification text.
+
+### Settings
+- Fresh install defaults:
+  - sound = Âm cảnh báo lớn 1;
+  - cooldown = 600s;
+  - schedule = 22:30–06:00.
+- Existing install không bị overwrite.
+- Reset defaults đúng.
+- Restart giữ settings.
+- Schedule overnight boundary đúng.
+
+### Alarm regression
+- NotificationListener.
+- Exact Alarm.
+- FGS startup.
+- Audio/vibration.
+- Full-screen.
+- STOP.
+- Open Camera.
+- Test Alarm isolation.
+- Cooldown.
+- Active hours.
+
+## P5.2 — Build gate
+
+```bash
+./gradlew test --rerun-tasks
+./gradlew lint
+./gradlew assembleDebug
+./gradlew :app:assembleRelease
+./gradlew :app:assembleAndroidTest
+```
+
+Nếu emulator/device có sẵn, chạy instrumentation phù hợp.
+
+Chỉ sang Phase 6 khi candidate sạch và gate PASS.
 
 ---
 
-## P2.5 — API 36 matrix
+# Phase 6 — Runtime / Device Certification
 
-### Test
+Thực hiện device certification **sau Rule V2 + Settings V2**, không dùng PASS của commit cũ làm bằng chứng release.
 
-- [ ] toàn bộ latest-target behavior.
-- [ ] exact alarm capability grant/revoke.
-- [ ] POST_NOTIFICATIONS deny.
-- [ ] full-screen allow/deny.
-- [ ] process recreation.
-- [ ] screen lock.
-- [ ] Doze.
-- [ ] reboot.
-- [ ] STOP idempotency.
-- [ ] history lifecycle correctness.
+## P6.1 — API matrix
 
----
+Chạy API 31 / 33 / 34 / 36 theo khả năng môi trường.
 
-## P2.6 — Samsung physical validation
+Bao gồm:
 
-> Bắt buộc vì thiết bị mục tiêu thực tế là Samsung.
+- foreground/background;
+- screen locked/off;
+- Doze/idle;
+- process recreation;
+- reboot/listener reconnect;
+- repeated notification;
+- cooldown 600s;
+- schedule 22:30–06:00;
+- POST_NOTIFICATIONS behavior;
+- exact alarm grant/deny/revoke;
+- full-screen allow/deny;
+- STOP từ Activity/notification/main;
+- Open Camera action;
+- history lifecycle.
 
-### Checklist
+## P6.2 — Samsung A50 physical validation
 
-- [ ] Ghi model và One UI/Android version.
-- [ ] Camera Alarm nằm trong Never Sleeping/appropriate battery config.
-- [ ] Notification Access enabled.
-- [ ] App ở background ít nhất vài phút.
-- [ ] Screen locked.
-- [ ] Screen off.
-- [ ] Real camera notification.
-- [ ] Alarm audio starts.
-- [ ] vibration starts.
-- [ ] full-screen behavior được ghi nhận.
-- [ ] STOP hoạt động.
-- [ ] Open-camera action hoạt động.
-- [ ] repeated alert/cooldown hoạt động.
-- [ ] reboot rồi không mở app thủ công.
-- [ ] listener phục hồi.
-- [ ] real camera alert sau reboot hoạt động.
+Bắt buộc vì đây là thiết bị mục tiêu hiện có.
 
-### Evidence
+Test:
 
-- [ ] log/checkpoint hoặc history timeline.
-- [ ] không chỉ ghi “PASS” không có bằng chứng.
+- app background vài phút;
+- screen locked;
+- screen off;
+- notification camera thật;
+- Rule source package đúng;
+- alarm audio/vibration;
+- full-screen behavior;
+- Open Camera;
+- STOP;
+- cooldown;
+- reboot không mở app thủ công;
+- listener recovery;
+- alert thật sau reboot.
 
----
+Ghi evidence và commit SHA.
 
-## P2.7 — Xiaomi / Redmi / POCO physical validation
+## P6.3 — Xiaomi
 
-Chỉ bắt buộc nếu app tuyên bố hỗ trợ Xiaomi/HyperOS.
-
-### Checklist
-
-- [ ] real Xiaomi-family device.
-- [ ] HyperOS/MIUI version.
-- [ ] Autostart configured.
-- [ ] Battery No Restrictions.
-- [ ] relevant popup/lock-screen permission.
-- [ ] background lock nếu cần.
-- [ ] screen-off real camera trigger.
-- [ ] selected sound.
-- [ ] STOP.
-- [ ] reboot + post-reboot real camera trigger.
-
-Nếu không có device:
+Chỉ ghi:
 
 ```text
 Xiaomi implementation: COMPLETE
 Xiaomi physical validation: NOT VERIFIED
 ```
 
-Không được ghi fully verified.
+nếu không có máy thật.
 
 ---
 
-## P2.8 — Phase 2 certification document
+# Phase 7 — Remaining Hardening từ report cũ
 
-Tạo/cập nhật:
+Sau device certification mới xử lý các phần còn lại không bị feature mới thay thế.
 
-```text
-docs/review/runtime-certification.md
-```
+## P7.1 History contract
+- Chuẩn hóa lifecycle events.
+- `ruleId` phải phản ánh Rule V2.
+- `alarmToken` xuyên lifecycle.
+- Retention giữ contract hiện tại đã chốt.
+- Không lưu nội dung unrelated app.
 
-Phải có:
+## P7.2 Backup / restore
+- Exclude history preview nhạy cảm.
+- Exclude runtime Pending/Ringing/token/nonce.
+- Restore không tạo phantom alarm.
 
-- [ ] commit SHA;
-- [ ] API/device matrix;
-- [ ] command đã chạy;
-- [ ] permission state;
-- [ ] scenario result;
-- [ ] bug phát hiện;
-- [ ] bug fix commit nếu có;
-- [ ] remaining limitations.
+## P7.3 Battery/OEM guidance
+- Hoàn thiện battery optimization flow.
+- Không fail silent.
+- Giữ Samsung/Xiaomi guidance defensive.
 
-### Phase 2 Gate
+## P7.4 Localization/UI
+- Không hard-code user-facing EN/VI.
+- Review Rule V2 + Settings V2 ở cả hai locale.
+- Font scale lớn, small screen, dark mode.
 
-Không chuyển trạng thái release-ready nếu current release candidate chưa có matrix tương ứng.
+## P7.5 BootReceiver / full-screen cleanup
+- Giới hạn receiver exposure.
+- Chỉ đơn giản hóa full-screen launch path sau khi có device evidence.
+- Không làm regression locked-screen alarm.
 
----
-
-# Phase 3 — Data, Privacy, UX và Maintainability Hardening
-
----
-
-## P3.1 — ISSUE-06: Chuẩn hóa History contract
-
-### Mục tiêu
-
-Một contract duy nhất giữa docs, production, DB, UI và tests.
-
-### Checklist
-
-- [ ] Chốt retention policy chính thức.
-- [ ] Đồng bộ docs với production.
-- [ ] Chuẩn hóa decisions tối thiểu:
-  - [ ] SCHEDULED;
-  - [ ] ALARM_FIRED;
-  - [ ] ALARM_STOPPED;
-  - [ ] ALARM_RUNTIME_ERROR;
-  - [ ] SUPPRESSED_COOLDOWN;
-  - [ ] SUPPRESSED_OUTSIDE_ACTIVE_HOURS;
-  - [ ] BOOT_RECONCILED;
-  - [ ] SCHEDULE_FAILED.
-- [ ] Receiver/service thật sự emit lifecycle events tương ứng.
-- [ ] `ruleId` được ghi khi có rule match.
-- [ ] `alarmToken` xuyên suốt lifecycle.
-- [ ] `normalizedHash` chỉ giữ nếu có mục đích diagnostic rõ.
-- [ ] Boot event có UI mapping riêng, không hiện như error mặc định.
-- [ ] History filters đồng bộ với event enum.
-- [ ] Không dùng raw unversioned string nếu có thể chuyển sang enum/version-safe adapter.
-- [ ] Regression test cho history lifecycle một alarm hoàn chỉnh.
-
-### Acceptance
-
-- [ ] Có thể nhìn history và biết alarm đã schedule, fire, stop hay fail.
-- [ ] Không có decision UI mà production không bao giờ emit.
+## P7.6 Test quality / technical debt
+- Ưu tiên production-path tests.
+- Triage AppContainer/Test Alarm controller nếu còn debt.
+- Không refactor rộng chỉ để “đẹp code”.
 
 ---
 
-## P3.2 — ISSUE-08: Định nghĩa backup / data extraction policy
-
-### Mục tiêu
-
-Không backup dữ liệu nhạy cảm hoặc runtime state không phù hợp.
-
-### Checklist
-
-- [ ] Xác định dữ liệu nào có thể backup:
-  - [ ] user preferences an toàn;
-  - [ ] rules nếu muốn;
-  - [ ] schedules nếu muốn.
-- [ ] Exclude:
-  - [ ] history notification previews;
-  - [ ] pending/ringing runtime state;
-  - [ ] alarm token/runtime nonce;
-  - [ ] dữ liệu diagnostic nhạy cảm.
-- [ ] Định nghĩa `android:dataExtractionRules` cho Android 12+.
-- [ ] Định nghĩa `android:fullBackupContent` cho Android <=11 nếu cần.
-- [ ] Hoặc tắt backup hoàn toàn nếu phù hợp sản phẩm cá nhân.
-- [ ] Test restore không tạo phantom alarm.
-- [ ] Document backup policy.
-
-### Acceptance
-
-- [ ] Device transfer/restore không làm sống lại runtime alarm cũ.
-- [ ] Sensitive history không bị backup ngoài kỳ vọng.
-
----
-
-## P3.3 — ISSUE-09: Hoàn thiện battery optimization flow
-
-### Checklist
-
-- [ ] Audit direct `ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` path.
-- [ ] Quyết định distribution mode thực tế: personal sideload hay store.
-- [ ] Nếu dùng direct exemption:
-  - [ ] manifest/permission phù hợp;
-  - [ ] behavior được test;
-  - [ ] policy risk được document.
-- [ ] Nếu không dùng direct exemption:
-  - [ ] mở generic battery optimization settings;
-  - [ ] hướng dẫn thủ công;
-  - [ ] detect/fallback intent an toàn.
-- [ ] Không catch lỗi im lặng; hiển thị feedback/diagnostics.
-- [ ] Samsung/Xiaomi advisor dùng chung reliability state hợp lý.
-
-### Acceptance
-
-- [ ] User biết rõ còn thiếu battery configuration gì.
-- [ ] Action không fail silent.
-
----
-
-## P3.4 — ISSUE-10: Hoàn thiện localization EN/VI
-
-### Checklist
-
-- [ ] Quét toàn bộ user-facing hardcoded strings.
-- [ ] Chuyển sang resources.
-- [ ] Reliability advisor không hard-code tiếng Việt.
-- [ ] Validation/snackbar không hard-code tiếng Anh.
-- [ ] Diagnostics labels dùng resources nơi phù hợp.
-- [ ] Kiểm tra English UI không lẫn Vietnamese.
-- [ ] Kiểm tra Vietnamese UI không lẫn English không cần thiết.
-- [ ] Review wording tiếng Việt cho người phổ thông.
-- [ ] Test font scale lớn.
-- [ ] Test Samsung A50/small screen layout.
-- [ ] Test text overflow.
-- [ ] Test dark mode.
-- [ ] Thêm Compose smoke/UI test nếu framework hiện có cho phép.
-
-### Acceptance
-
-- [ ] Hai locale nhất quán.
-- [ ] Không còn layout vỡ vì text tiếng Việt dài.
-
----
-
-## P3.5 — ISSUE-11: Giữ deterministic rule order khi edit
-
-### Checklist
-
-- [ ] Khi edit rule, giữ nguyên `createdAtEpochMs`.
-- [ ] Nếu cần, dùng `updatedAtEpochMs` riêng.
-- [ ] Không đổi tie-break order chỉ vì sửa keyword/name.
-- [ ] Test hai rule cùng priority trước/sau edit.
-- [ ] Test matcher chọn rule ổn định.
-
-### Acceptance
-
-- [ ] Edit không âm thầm thay match order.
-
----
-
-## P3.6 — ISSUE-12: Hardening BootReceiver exposure
-
-### Checklist
-
-- [ ] Liệt kê action chuẩn và vendor QUICKBOOT action.
-- [ ] Xác định action nào bắt buộc exported.
-- [ ] Tách system-protected path và vendor compatibility path nếu cần.
-- [ ] Validate accepted action trong receiver.
-- [ ] Không để arbitrary custom broadcast reset runtime state.
-- [ ] Thêm sender/source policy nếu platform cho phép.
-- [ ] Test unknown action bị ignore.
-- [ ] Test spoof-like explicit vendor action theo khả năng môi trường.
-- [ ] Physical OEM test nếu giữ vendor actions.
-
-### Acceptance
-
-- [ ] Receiver exposure nhỏ nhất có thể.
-- [ ] Broadcast không hợp lệ không gây reconciliation side effect.
-
----
-
-## P3.7 — ISSUE-13: Đơn giản hóa full-screen launch path sau khi có device evidence
-
-### Mục tiêu
-
-Chỉ làm sau Phase 2 matrix để tránh phá behavior screen lock đang hoạt động.
-
-### Checklist
-
-- [ ] Lập sơ đồ các launch path hiện tại:
-  - [ ] notification full-screen PendingIntent;
-  - [ ] direct startActivity;
-  - [ ] fallback khác.
-- [ ] Dựa trên device evidence chọn primary path.
-- [ ] Giữ fallback có điều kiện và đo lường được.
-- [ ] Loại duplicate launch attempt nếu không cần.
-- [ ] Review deprecated wake/full-screen APIs.
-- [ ] Thay API deprecated chỉ khi không làm giảm reliability.
-- [ ] Re-run locked/unlocked API 34/36 + Samsung device.
-
-### Acceptance
-
-- [ ] Không double-launch.
-- [ ] Screen-lock alarm không regression.
-
----
-
-## P3.8 — ISSUE-14: Nâng chất lượng test từ logic-replica sang production-path
-
-### Checklist
-
-- [ ] Audit test nào copy logic thay vì gọi production class.
-- [ ] Ưu tiên sửa test cho:
-  - [ ] BootReconciler;
-  - [ ] source selection;
-  - [ ] ViewModel integration;
-  - [ ] alarm start/stop controller;
-  - [ ] history retention;
-  - [ ] settings persistence.
-- [ ] Thêm test backup/restore contract.
-- [ ] Thêm migration test.
-- [ ] Thêm slow-I/O FGS regression test.
-- [ ] Thêm UI/font scale/accessibility smoke test nếu hợp lý.
-- [ ] Thêm resource lifecycle/soak test nếu environment hỗ trợ.
-
-### Acceptance
-
-- [ ] Test count không phải mục tiêu; production boundary coverage mới là mục tiêu.
-
----
-
-## P3.9 — Technical debt: AppContainer và Test Alarm controller
-
-### Mục tiêu
-
-Giảm wiring/policy side effects nhưng không refactor lớn trong một commit.
-
-### Checklist
-
-- [ ] Xác định logic history policy đang nằm trong `AppContainer`.
-- [ ] Tách use-case/factory nhỏ nếu giúp test production path.
-- [ ] Không tạo DI framework mới nếu không cần.
-- [ ] Gom Start/Stop Test Alarm vào một controller/use case dùng chung.
-- [ ] ViewModel chỉ gọi use case/controller.
-- [ ] Giữ behavior y hệt sau refactor.
-- [ ] Regression tests trước/sau.
-
-### Acceptance
-
-- [ ] Giảm duplicate Test Alarm logic.
-- [ ] Composition root đơn giản hơn mà không tăng framework complexity.
-
----
-
-## P3.10 — Room schema export và migration framework
-
-### Checklist
-
-- [ ] Bật `exportSchema = true`.
-- [ ] Commit schema JSON đúng convention.
-- [ ] Thiết lập migration test infrastructure.
-- [ ] Nếu schema vẫn v1, chuẩn bị đường migration v1→v2 trước thay đổi schema tiếp theo.
-- [ ] Không dùng destructive migration cho dữ liệu người dùng nếu chưa có quyết định rõ.
-- [ ] Test upgrade DB release-like.
-
-### Acceptance
-
-- [ ] Có migration strategy trước schema version tiếp theo.
-
----
-
-## P3.11 — Phase 3 gate
-
-### Checklist
-
-- [ ] privacy tests PASS.
-- [ ] history lifecycle tests PASS.
-- [ ] backup policy tests PASS.
-- [ ] localization smoke PASS.
-- [ ] rule ordering PASS.
-- [ ] boot receiver security tests PASS.
-- [ ] migration tests PASS.
-- [ ] `test lint assembleDebug assembleRelease assembleAndroidTest` PASS.
-
----
-
-# Phase 4 — Lint, Dependencies, Release Packaging và Final Release Review
-
----
-
-## P4.1 — ISSUE-15: Triage lint warnings
-
-### Mục tiêu
-
-Không cần zero-warning tuyệt đối; phải xử lý warning liên quan behavior/policy/release trước.
-
-### Checklist
-
-Phân loại warnings:
-
-- [ ] Behavior/API deprecated.
-- [ ] Battery/policy.
-- [ ] Locale/plural.
-- [ ] Accessibility.
-- [ ] Icon/density/resource.
-- [ ] Dependency update.
-- [ ] Cosmetic/low-risk.
-
-Ưu tiên:
-
-1. behavior/policy;
-2. deprecated API ảnh hưởng target SDK;
-3. accessibility/localization;
-4. resource correctness;
-5. dependency update.
-
-- [ ] Không blanket suppress.
-- [ ] Mỗi suppression phải có lý do.
-- [ ] Ghi remaining warnings có chủ đích.
-
----
-
-## P4.2 — Dependency upgrade theo batch
-
-### Rule
-
-Không nâng toàn bộ cùng lúc.
-
-### Suggested batches
-
-```text
-Batch A: Kotlin / AGP / Compose toolchain
-Batch B: AndroidX lifecycle/activity/navigation
-Batch C: Room/DataStore
-Batch D: test libraries
-```
-
-### Mỗi batch
-
-- [ ] đọc release notes liên quan;
-- [ ] upgrade nhỏ nhất hợp lý;
-- [ ] compile;
-- [ ] unit test;
-- [ ] instrumentation;
-- [ ] runtime smoke;
-- [ ] commit riêng.
-
-Nếu upgrade không cần cho release hiện tại, có thể defer và ghi rõ.
-
----
-
-## P4.3 — Signed release pipeline
-
-### Checklist
-
-- [ ] Xác định versionCode/versionName.
-- [ ] Signing config không commit secret vào repo.
-- [ ] Build signed release artifact.
-- [ ] Verify signature.
-- [ ] Ghi SHA-256 artifact.
-- [ ] Smoke-install signed APK trên device.
-- [ ] Fresh install flow PASS.
-- [ ] Upgrade từ previous internal build PASS nếu applicable.
-- [ ] Alarm trigger/STOP trên signed release PASS.
-- [ ] Không để debug-only exported component trong release.
-- [ ] Debug logging nhạy cảm disabled.
-
----
-
-## P4.4 — Release checklist hoàn chỉnh
-
-### Checklist
-
-- [ ] App name/icon/splash đúng.
-- [ ] Version đúng.
-- [ ] Privacy policy nội bộ/README nếu cần.
-- [ ] Permissions được giải thích.
-- [ ] Backup policy final.
-- [ ] Samsung verification final.
-- [ ] Xiaomi verification status trung thực.
-- [ ] Full-screen behavior final.
-- [ ] Reboot/listener recovery final.
-- [ ] History privacy final.
-- [ ] Signed artifact test final.
-
----
-
-# Phase 5 — Final Audit Against Original Report
-
-> Không phải feature phase. Đây là vòng đóng issue.
-
-## P5.1 — Map ISSUE-01 → ISSUE-15
-
-Tạo bảng trong:
+# Phase 8 — Release Engineering + Final Audit
+
+## P8.1 Lint/dependency
+- Triage behavior/policy/accessibility trước.
+- Không cần zero-warning tuyệt đối.
+- Dependency upgrade theo batch riêng nếu thực sự cần.
+
+## P8.2 Signed release
+- versionCode/versionName;
+- signing secret ngoài repo;
+- signed APK;
+- verify signature;
+- SHA-256;
+- install smoke;
+- fresh install;
+- upgrade install;
+- real alarm + STOP trên signed build.
+
+## P8.3 Final report
+
+Cập nhật/tạo:
 
 ```text
 docs/review/final-release-report.md
 ```
 
-Format:
+Phải gồm:
 
-| Issue | Status | Fix commit | Test evidence | Remaining limitation |
-|---|---|---|---|---|
-| ISSUE-01 | | | | |
-| ... | | | | |
-| ISSUE-15 | | | | |
-
-Mỗi issue chỉ được đánh dấu `CLOSED` khi có fix + evidence phù hợp.
-
----
-
-## P5.2 — Final commands
-
-Chạy trên clean checkout/current main:
-
-```bash
-./gradlew clean
-./gradlew test --rerun-tasks
-./gradlew lint
-./gradlew assembleDebug
-./gradlew :app:assembleRelease
-./gradlew :app:assembleAndroidTest
-```
-
-Nếu có device/emulator matrix:
-
-- [ ] connected instrumentation PASS.
-- [ ] runtime certification doc khớp commit SHA final.
+- commit SHA release;
+- status các issue report cũ;
+- Rule V2 verification;
+- Settings V2 verification;
+- API/device matrix;
+- Samsung result;
+- Xiaomi status;
+- privacy/security;
+- remaining limitations;
+- signed artifact;
+- final verdict.
 
 ---
 
-## P5.3 — Final decision
+# Definition of Done
 
-Chỉ được ghi:
+Chỉ ghi `READY FOR RELEASE` khi:
 
-```text
-READY FOR RELEASE
-```
+- Phase 1 release gate PASS.
+- Rule V2 hoàn tất và migration PASS.
+- Max 3 rule + unique priority hoạt động.
+- ANY/ALL matcher không regression.
+- Per-rule camera source hoạt động.
+- Wrong-package privacy vẫn PASS.
+- Template Việt Nam hoạt động.
+- Default profile đúng:
+  - Âm cảnh báo lớn 1;
+  - cooldown 600s;
+  - 22:30–06:00.
+- Reset defaults không xóa rules/history/permissions.
+- Existing install không bị overwrite settings ngoài ý muốn.
+- AndroidTest compile/run PASS.
+- API/device matrix tương ứng PASS.
+- Samsung A50 physical validation PASS.
+- Không còn Critical/High unresolved.
+- Signed release artifact smoke-tested.
+- Repo sạch.
 
-khi:
-
-- [ ] ISSUE-01 → ISSUE-05 CLOSED;
-- [ ] không còn Critical/High unresolved;
-- [ ] current release commit có device matrix;
-- [ ] Samsung target validation PASS;
-- [ ] privacy fix PASS;
-- [ ] FGS startup no blocking I/O;
-- [ ] boot listener recovery verified;
-- [ ] instrumentation compile/run PASS;
-- [ ] signed release artifact smoke-tested;
-- [ ] repo sạch.
-
-Nếu Xiaomi chưa test thật nhưng app vẫn giữ Xiaomi guidance:
+Nếu Xiaomi chưa test thật:
 
 ```text
 READY FOR RELEASE
 Xiaomi physical validation: NOT VERIFIED
 ```
 
-và không được tuyên bố Xiaomi fully supported/verified.
-
----
-
-# Suggested Commit Sequence
-
-Agent có thể dùng chuỗi commit tương tự:
-
-```text
-test: restore database instrumentation release gate
-fix: stop persisting unrelated notification content
-fix: remove blocking settings io from alarm startup
-fix: harden notification listener recovery after boot
-fix: isolate test alarm from production runtime
-test: certify alarm runtime across android api levels
-fix: normalize alarm history lifecycle
-fix: define backup and restore policy
-fix: harden battery optimization guidance
-ui: complete english and vietnamese localization
-fix: preserve deterministic rule ordering
-fix: restrict boot receiver compatibility actions
-refactor: simplify verified full screen launch path
-test: increase production path coverage
-build: add room schema and migration verification
-chore: triage release lint warnings
-build: prepare signed release pipeline
-docs: publish final release verification
-```
-
-Không bắt buộc đúng message trên; mục tiêu là commit nhỏ, dễ rollback và trace được từng issue.
+Không được tuyên bố Xiaomi fully verified.
 
 ---
 
 # Agent Final Report Format
 
-Sau khi thực hiện xong toàn bộ plan, Agent báo cáo:
-
 ```text
 ## Overall Status
 
-Phase 0:
 Phase 1:
 Phase 2:
 Phase 3:
 Phase 4:
 Phase 5:
+Phase 6:
+Phase 7:
+Phase 8:
 
-## Issues
+## Rule V2
 
-ISSUE-01:
-...
-ISSUE-15:
+Max rules:
+Priority:
+ANY/ALL:
+Keyword editor:
+Per-rule source:
+Template:
+Migration:
+
+## Settings V2
+
+Default sound:
+Default cooldown:
+Default schedule:
+Reset defaults:
+Basic/Advanced UI:
+Existing-user migration:
 
 ## Verification
 
 Unit:
 Lint:
-Debug build:
-Release build:
-AndroidTest compile:
+Debug:
+Release:
+AndroidTest:
 Instrumentation:
 API 31:
 API 33:
 API 34:
 API 36:
-Samsung:
+Samsung A50:
 Xiaomi:
-
-## Privacy / Security
-
-Wrong-package persistence:
-Backup policy:
-Receiver exposure:
 
 ## Reliability
 
-FGS cold start:
 Screen lock:
 Doze:
 Process recreation:
 Reboot:
 STOP:
+Open Camera:
 
-## Release Artifact
+## Privacy
 
-Version:
-Signed artifact:
-SHA-256:
-Install smoke test:
+Wrong-package persistence:
+Backup policy:
 
 ## Remaining Limitations
 
@@ -1136,29 +740,3 @@ or
 
 NOT READY FOR RELEASE
 ```
-
----
-
-# Definition of Done
-
-Toàn bộ plan chỉ hoàn tất khi:
-
-- [ ] report High issues được đóng;
-- [ ] instrumentation gate được phục hồi;
-- [ ] privacy leakage wrong-package được loại bỏ;
-- [ ] FGS startup không blocking DataStore;
-- [ ] boot listener recovery được harden/test;
-- [ ] Test Alarm không xung đột production alarm;
-- [ ] current commit có API/device matrix;
-- [ ] Samsung target device được test thật;
-- [ ] history contract thống nhất;
-- [ ] backup policy rõ ràng;
-- [ ] localization EN/VI hoàn chỉnh;
-- [ ] rule ordering deterministic;
-- [ ] BootReceiver exposure được kiểm soát;
-- [ ] migration strategy tồn tại;
-- [ ] lint warnings được triage;
-- [ ] signed release artifact được smoke-test;
-- [ ] final release report map đủ ISSUE-01 → ISSUE-15;
-- [ ] repository sạch;
-- [ ] không còn Critical/High unresolved.
