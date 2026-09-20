@@ -22,7 +22,42 @@ class TriggerPipelineTest {
         pipeline.process(incoming("k"))
         assertEquals(1, submitted.size)
         assertEquals("r", submitted.single().ruleId)
-        assertEquals(listOf(TriggerDecision.IGNORED_WRONG_PACKAGE, TriggerDecision.SCHEDULED, TriggerDecision.IGNORED_DUPLICATE), history)
+        assertEquals(listOf(TriggerDecision.SCHEDULED, TriggerDecision.IGNORED_DUPLICATE), history)
+    }
+
+    @Test fun wrongPackageContentIsNeverPassedToPersistentHistory() = runTest {
+        val persisted = mutableListOf<IncomingNotification>()
+        val pipeline = TriggerPipeline(
+            Clock { 1000 },
+            { TriggerConfiguration(true, "camera.app", listOf(rule)) },
+            TtlDuplicateGuard(),
+            ValidTriggerSink { AlarmOutcome.SCHEDULED },
+            TriggerHistory { notification, _, _ -> persisted += notification }
+        )
+
+        val decision = pipeline.process(
+            incoming("private", "mail.app").copy(
+                title = "Private email subject",
+                text = "Private email body"
+            )
+        )
+
+        assertEquals(TriggerDecision.IGNORED_WRONG_PACKAGE, decision)
+        assertTrue(persisted.isEmpty())
+    }
+
+    @Test fun selectedPackageStillPersistsHistory() = runTest {
+        val persisted = mutableListOf<IncomingNotification>()
+        val pipeline = TriggerPipeline(
+            Clock { 1000 },
+            { TriggerConfiguration(true, "camera.app", listOf(rule)) },
+            TtlDuplicateGuard(),
+            ValidTriggerSink { AlarmOutcome.SCHEDULED },
+            TriggerHistory { notification, _, _ -> persisted += notification }
+        )
+
+        assertEquals(TriggerDecision.SCHEDULED, pipeline.process(incoming("selected")))
+        assertEquals("Human detected", persisted.single().title)
     }
     @Test fun monitoringOffAndNoMatchNeverSubmit() = runTest {
         var count = 0
@@ -32,7 +67,7 @@ class TriggerPipelineTest {
         TriggerPipeline(Clock { 0 }, { TriggerConfiguration(false, "camera.app", listOf(rule)) }, TtlDuplicateGuard(), sink, history).process(incoming("a"))
         TriggerPipeline(Clock { 0 }, { TriggerConfiguration(true, "camera.app", listOf(rule.copy(keywords = listOf("missing")))) }, TtlDuplicateGuard(), sink, history).process(incoming("b"))
         assertEquals(0, count)
-        assertEquals(listOf(TriggerDecision.IGNORED_MONITORING_OFF, TriggerDecision.IGNORED_NO_RULE_MATCH), decisions)
+        assertEquals(listOf(TriggerDecision.IGNORED_NO_RULE_MATCH), decisions)
     }
 
     @Test fun historyFailureDoesNotBreakScheduledAlarmPath() = runTest {

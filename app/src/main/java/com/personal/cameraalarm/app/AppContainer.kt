@@ -62,6 +62,9 @@ class AppContainer(context: Context) {
 
     init {
         appScope.launch {
+            historyRepository.deleteLegacyUnrelatedNotificationRows()
+        }
+        appScope.launch {
             combine(settingsRepository.settings, ruleRepository.rules) { settings, rules ->
                 triggerConfiguration = TriggerConfiguration(
                     monitoringEnabled = settings.monitoringEnabled,

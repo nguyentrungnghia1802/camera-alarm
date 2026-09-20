@@ -61,4 +61,7 @@ interface AlertEventDao {
 
     @Query("DELETE FROM alert_events")
     suspend fun clearAll()
+
+    @Query("DELETE FROM alert_events WHERE decision IN (:decisions)")
+    suspend fun deleteByDecisions(decisions: List<String>): Int
 }

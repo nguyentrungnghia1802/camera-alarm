@@ -66,3 +66,11 @@ Further phase results are appended below only after the corresponding command ac
 - `\.\gradlew.bat :app:assembleAndroidTest test`: PASS.
 - `\.\gradlew.bat :app:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.personal.cameraalarm.DatabaseInstrumentedTest`: PASS, 4/4 tests on Samsung SM-A505F / Android 11.
 - Direct AndroidJUnitRunner execution on `CameraAlarm_API_31` (`emulator-5554`): PASS, 4/4 tests.
+
+## P1.2 — Wrong-package privacy
+
+- `IGNORED_WRONG_PACKAGE` and `IGNORED_MONITORING_OFF` decisions no longer invoke persistent history.
+- Existing rows with those legacy decisions are deleted once during application container initialization.
+- Selected-source decisions still persist normally; pipeline scheduling behavior is unchanged.
+- Release/debug logging on this path contains decision/package metadata only, not notification title or body.
+- `\.\gradlew.bat test :app:assembleAndroidTest lint assembleDebug`: PASS.

@@ -84,9 +84,43 @@ class FakeAlertEventDao : AlertEventDao {
         items.clear()
         emit()
     }
+
+    override suspend fun deleteByDecisions(decisions: List<String>): Int {
+        val countBefore = items.size
+        items.removeAll { it.decision in decisions }
+        emit()
+        return countBefore - items.size
+    }
 }
 
 class HistoryRepositoryTest {
+
+    @Test
+    fun legacyUnrelatedNotificationRowsAreRemovedWithoutDeletingSelectedHistory() = runBlocking {
+        val dao = FakeAlertEventDao()
+        val repo = HistoryRepository(dao)
+        listOf("IGNORED_WRONG_PACKAGE", "IGNORED_MONITORING_OFF", "SCHEDULED").forEachIndexed { index, decision ->
+            dao.insert(
+                AlertEventEntity(
+                    createdAtEpochMs = index.toLong(),
+                    sourcePackage = "package-$index",
+                    notificationKey = "key-$index",
+                    title = "private-$index",
+                    textPreview = "private-preview-$index",
+                    normalizedHash = null,
+                    decision = decision,
+                    ruleId = null,
+                    alarmToken = null,
+                    details = null
+                )
+            )
+        }
+
+        assertEquals(2, repo.deleteLegacyUnrelatedNotificationRows())
+        val remaining = repo.observePaged("ALL", 1).first()
+        assertEquals(1, remaining.size)
+        assertEquals("SCHEDULED", remaining.single().decision)
+    }
 
     @Test
     fun recordEventInsertsAndReturnsId() = runBlocking {

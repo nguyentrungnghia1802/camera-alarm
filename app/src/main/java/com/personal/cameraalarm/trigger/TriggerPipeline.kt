@@ -41,11 +41,13 @@ class TriggerPipeline(
 
     suspend fun process(notification: IncomingNotification): TriggerDecision {
         val (decision, token) = mutex.withLock { decide(notification) }
-        try {
-            history.record(notification, decision, token)
-        } catch (error: Exception) {
-            if (error is CancellationException) throw error
-            historyFailure(error)
+        if (decision.shouldPersistHistory()) {
+            try {
+                history.record(notification, decision, token)
+            } catch (error: Exception) {
+                if (error is CancellationException) throw error
+                historyFailure(error)
+            }
         }
         return decision
     }
@@ -86,3 +88,7 @@ class TriggerPipeline(
         return "${n.packageName}:${n.notificationId}:${n.tag ?: ""}:${n.postTimeEpochMs / 10_000}:$hash"
     }
 }
+
+private fun TriggerDecision.shouldPersistHistory(): Boolean =
+    this != TriggerDecision.IGNORED_WRONG_PACKAGE &&
+        this != TriggerDecision.IGNORED_MONITORING_OFF

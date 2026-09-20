@@ -185,26 +185,26 @@ Notification từ package khác
 
 ### Checklist
 
-- [ ] Audit `TriggerPipeline.process()` và history callback trong `AppContainer`.
-- [ ] Xác định chính xác nơi `IGNORED_WRONG_PACKAGE` được persist.
-- [ ] Sửa để wrong-package không persist nội dung notification.
-- [ ] Nếu vẫn cần diagnostic count:
-  - [ ] chỉ dùng in-memory counter hoặc metadata tối thiểu;
-  - [ ] không lưu title/text/subtext;
-  - [ ] không log raw text ở release build.
-- [ ] Review history schema để chắc không có hidden/raw payload field chứa text ngoài source.
-- [ ] Thêm regression test:
-  - [ ] wrong package không tạo DB row có content;
-  - [ ] selected package vẫn ghi history đúng;
-  - [ ] debug log không lộ full text trong release configuration nếu testable.
-- [ ] Kiểm tra History UI không phụ thuộc vào wrong-package rows cũ.
-- [ ] Nếu cần migration/cleanup existing wrong-package data, tạo cleanup an toàn.
+- [x] Audit `TriggerPipeline.process()` và history callback trong `AppContainer`.
+- [x] Xác định chính xác nơi `IGNORED_WRONG_PACKAGE` được persist.
+- [x] Sửa để wrong-package không persist nội dung notification.
+- [x] Nếu vẫn cần diagnostic count: không áp dụng; không giữ counter cho notification ngoài source.
+  - [x] chỉ dùng in-memory counter hoặc metadata tối thiểu; không áp dụng vì không giữ counter.
+  - [x] không lưu title/text/subtext.
+  - [x] không log raw text ở release build.
+- [x] Review history schema để chắc không có hidden/raw payload field chứa text ngoài source.
+- [x] Thêm regression test:
+  - [x] wrong package không tạo DB row có content;
+  - [x] selected package vẫn ghi history đúng;
+  - [x] debug/release logging path chỉ ghi decision/package, không ghi raw text.
+- [x] Kiểm tra History UI không phụ thuộc vào wrong-package rows cũ.
+- [x] Nếu cần migration/cleanup existing wrong-package data, tạo cleanup an toàn.
 
 ### Acceptance
 
-- [ ] Room không lưu preview từ package ngoài source đã chọn.
-- [ ] Core trigger behavior không đổi.
-- [ ] Privacy regression test PASS.
+- [x] Room không lưu preview từ package ngoài source đã chọn.
+- [x] Core trigger behavior không đổi.
+- [x] Privacy regression test PASS.
 
 ### Commit gợi ý
 

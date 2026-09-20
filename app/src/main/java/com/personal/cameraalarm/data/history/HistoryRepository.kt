@@ -52,6 +52,9 @@ class HistoryRepository(private val dao: AlertEventDao) {
         dao.clearAll()
     }
 
+    suspend fun deleteLegacyUnrelatedNotificationRows(): Int =
+        dao.deleteByDecisions(listOf("IGNORED_WRONG_PACKAGE", "IGNORED_MONITORING_OFF"))
+
     suspend fun count(): Int = dao.count()
 
     companion object {
