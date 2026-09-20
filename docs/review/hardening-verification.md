@@ -57,3 +57,12 @@ The AndroidTest failure is ISSUE-01 and is the first Phase 1 implementation task
 ## Verification Log
 
 Further phase results are appended below only after the corresponding command actually runs.
+
+## P1.1 — Instrumentation database gate
+
+- Retention contract fixed at 100 newest events, maximum age 3 days, and at most 10 suppressed/ignored events.
+- Removed the stale instrumentation dependency on `pruneOverRetention`; tests exercise the production `pruneRetention` transaction.
+- Added on-device coverage for age pruning, maximum count, suppressed cap, and pagination after pruning.
+- `\.\gradlew.bat :app:assembleAndroidTest test`: PASS.
+- `\.\gradlew.bat :app:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.personal.cameraalarm.DatabaseInstrumentedTest`: PASS, 4/4 tests on Samsung SM-A505F / Android 11.
+- Direct AndroidJUnitRunner execution on `CameraAlarm_API_31` (`emulator-5554`): PASS, 4/4 tests.

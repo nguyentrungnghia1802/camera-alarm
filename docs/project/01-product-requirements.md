@@ -204,7 +204,7 @@ Monitoring            Ready/Not ready
 
 ### FR-015 — History
 
-Lưu tối đa 500 event gần nhất.
+Lưu tối đa 100 event gần nhất trong 3 ngày; trong đó chỉ giữ tối đa 10 event suppressed/ignored gần nhất.
 
 Mỗi event chứa:
 

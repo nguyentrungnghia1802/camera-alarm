@@ -4,7 +4,9 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.personal.cameraalarm.data.AppDatabase
+import com.personal.cameraalarm.data.history.AlertEventDao
 import com.personal.cameraalarm.data.history.AlertEventEntity
+import com.personal.cameraalarm.data.history.HistoryRepository
 import com.personal.cameraalarm.data.rule.TriggerRuleEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -57,36 +59,69 @@ class DatabaseInstrumentedTest {
     }
 
     @Test
-    fun alertEventDaoRetentionLimit() = runBlocking {
-        // Insert 510 events
-        for (i in 1..510) {
-            val event = AlertEventEntity(
-                createdAtEpochMs = i.toLong(),
-                sourcePackage = "com.camera.test",
-                notificationKey = "key-$i",
-                title = "Event $i",
-                textPreview = "Preview $i",
-                normalizedHash = null,
-                decision = "SCHEDULED",
-                ruleId = "rule-1",
-                alarmToken = "token-$i",
-                details = null
-            )
-            db.alertEventDao().insert(event)
-        }
-        assertEquals(510, db.alertEventDao().count())
+    fun alertEventDaoPrunesByMaximumCountAndKeepsPaginationStable() = runBlocking {
+        val dao = db.alertEventDao()
+        for (i in 1..120) dao.insert(event(i))
 
-        // Prune retention
-        db.alertEventDao().pruneOverRetention()
+        dao.pruneRetention(
+            cutoffEpochMs = Long.MIN_VALUE,
+            maxRetained = HistoryRepository.MAX_RETAINED,
+            maxSuppressed = HistoryRepository.MAX_SUPPRESSED_RETAINED
+        )
 
-        // Count should now be exactly 500
-        assertEquals(500, db.alertEventDao().count())
-
-        // The oldest 10 (timestamps 1..10) should have been pruned
-        val remaining = db.alertEventDao().observeAll().first()
-        assertEquals(500, remaining.size)
-        // Highest timestamp should be 510, lowest should be 11
-        assertEquals(510L, remaining.first().createdAtEpochMs)
-        assertEquals(11L, remaining.last().createdAtEpochMs)
+        assertEquals(100, dao.count())
+        val newestPage = dao.observePaged("ALL", limit = 25, offset = 0).first()
+        val oldestPage = dao.observePaged("ALL", limit = 25, offset = 75).first()
+        val beyondRetention = dao.observePaged("ALL", limit = 25, offset = 100).first()
+        assertEquals(120L, newestPage.first().createdAtEpochMs)
+        assertEquals(21L, oldestPage.last().createdAtEpochMs)
+        assertTrue(beyondRetention.isEmpty())
     }
+
+    @Test
+    fun alertEventDaoPrunesEventsOutsideRetentionWindow() = runBlocking {
+        val dao = db.alertEventDao()
+        val now = 10_000_000_000L
+        val cutoff = now - HistoryRepository.RETENTION_WINDOW_MS
+        dao.insert(event(1, createdAtEpochMs = cutoff - 1))
+        dao.insert(event(2, createdAtEpochMs = cutoff))
+        dao.insert(event(3, createdAtEpochMs = now))
+
+        dao.pruneRetention(cutoff)
+
+        val remaining = dao.observeAll().first()
+        assertEquals(listOf(now, cutoff), remaining.map { it.createdAtEpochMs })
+    }
+
+    @Test
+    fun alertEventDaoCapsSuppressedEventsWithoutRemovingTriggeredEvents() = runBlocking {
+        val dao = db.alertEventDao()
+        for (i in 1..15) dao.insert(event(i, decision = "SUPPRESSED_COOLDOWN"))
+        for (i in 16..20) dao.insert(event(i, decision = "SCHEDULED"))
+
+        dao.pruneRetention(Long.MIN_VALUE)
+
+        val all = dao.observeAll().first()
+        assertEquals(15, all.size)
+        assertEquals(10, all.count { it.decision == "SUPPRESSED_COOLDOWN" })
+        assertEquals(5, all.count { it.decision == "SCHEDULED" })
+        assertEquals(6L, all.filter { it.decision == "SUPPRESSED_COOLDOWN" }.minOf { it.createdAtEpochMs })
+    }
+
+    private fun event(
+        index: Int,
+        createdAtEpochMs: Long = index.toLong(),
+        decision: String = "SCHEDULED"
+    ) = AlertEventEntity(
+        createdAtEpochMs = createdAtEpochMs,
+        sourcePackage = "com.camera.test",
+        notificationKey = "key-$index",
+        title = "Event $index",
+        textPreview = "Preview $index",
+        normalizedHash = null,
+        decision = decision,
+        ruleId = "rule-1",
+        alarmToken = "token-$index",
+        details = null
+    )
 }

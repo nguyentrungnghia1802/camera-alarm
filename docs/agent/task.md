@@ -134,25 +134,25 @@ Khôi phục toàn bộ instrumentation pipeline trước khi làm device certif
 
 ### Checklist
 
-- [ ] Mở `DatabaseInstrumentedTest` và DAO production hiện tại.
-- [ ] Xác định contract retention đang được production sử dụng thật.
-- [ ] Chốt contract duy nhất cho release candidate.
-- [ ] Đồng bộ test với API DAO hiện tại, không thêm compatibility method giả chỉ để test pass.
-- [ ] Nếu retention contract là `100 event / 3 ngày / max suppressed policy`, cập nhật test đúng contract đó.
-- [ ] Nếu report/docs khác production, cập nhật docs sau khi contract được chốt.
-- [ ] Thêm test cho:
-  - [ ] prune theo thời gian;
-  - [ ] prune theo max count;
-  - [ ] suppressed cap nếu production vẫn có;
-  - [ ] pagination không vỡ sau prune.
-- [ ] Chạy `:app:assembleAndroidTest`.
-- [ ] Chạy instrumentation DB test thật trên emulator nếu có.
+- [x] Mở `DatabaseInstrumentedTest` và DAO production hiện tại.
+- [x] Xác định contract retention đang được production sử dụng thật.
+- [x] Chốt contract duy nhất cho release candidate.
+- [x] Đồng bộ test với API DAO hiện tại, không thêm compatibility method giả chỉ để test pass.
+- [x] Nếu retention contract là `100 event / 3 ngày / max suppressed policy`, cập nhật test đúng contract đó.
+- [x] Nếu report/docs khác production, cập nhật docs sau khi contract được chốt.
+- [x] Thêm test cho:
+  - [x] prune theo thời gian;
+  - [x] prune theo max count;
+  - [x] suppressed cap nếu production vẫn có;
+  - [x] pagination không vỡ sau prune.
+- [x] Chạy `:app:assembleAndroidTest`.
+- [x] Chạy instrumentation DB test thật trên emulator nếu có.
 
 ### Acceptance
 
-- [ ] `:app:assembleAndroidTest` PASS.
-- [ ] Không còn reference tới DAO API đã xoá.
-- [ ] Test phản ánh production contract thật, không phải contract lịch sử.
+- [x] `:app:assembleAndroidTest` PASS.
+- [x] Không còn reference tới DAO API đã xoá.
+- [x] Test phản ánh production contract thật, không phải contract lịch sử.
 
 ### Commit gợi ý
 

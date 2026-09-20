@@ -62,7 +62,7 @@ Tối thiểu bao phủ tất cả transition trong `03-domain-state-machine.md`
 
 - Settings defaults đúng: delay 1000, cooldown 10000, vibration true, monitoring false.
 - Rule CRUD + validation.
-- History retention <= 500.
+- History retention <= 100, không quá 3 ngày và tối đa 10 event suppressed/ignored.
 - Runtime metadata persistence/hydration.
 
 ## 4. Scheduler adapter tests

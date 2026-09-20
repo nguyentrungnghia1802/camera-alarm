@@ -62,7 +62,7 @@ Index:
 
 Retention:
 
-- sau insert, nếu > 500 rows thì delete rows cũ nhất vượt limit;
+- sau insert, xoá event quá 3 ngày, giữ tối đa 100 rows và tối đa 10 rows suppressed/ignored gần nhất;
 - cleanup có thể batch sau insert, không cần worker định kỳ.
 
 ## 3. Main screen
