@@ -2,93 +2,96 @@ package com.personal.cameraalarm.boot
 
 import android.content.ComponentName
 import android.content.Context
-import android.content.pm.PackageManager
 import android.service.notification.NotificationListenerService
 import com.personal.cameraalarm.alarm.AlarmState
 import com.personal.cameraalarm.app.AppContainer
 import com.personal.cameraalarm.notification.CameraNotificationListener
-import com.personal.cameraalarm.notification.ListenerStatus
 
 interface BootReconciler {
     suspend fun reconcile()
 }
 
-class DefaultBootReconciler(
-    private val context: Context,
-    private val container: AppContainer
+internal interface BootReconcilerDependencies {
+    suspend fun awaitConfigLoaded()
+    suspend fun readAlarmState(): AlarmState
+    suspend fun writeAlarmState(state: AlarmState)
+    fun clearTestAlarmToken()
+    suspend fun recoverNotificationListener(): ListenerRecoveryResult
+    suspend fun recordBootEvent()
+    fun recordDiagnostic(message: String)
+}
+
+class DefaultBootReconciler internal constructor(
+    private val dependencies: BootReconcilerDependencies
 ) : BootReconciler {
+    constructor(context: Context, container: AppContainer) : this(
+        AndroidBootReconcilerDependencies(context, container)
+    )
+
     override suspend fun reconcile() {
-        // 0. Ensure persisted settings and rules are fully loaded into memory before checking readiness
-        container.awaitConfigLoaded()
+        dependencies.awaitConfigLoaded()
 
-        // 1. Reconcile alarm runtime state to safe Idle (clearing any orphan PENDING or RINGING)
         try {
-            val currentState = container.stateStore.read()
-            if (currentState !is AlarmState.Idle) {
-                container.stateStore.write(AlarmState.Idle)
+            if (dependencies.readAlarmState() !is AlarmState.Idle) {
+                dependencies.writeAlarmState(AlarmState.Idle)
             }
-        } catch (e: Exception) {
-            container.runtimeDiagnostics.record("boot stateStore: ${e.message ?: e.javaClass.simpleName}")
+        } catch (error: Exception) {
+            dependencies.recordDiagnostic("boot stateStore: ${error.message ?: error.javaClass.simpleName}")
         }
 
-        // 2. Clear test alarm token if lingering
-        container.testAlarmToken.value = null
+        dependencies.clearTestAlarmToken()
+        dependencies.recoverNotificationListener()
 
-        // 3. Check readiness dynamically (now with accurate configuration loaded)
-        val readiness = container.readiness.snapshot()
-
-        // 4. Request rebind for NotificationListenerService if access is granted
-        if (readiness.notificationAccessGranted) {
-            rebindNotificationListener()
-        }
-
-        // 5. Record boot diagnostics / history event
         try {
-            container.historyRepository.recordEvent(
-                createdAtEpochMs = System.currentTimeMillis(),
-                sourcePackage = container.triggerConfiguration.sourcePackage,
-                notificationKey = null,
-                title = "System Boot",
-                textPreview = "Boot completed; state reconciled to Idle; readiness checked",
-                normalizedHash = null,
-                decision = "BOOT_RECONCILED",
-                ruleId = null,
-                alarmToken = null,
-                details = "monitoring=${container.triggerConfiguration.monitoringEnabled}, access=${readiness.notificationAccessGranted}"
-            )
-        } catch (e: Exception) {
-            container.runtimeDiagnostics.record("boot history: ${e.message ?: e.javaClass.simpleName}")
+            dependencies.recordBootEvent()
+        } catch (error: Exception) {
+            dependencies.recordDiagnostic("boot history: ${error.message ?: error.javaClass.simpleName}")
         }
     }
+}
 
-    private fun rebindNotificationListener() {
-        val component = ComponentName(context, CameraNotificationListener::class.java)
-        try {
-            NotificationListenerService.requestRebind(component)
-        } catch (e: Exception) {
-            container.runtimeDiagnostics.record("boot rebind: ${e.message ?: e.javaClass.simpleName}")
-        }
+private class AndroidBootReconcilerDependencies(
+    context: Context,
+    private val container: AppContainer
+) : BootReconcilerDependencies {
+    private val component = ComponentName(context, CameraNotificationListener::class.java)
+    private val recovery = NotificationListenerRecovery(
+        accessGranted = { container.readiness.snapshot().notificationAccessGranted },
+        connectionState = container.listenerConnection,
+        requestRebind = { NotificationListenerService.requestRebind(component) },
+        recordDiagnostic = container.runtimeDiagnostics::record
+    )
 
-        // On OEM devices (Samsung, Xiaomi, Oppo, etc.) after hard reboot,
-        // requestRebind alone may not nudge NotificationManagerService if the service was not yet initialized.
-        // Nudging component enabled state triggers immediate rebinding in Android OS.
-        if (container.listenerConnection.status.value != ListenerStatus.CONNECTED) {
-            try {
-                val pm = context.packageManager
-                pm.setComponentEnabledSetting(
-                    component,
-                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                    PackageManager.DONT_KILL_APP
-                )
-                pm.setComponentEnabledSetting(
-                    component,
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                    PackageManager.DONT_KILL_APP
-                )
-                NotificationListenerService.requestRebind(component)
-            } catch (e: Exception) {
-                container.runtimeDiagnostics.record("boot nudge listener: ${e.message ?: e.javaClass.simpleName}")
-            }
-        }
+    override suspend fun awaitConfigLoaded() = container.awaitConfigLoaded()
+
+    override suspend fun readAlarmState(): AlarmState = container.stateStore.read()
+
+    override suspend fun writeAlarmState(state: AlarmState) = container.stateStore.write(state)
+
+    override fun clearTestAlarmToken() {
+        container.testAlarmToken.value = null
+    }
+
+    override suspend fun recoverNotificationListener(): ListenerRecoveryResult = recovery.recover()
+
+    override suspend fun recordBootEvent() {
+        val readiness = container.readiness.snapshot()
+        container.historyRepository.recordEvent(
+            createdAtEpochMs = System.currentTimeMillis(),
+            sourcePackage = container.triggerConfiguration.sourcePackage,
+            notificationKey = null,
+            title = "System Boot",
+            textPreview = "Boot completed; state reconciled to Idle; readiness checked",
+            normalizedHash = null,
+            decision = "BOOT_RECONCILED",
+            ruleId = null,
+            alarmToken = null,
+            details = "monitoring=${container.triggerConfiguration.monitoringEnabled}, " +
+                "access=${readiness.notificationAccessGranted}, listener=${readiness.listenerStatus.name}"
+        )
+    }
+
+    override fun recordDiagnostic(message: String) {
+        container.runtimeDiagnostics.record(message)
     }
 }

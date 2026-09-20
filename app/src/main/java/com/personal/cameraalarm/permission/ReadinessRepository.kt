@@ -22,7 +22,8 @@ data class ReadinessState(
     val postNotificationsGranted: Boolean,
     val sourceConfigured: Boolean,
     val ruleConfigured: Boolean,
-    val alarmVolumeNonZero: Boolean
+    val alarmVolumeNonZero: Boolean,
+    val listenerStatus: ListenerStatus = if (listenerConnected) ListenerStatus.CONNECTED else ListenerStatus.DISCONNECTED
 ) {
     val blockingReady get() = notificationAccessGranted && exactAlarmGranted && sourceConfigured && ruleConfigured
     val readyForMonitoring get() = blockingReady && listenerConnected && postNotificationsGranted && alarmVolumeNonZero
@@ -46,7 +47,8 @@ class ReadinessRepository(private val context: Context, private val exact: Exact
             postNotificationsGranted = Build.VERSION.SDK_INT < 33 || ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED,
             sourceConfigured = source != null,
             ruleConfigured = source != null && config.rules.any { it.enabled && it.sourcePackage == source && it.keywords.any { word -> NotificationNormalizer.normalize(word).isNotEmpty() } },
-            alarmVolumeNonZero = volumeStatus().isNonZero
+            alarmVolumeNonZero = volumeStatus().isNonZero,
+            listenerStatus = listener.status.value
         )
     }
     private fun notificationAccessGranted(): Boolean {

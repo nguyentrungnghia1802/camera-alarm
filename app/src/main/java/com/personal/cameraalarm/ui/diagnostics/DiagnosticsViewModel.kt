@@ -129,7 +129,7 @@ class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
             appendLine("Selected Guide: ${info.selectedOemKey}")
             appendLine("Battery Optimizations Ignored: ${batteryIgnored ?: "UNKNOWN"}")
             appendLine("Notification Access: ${if (info.readiness.notificationAccessGranted) "GRANTED" else "REQUIRED"}")
-            appendLine("Listener Connection: ${if (info.readiness.listenerConnected) "CONNECTED" else "DISCONNECTED"}")
+            appendLine("Listener Connection: ${info.readiness.listenerStatus.name}")
             appendLine("Exact Alarm: ${if (info.readiness.exactAlarmGranted) "GRANTED" else "REQUIRED"}")
             appendLine("Post Notifications: ${if (info.readiness.postNotificationsGranted) "GRANTED" else "DENIED"}")
             appendLine("Full Screen Intent: ${if (info.fullScreenIntentAllowed) "ALLOWED" else "DISALLOWED"}")

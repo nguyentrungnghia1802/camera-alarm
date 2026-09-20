@@ -84,3 +84,12 @@ Further phase results are appended below only after the corresponding command ac
 - Added monotonic timing markers for receiver fire, service request, foreground completion, and runtime/audio start.
 - Added a delayed-settings regression test proving cold reads return immediately and later reads use the loaded values.
 - `\.\gradlew.bat test lint assembleDebug :app:assembleAndroidTest`: PASS.
+
+## P1.4 — Notification listener recovery after boot
+
+- Removed the disable/enable component workaround entirely; boot recovery never mutates the listener component state.
+- Recovery checks access, preserves an already connected listener, exposes `RECONNECTING`, and performs at most three `requestRebind` attempts with a 750 ms bounded interval.
+- Failures and final disconnected state are recorded in runtime diagnostics; no polling loop or watchdog service is used.
+- `DefaultBootReconciler` now has an injectable production dependency boundary and is tested directly for stale Ringing cleanup, test-token cleanup, recovery invocation, and history recording.
+- Unit tests cover access denied, already connected, delayed connection, repeated request failure/no callback, and stale boot state.
+- `\.\gradlew.bat test lint assembleDebug :app:assembleAndroidTest`: PASS.

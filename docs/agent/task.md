@@ -293,38 +293,38 @@ Listener recovery có state rõ ràng, retry có giới hạn và không thay đ
 
 ### Checklist
 
-- [ ] Audit `DefaultBootReconciler` production path.
-- [ ] Audit component toggle workaround hiện tại.
-- [ ] Xác định behavior chuẩn:
-  - [ ] requestRebind;
-  - [ ] wait/retry bounded;
-  - [ ] no infinite polling;
-  - [ ] no permanent FGS watchdog.
-- [ ] Không toggle component ngay chỉ vì listener chưa CONNECTED tức thời.
-- [ ] Nếu vẫn giữ OEM workaround:
-  - [ ] chỉ activate trên OEM/version đã chứng minh cần;
-  - [ ] timeout rõ;
-  - [ ] fallback an toàn;
-  - [ ] diagnostics rõ.
-- [ ] Không disable/enable listener theo cách làm mất user permission.
-- [ ] Thêm production-path tests cho BootReconciler, không replica logic.
-- [ ] Test:
-  - [ ] access granted + delayed connect;
-  - [ ] access denied;
-  - [ ] listener already connected;
-  - [ ] requestRebind failure/no callback;
-  - [ ] reboot with stale runtime state.
-- [ ] Cập nhật diagnostics để phân biệt:
-  - [ ] access granted;
-  - [ ] connected;
-  - [ ] reconnecting;
-  - [ ] disconnected.
+- [x] Audit `DefaultBootReconciler` production path.
+- [x] Audit component toggle workaround hiện tại.
+- [x] Xác định behavior chuẩn:
+  - [x] requestRebind;
+  - [x] wait/retry bounded;
+  - [x] no infinite polling;
+  - [x] no permanent FGS watchdog.
+- [x] Không toggle component ngay chỉ vì listener chưa CONNECTED tức thời.
+- [x] OEM component-toggle workaround đã được loại bỏ vì chưa có bằng chứng cần thiết.
+  - [x] chỉ activate trên OEM/version đã chứng minh cần; không áp dụng.
+  - [x] timeout rõ; bounded retry tối đa 3 lần.
+  - [x] fallback an toàn; kết thúc `DISCONNECTED` và giữ nguyên permission state.
+  - [x] diagnostics rõ.
+- [x] Không disable/enable listener theo cách làm mất user permission.
+- [x] Thêm production-path tests cho BootReconciler, không replica logic.
+- [x] Test:
+  - [x] access granted + delayed connect;
+  - [x] access denied;
+  - [x] listener already connected;
+  - [x] requestRebind failure/no callback;
+  - [x] reboot with stale runtime state.
+- [x] Cập nhật diagnostics để phân biệt:
+  - [x] access granted;
+  - [x] connected;
+  - [x] reconnecting;
+  - [x] disconnected.
 
 ### Acceptance
 
-- [ ] Không có immediate component toggle race.
-- [ ] Boot recovery deterministic và bounded.
-- [ ] Production reconciler được test trực tiếp.
+- [x] Không có immediate component toggle race.
+- [x] Boot recovery deterministic và bounded.
+- [x] Production reconciler được test trực tiếp.
 
 ### Commit gợi ý
 

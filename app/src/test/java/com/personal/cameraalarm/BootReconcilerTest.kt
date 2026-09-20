@@ -1,83 +1,115 @@
 package com.personal.cameraalarm
 
-import com.personal.cameraalarm.alarm.*
-import com.personal.cameraalarm.boot.BootReconciler
+import com.personal.cameraalarm.alarm.AlarmState
+import com.personal.cameraalarm.alarm.AlarmToken
+import com.personal.cameraalarm.alarm.TriggerSnapshot
+import com.personal.cameraalarm.boot.BootReconcilerDependencies
 import com.personal.cameraalarm.boot.DefaultBootReconciler
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
+import com.personal.cameraalarm.boot.ListenerRecoveryResult
+import com.personal.cameraalarm.boot.NotificationListenerRecovery
+import com.personal.cameraalarm.notification.ListenerConnectionState
+import com.personal.cameraalarm.notification.ListenerStatus
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class BootReconcilerTest {
+    private class FakeDependencies(initialState: AlarmState) : BootReconcilerDependencies {
+        var state = initialState
+        var testToken: AlarmToken? = AlarmToken("test-boot")
+        var configAwaited = false
+        var recoveryCalls = 0
+        var historyCalls = 0
+        val diagnostics = mutableListOf<String>()
 
-    private class FakeStateStore(var state: AlarmState = AlarmState.Idle) : AlarmStateStore {
-        override suspend fun read(): AlarmState = state
-        override suspend fun write(state: AlarmState) { this.state = state }
-    }
-
-    private class FakeHistoryRecorder {
-        val records = mutableListOf<String>()
-        fun record(decision: String) { records += decision }
-    }
-
-    @Test
-    fun bootReconciliationResetsOrphanRingingToIdle() = runTest {
-        val trigger = TriggerSnapshot(AlarmToken("old-token"), "camera.app", "key1", "rule1", "Title", "Text", 1000L)
-        val store = FakeStateStore(AlarmState.Ringing(trigger, 1000L))
-
-        // When boot happens, orphan Ringing state must be reset to Idle
-        if (store.read() !is AlarmState.Idle) {
-            store.write(AlarmState.Idle)
+        override suspend fun awaitConfigLoaded() { configAwaited = true }
+        override suspend fun readAlarmState(): AlarmState = state
+        override suspend fun writeAlarmState(state: AlarmState) { this.state = state }
+        override fun clearTestAlarmToken() { testToken = null }
+        override suspend fun recoverNotificationListener(): ListenerRecoveryResult {
+            recoveryCalls++
+            return ListenerRecoveryResult.CONNECTED
         }
-
-        assertEquals(AlarmState.Idle, store.read())
+        override suspend fun recordBootEvent() { historyCalls++ }
+        override fun recordDiagnostic(message: String) { diagnostics += message }
     }
 
     @Test
-    fun bootReconciliationResetsOrphanPendingToIdle() = runTest {
-        val trigger = TriggerSnapshot(AlarmToken("pending-token"), "camera.app", "key2", "rule2", "Title", "Text", 2000L)
-        val store = FakeStateStore(AlarmState.Pending(trigger, 3000L))
+    fun productionReconcilerResetsStaleStateAndRunsRecoveryInOrder() = runTest {
+        val trigger = TriggerSnapshot(
+            AlarmToken("old-token"), "camera.app", "key", "rule", "Title", "Text", 1_000L
+        )
+        val dependencies = FakeDependencies(AlarmState.Ringing(trigger, 1_000L))
 
-        if (store.read() !is AlarmState.Idle) {
-            store.write(AlarmState.Idle)
-        }
+        DefaultBootReconciler(dependencies).reconcile()
 
-        assertEquals(AlarmState.Idle, store.read())
+        assertTrue(dependencies.configAwaited)
+        assertEquals(AlarmState.Idle, dependencies.state)
+        assertNull(dependencies.testToken)
+        assertEquals(1, dependencies.recoveryCalls)
+        assertEquals(1, dependencies.historyCalls)
     }
 
     @Test
-    fun testAlarmTokenClearedOnBoot() = runTest {
-        val testToken = MutableStateFlow<AlarmToken?>(AlarmToken("test-boot"))
-        assertNotNull(testToken.value)
+    fun accessDeniedDoesNotRequestRebind() = runTest {
+        val state = ListenerConnectionState()
+        var requests = 0
+        val result = NotificationListenerRecovery(
+            accessGranted = { false }, connectionState = state,
+            requestRebind = { requests++ }, recordDiagnostic = {}, wait = {}
+        ).recover()
 
-        // Boot reconciler clears test token
-        testToken.value = null
-        assertNull(testToken.value)
+        assertEquals(ListenerRecoveryResult.ACCESS_DENIED, result)
+        assertEquals(0, requests)
+        assertEquals(ListenerStatus.DISCONNECTED, state.status.value)
     }
 
     @Test
-    fun bootRecordsDiagnosticEventWithoutBreaking() = runTest {
-        val history = FakeHistoryRecorder()
-        history.record("BOOT_RECONCILED")
-        assertEquals(listOf("BOOT_RECONCILED"), history.records)
+    fun alreadyConnectedDoesNotRequestRebind() = runTest {
+        val state = ListenerConnectionState().apply { connected() }
+        var requests = 0
+        val result = NotificationListenerRecovery(
+            accessGranted = { true }, connectionState = state,
+            requestRebind = { requests++ }, recordDiagnostic = {}, wait = {}
+        ).recover()
+
+        assertEquals(ListenerRecoveryResult.ALREADY_CONNECTED, result)
+        assertEquals(0, requests)
     }
 
     @Test
-    fun initialConfigAwaitedBeforePipelineProcessing() = runTest {
-        val loaded = kotlinx.coroutines.CompletableDeferred<Unit>()
-        var configReady = false
+    fun delayedConnectCompletesWithinBoundedRetry() = runTest {
+        val state = ListenerConnectionState()
+        var requests = 0
+        var waits = 0
+        val result = NotificationListenerRecovery(
+            accessGranted = { true }, connectionState = state,
+            requestRebind = { requests++ }, recordDiagnostic = {},
+            wait = { waits++; state.connected() }
+        ).recover()
 
-        val job = launch {
-            if (!loaded.isCompleted) {
-                loaded.await()
-            }
-            configReady = true
-        }
+        assertEquals(ListenerRecoveryResult.CONNECTED, result)
+        assertEquals(1, requests)
+        assertEquals(1, waits)
+    }
 
-        assertFalse(configReady)
-        loaded.complete(Unit)
-        job.join()
-        assertTrue(configReady)
+    @Test
+    fun failuresRemainBoundedAndEndDisconnected() = runTest {
+        val state = ListenerConnectionState()
+        val diagnostics = mutableListOf<String>()
+        var requests = 0
+        val result = NotificationListenerRecovery(
+            accessGranted = { true }, connectionState = state,
+            requestRebind = { requests++; error("notification manager unavailable") },
+            recordDiagnostic = { diagnostics += it }, retryDelayMs = 1,
+            maxAttempts = 3, wait = {}
+        ).recover()
+
+        assertEquals(ListenerRecoveryResult.DISCONNECTED, result)
+        assertEquals(3, requests)
+        assertEquals(ListenerStatus.DISCONNECTED, state.status.value)
+        assertTrue(diagnostics.last().contains("after 3 attempts"))
     }
 }
