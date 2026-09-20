@@ -297,6 +297,16 @@
     <string name="rule_sample_template_btn">Tạo mẫu Người / Chuyển động</string>
     <string name="rule_delete_confirm_dialog">Bạn có chắc chắn muốn xóa quy tắc \"%1$s\" không?</string>
 
+    <string name="rule_create_title">Tạo điều kiện cảnh báo</string>
+    <string name="rule_create_blank">Tạo mới</string>
+    <string name="rule_create_template">Dùng mẫu đề xuất</string>
+    <string name="rule_limit_reached">Đã đạt giới hạn tối đa 3 điều kiện.</string>
+    <string name="rule_legacy_overflow">Đang có %1$d điều kiện cũ. Hãy giảm còn 3 trước khi tạo thêm.</string>
+    <string name="rule_keyword_add">+ Thêm từ khóa</string>
+    <string name="rule_keyword_edit">Sửa từ khóa</string>
+    <string name="rule_keyword_label">Từ khóa</string>
+    <string name="rule_source_app">Ứng dụng áp dụng</string>
+
     <!-- Source Picker -->
     <string name="source_picker_installed_apps">Ứng dụng trên máy (%1$d)</string>
     <string name="source_picker_empty_search">Không tìm thấy ứng dụng phù hợp.</string>

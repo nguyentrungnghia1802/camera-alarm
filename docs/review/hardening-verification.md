@@ -125,3 +125,16 @@ Date: 2026-09-21.
 - `.\gradlew.bat :app:assembleAndroidTest test --rerun-tasks`: PASS.
 - Filtered API 31 instrumentation: `RuleMigrationInstrumentedTest` plus `RuleRepositoryInstrumentedTest`: PASS, 4/4.
 - `.\gradlew.bat test lint assembleDebug`: PASS; no lint error.
+
+## Phase 3 — Rule System V2
+
+Date: 2026-09-21.
+
+- Rule list enforces the normal maximum of three and explains both the limit and legacy overflow state; creation offers blank or the exact Vietnamese suggested template.
+- Priority is limited to 1–3 and changing an edited rule to an occupied priority swaps both rows atomically. Delete leaves remaining gaps unchanged and edits preserve `createdAtEpochMs`.
+- Keyword entry is now a bounded scrolling list of individual cards. Add/edit/delete uses a dialog; blank and normalized case/whitespace duplicates are rejected. ANY/ALL remains a rule-level matcher and its matching implementation was not changed.
+- Rule editor reuses the installed-app picker, including label/package search and app icons. Each rule owns `sourcePackage`; multiple rules may share a package.
+- Trigger privacy gate derives allowed packages only from enabled rules. Global source remains a new-rule default and no longer blocks another enabled rule's source.
+- Regression coverage includes three different packages, two same-package rules with deterministic priority, disabled-only package privacy, template contract, keyword normalization, max-three enforcement, swaps, stable creation time, delete gaps, and Room migration.
+- First full API 31 run exposed an obsolete instrumentation fixture using priority `0`; production now requires `1..3`. The fixture and debug injectors were corrected and the full suite then passed 14/14.
+- `.\gradlew.bat test --rerun-tasks lint assembleDebug :app:assembleAndroidTest`: PASS; 184 tasks executed, no lint error.

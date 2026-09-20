@@ -1,6 +1,7 @@
 package com.personal.cameraalarm.ui.picker
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,18 +13,21 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.personal.cameraalarm.R
+import androidx.core.graphics.drawable.toBitmap
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SourcePickerScreen(
     viewModel: SourcePickerViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onAppSelected: ((AppInfo) -> Unit)? = null
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -89,7 +93,12 @@ fun SourcePickerScreen(
                             modifier = Modifier.weight(1f)
                         )
                         Button(
-                            onClick = { viewModel.submitManualInput(onBack) },
+                            onClick = {
+                                viewModel.submitManualInput(persistGlobal = onAppSelected == null) { app ->
+                                    onAppSelected?.invoke(app)
+                                    onBack()
+                                }
+                            },
                             shape = RoundedCornerShape(10.dp),
                             modifier = Modifier.height(56.dp)
                         ) {
@@ -142,7 +151,12 @@ fun SourcePickerScreen(
                         AppRow(
                             app = app,
                             isSelected = isSelected,
-                            onSelect = { viewModel.selectApp(app, onBack) }
+                            onSelect = {
+                                viewModel.selectApp(app, persistGlobal = onAppSelected == null) { selected ->
+                                    onAppSelected?.invoke(selected)
+                                    onBack()
+                                }
+                            }
                         )
                     }
                 }
@@ -173,6 +187,17 @@ private fun AppRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            app.icon?.let { drawable ->
+                Image(
+                    bitmap = drawable.toBitmap(width = 48, height = 48).asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier.size(40.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+            } ?: run {
+                Icon(Icons.Default.Apps, contentDescription = null, modifier = Modifier.size(40.dp))
+                Spacer(modifier = Modifier.width(12.dp))
+            }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = app.label,

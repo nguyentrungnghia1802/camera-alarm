@@ -17,7 +17,7 @@ class DebugCameraNotificationReceiver : BroadcastReceiver() {
         val app = context.applicationContext as CameraAlarmApp
         val source = context.packageName
         app.container.triggerConfiguration = TriggerConfiguration(true, source,
-            listOf(TriggerRule("debug-notification", "Debug camera", true, source, MatchMode.CONTAINS_ANY, listOf("human detected"), 0, 0)))
+            listOf(TriggerRule("debug-notification", "Debug camera", true, source, MatchMode.CONTAINS_ANY, listOf("human detected"), 1, 0)))
         val manager = context.getSystemService(NotificationManager::class.java)
         val channel = NotificationChannel(CHANNEL, "Debug camera source", NotificationManager.IMPORTANCE_HIGH)
         channel.setSound(null, null)

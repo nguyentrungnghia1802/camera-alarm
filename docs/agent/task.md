@@ -165,6 +165,8 @@ Acceptance:
 
 ## P3.1 — Tối đa 3 rule + priority duy nhất
 
+Status: **COMPLETE** on 2026-09-21.
+
 Behavior:
 
 - Khi chưa đủ 3 rule, cho phép thêm.
@@ -183,6 +185,8 @@ Test:
 - process restart giữ priority.
 
 ## P3.2 — Keyword editor dạng chip/card
+
+Status: **COMPLETE** on 2026-09-21; matcher ANY/ALL unchanged.
 
 **Không thay đổi matcher.**
 
@@ -225,6 +229,8 @@ Yêu cầu:
 - Migration/UI hiển thị keyword cũ thành từng chip/card mà không thay nội dung.
 
 ## P3.3 — Mỗi Rule chọn app camera riêng
+
+Status: **COMPLETE** on 2026-09-21; global source retained only as the default for a new rule.
 
 Trong editor Rule:
 
@@ -292,6 +298,8 @@ Test:
 - priority evaluation deterministic.
 
 ## P3.4 — Nút `+`: Rule mới hoặc Template
+
+Status: **COMPLETE** on 2026-09-21.
 
 Khi bấm `+`:
 

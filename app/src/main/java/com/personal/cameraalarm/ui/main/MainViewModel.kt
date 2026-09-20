@@ -70,7 +70,7 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
         val readiness = container.readiness.snapshot()
         val volume = container.readiness.volumeStatus()
         val isRinging = alarmState is AlarmState.Ringing || testing
-        val enabledRules = rules.filter { it.enabled && it.sourcePackage == settings.sourcePackage }
+        val enabledRules = rules.filter { it.enabled && it.sourcePackage.isNotBlank() }
 
         val scheduleConfig = ScheduleConfiguration(settings.scheduleMode, settings.scheduleRanges)
         val now = System.currentTimeMillis()

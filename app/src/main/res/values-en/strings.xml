@@ -297,6 +297,16 @@
     <string name="rule_sample_template_btn">Create Person / Motion Template</string>
     <string name="rule_delete_confirm_dialog">Are you sure you want to delete rule \"%1$s\"?</string>
 
+    <string name="rule_create_title">Create alert rule</string>
+    <string name="rule_create_blank">Create new</string>
+    <string name="rule_create_template">Use suggested template</string>
+    <string name="rule_limit_reached">The maximum of 3 rules has been reached.</string>
+    <string name="rule_legacy_overflow">%1$d legacy rules are stored. Delete rules until 3 remain before creating another.</string>
+    <string name="rule_keyword_add">+ Add keyword</string>
+    <string name="rule_keyword_edit">Edit keyword</string>
+    <string name="rule_keyword_label">Keyword</string>
+    <string name="rule_source_app">Applies to app</string>
+
     <!-- Source Picker -->
     <string name="source_picker_installed_apps">Installed Apps (%1$d)</string>
     <string name="source_picker_empty_search">No matching apps found.</string>

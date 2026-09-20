@@ -1,7 +1,10 @@
 package com.personal.cameraalarm.ui.rule
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -22,13 +25,60 @@ import com.personal.cameraalarm.trigger.MatchMode
 @Composable
 fun RuleEditorScreen(
     viewModel: RuleViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onSelectSourceApp: () -> Unit
 ) {
     val state by viewModel.editorState.collectAsState()
     var showUnsavedDialog by remember { mutableStateOf(false) }
+    var showKeywordDialog by remember { mutableStateOf(false) }
+    var keywordDialogIndex by remember { mutableStateOf<Int?>(null) }
+    var keywordDraft by remember { mutableStateOf("") }
 
-    val isModified = remember(state.name, state.keywordsRaw, state.matchMode, state.priority, state.enabled) {
+    val isModified = remember(state.name, state.keywordsRaw, state.sourcePackage, state.matchMode, state.priority, state.enabled) {
         state.name.isNotBlank() || state.keywordsRaw.isNotBlank()
+    }
+
+    if (showKeywordDialog) {
+        AlertDialog(
+            onDismissRequest = { showKeywordDialog = false },
+            title = {
+                Text(
+                    if (keywordDialogIndex == null) stringResource(R.string.rule_keyword_add)
+                    else stringResource(R.string.rule_keyword_edit)
+                )
+            },
+            text = {
+                OutlinedTextField(
+                    value = keywordDraft,
+                    onValueChange = { keywordDraft = it },
+                    label = { Text(stringResource(R.string.rule_keyword_label)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                Button(onClick = {
+                    val saved = keywordDialogIndex?.let { viewModel.editKeyword(it, keywordDraft) }
+                        ?: viewModel.addKeyword(keywordDraft)
+                    if (saved) showKeywordDialog = false
+                }) { Text(stringResource(R.string.btn_save)) }
+            },
+            dismissButton = {
+                Row {
+                    keywordDialogIndex?.let { index ->
+                        TextButton(onClick = {
+                            viewModel.deleteKeyword(index)
+                            showKeywordDialog = false
+                        }) {
+                            Text(stringResource(R.string.btn_delete), color = MaterialTheme.colorScheme.error)
+                        }
+                    }
+                    TextButton(onClick = { showKeywordDialog = false }) {
+                        Text(stringResource(R.string.btn_cancel))
+                    }
+                }
+            }
+        )
     }
 
     BackHandler {
@@ -75,7 +125,7 @@ fun RuleEditorScreen(
             TopAppBar(
                 title = {
                     Text(
-                        if (state.id != null) stringResource(R.string.btn_edit) else stringResource(R.string.btn_add),
+                        if (state.isNew) stringResource(R.string.btn_add) else stringResource(R.string.btn_edit),
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -116,19 +166,33 @@ fun RuleEditorScreen(
             )
 
             // Source App
-            OutlinedTextField(
-                value = state.sourcePackage,
-                onValueChange = { },
-                label = { Text(stringResource(R.string.setup_source_app)) },
-                readOnly = true,
-                supportingText = {
-                    Text(
-                        if (state.sourcePackage.isBlank()) stringResource(R.string.rule_source_app_empty_hint)
-                        else stringResource(R.string.rule_source_app_hint)
-                    )
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
+            Card(
+                modifier = Modifier.fillMaxWidth().clickable(onClick = onSelectSourceApp),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(14.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text("📷", fontSize = 24.sp)
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(stringResource(R.string.rule_source_app), style = MaterialTheme.typography.labelMedium)
+                        Text(
+                            state.sourceLabel.ifBlank { stringResource(R.string.rule_source_app_empty_hint) },
+                            fontWeight = FontWeight.Bold
+                        )
+                        if (state.sourcePackage.isNotBlank()) {
+                            Text(
+                                state.sourcePackage,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                    Text("›", fontSize = 28.sp)
+                }
+            }
 
             // Match Mode Selection
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -158,19 +222,46 @@ fun RuleEditorScreen(
                 )
             }
 
-            // Keywords Editor
-            OutlinedTextField(
-                value = state.keywordsRaw,
-                onValueChange = viewModel::updateKeywordsRaw,
-                label = { Text(stringResource(R.string.rule_keywords)) },
-                placeholder = { Text(stringResource(R.string.rule_keywords_hint)) },
-                minLines = 3,
-                maxLines = 6,
-                supportingText = {
-                    Text(stringResource(R.string.rule_keywords_helper))
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
+            // Keyword cards keep the matcher unchanged while removing CSV editing from the UI.
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(stringResource(R.string.rule_keywords), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp)) {
+                    if (state.keywordItems.isEmpty()) {
+                        Text(
+                            stringResource(R.string.rule_no_normalized_keywords),
+                            modifier = Modifier.padding(16.dp),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxWidth().heightIn(max = 220.dp),
+                            contentPadding = PaddingValues(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            itemsIndexed(state.keywordItems) { index, keyword ->
+                                Surface(
+                                    modifier = Modifier.fillMaxWidth().clickable {
+                                        keywordDialogIndex = index
+                                        keywordDraft = keyword
+                                        showKeywordDialog = true
+                                    },
+                                    shape = RoundedCornerShape(10.dp),
+                                    color = MaterialTheme.colorScheme.secondaryContainer
+                                ) {
+                                    Text(keyword, modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp))
+                                }
+                            }
+                        }
+                    }
+                }
+                OutlinedButton(onClick = {
+                    keywordDialogIndex = null
+                    keywordDraft = ""
+                    showKeywordDialog = true
+                }) {
+                    Text(stringResource(R.string.rule_keyword_add))
+                }
+            }
 
             // Guidance & Real-world Example Card
             Card(
@@ -274,7 +365,7 @@ fun RuleEditorScreen(
                     ) { Text("-") }
                     Button(
                         onClick = { viewModel.updatePriority(state.priority + 1) },
-                        enabled = state.priority < 100
+                        enabled = state.priority < RuleViewModel.MAX_RULES
                     ) { Text("+") }
                 }
             }

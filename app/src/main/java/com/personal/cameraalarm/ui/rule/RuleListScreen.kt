@@ -31,6 +31,41 @@ fun RuleListScreen(
 ) {
     val rules by viewModel.rules.collectAsState()
     var ruleToDelete by remember { mutableStateOf<TriggerRule?>(null) }
+    var showCreateChoice by remember { mutableStateOf(false) }
+    val canCreate = rules.size < RuleViewModel.MAX_RULES
+
+    if (showCreateChoice) {
+        AlertDialog(
+            onDismissRequest = { showCreateChoice = false },
+            title = { Text(stringResource(R.string.rule_create_title)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    TextButton(
+                        onClick = {
+                            showCreateChoice = false
+                            viewModel.initNewRule()
+                            onAddRule()
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) { Text(stringResource(R.string.rule_create_blank)) }
+                    TextButton(
+                        onClick = {
+                            showCreateChoice = false
+                            viewModel.initFromTemplate()
+                            onAddRule()
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) { Text(stringResource(R.string.rule_create_template)) }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = { showCreateChoice = false }) {
+                    Text(stringResource(R.string.btn_cancel))
+                }
+            }
+        )
+    }
 
     if (ruleToDelete != null) {
         AlertDialog(
@@ -60,10 +95,7 @@ fun RuleListScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.title_rules), fontWeight = FontWeight.Bold) },
                 actions = {
-                    IconButton(onClick = {
-                        viewModel.initNewRule()
-                        onAddRule()
-                    }) {
+                    IconButton(onClick = { showCreateChoice = true }, enabled = canCreate) {
                         Icon(Icons.Default.Add, contentDescription = stringResource(R.string.btn_add))
                     }
                 }
@@ -76,13 +108,10 @@ fun RuleListScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    viewModel.initNewRule()
-                    onAddRule()
+            if (canCreate) {
+                FloatingActionButton(onClick = { showCreateChoice = true }) {
+                    Icon(Icons.Default.Add, contentDescription = stringResource(R.string.btn_add))
                 }
-            ) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.btn_add))
             }
         }
     ) { padding ->
@@ -115,11 +144,8 @@ fun RuleListScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = {
-                        viewModel.initFromTemplate()
-                        onAddRule()
-                    }) {
-                        Text(stringResource(R.string.rule_sample_template_btn))
+                    Button(onClick = { showCreateChoice = true }) {
+                        Text(stringResource(R.string.btn_add))
                     }
                 }
             }
@@ -132,6 +158,20 @@ fun RuleListScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 contentPadding = PaddingValues(vertical = 12.dp)
             ) {
+                if (!canCreate) {
+                    item {
+                        Text(
+                            text = if (rules.size > RuleViewModel.MAX_RULES) {
+                                stringResource(R.string.rule_legacy_overflow, rules.size)
+                            } else {
+                                stringResource(R.string.rule_limit_reached)
+                            },
+                            color = if (rules.size > RuleViewModel.MAX_RULES) MaterialTheme.colorScheme.error
+                                else MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                }
                 items(rules, key = { it.id }) { rule ->
                     RuleCard(
                         rule = rule,

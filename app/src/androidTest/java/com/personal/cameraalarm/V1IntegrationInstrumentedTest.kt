@@ -128,7 +128,7 @@ class V1IntegrationInstrumentedTest {
             container.settingsRepository.setAlarmDelayMs(5_000)
             container.settingsRepository.setMonitoringEnabled(true)
             container.ruleRepository.saveRule(
-                TriggerRule(ruleId, "Person", true, "com.camera.instrumented", MatchMode.CONTAINS_ANY, listOf("person detected"), 0, 1_000)
+                TriggerRule(ruleId, "Person", true, "com.camera.instrumented", MatchMode.CONTAINS_ANY, listOf("person detected"), 1, 1_000)
             )
             awaitConfiguration {
                 it.monitoringEnabled && it.sourcePackage == "com.camera.instrumented" && it.rules.any { rule -> rule.id == ruleId }

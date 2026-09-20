@@ -9,7 +9,7 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class TriggerPipelineTest {
-    private val rule = TriggerRule("r", "person", true, "camera.app", MatchMode.CONTAINS_ANY, listOf("human"), 0, 0)
+    private val rule = TriggerRule("r", "person", true, "camera.app", MatchMode.CONTAINS_ANY, listOf("human"), 1, 0)
     private fun incoming(key: String, pkg: String = "camera.app") = IncomingNotification(key, pkg, 1, null, 1000, "Human detected", null, null, emptyList(), null)
     @Test fun rejectsWrongPackageDuplicateAndSubmitsMatchingRuleOnce() = runTest {
         val submitted = mutableListOf<TriggerSnapshot>()
@@ -58,6 +58,48 @@ class TriggerPipelineTest {
 
         assertEquals(TriggerDecision.SCHEDULED, pipeline.process(incoming("selected")))
         assertEquals("Human detected", persisted.single().title)
+    }
+
+    @Test fun enabledRulesDefineMultipleAllowedPackagesInsteadOfGlobalSource() = runTest {
+        val submitted = mutableListOf<TriggerSnapshot>()
+        val rules = listOf(
+            rule.copy(id = "one", sourcePackage = "camera.one", priority = 1),
+            rule.copy(id = "two", sourcePackage = "camera.two", priority = 2),
+            rule.copy(id = "three", sourcePackage = "camera.three", priority = 3)
+        )
+        val pipeline = TriggerPipeline(
+            Clock { 1_000 },
+            { TriggerConfiguration(true, "legacy.global", rules) },
+            TtlDuplicateGuard(),
+            ValidTriggerSink { submitted += it; AlarmOutcome.SCHEDULED },
+            TriggerHistory { _, _, _ -> }
+        )
+
+        assertEquals(TriggerDecision.SCHEDULED, pipeline.process(incoming("two", "camera.two")))
+        assertEquals("two", submitted.single().ruleId)
+        assertEquals(TriggerDecision.IGNORED_WRONG_PACKAGE, pipeline.process(incoming("global", "legacy.global")))
+    }
+
+    @Test fun disabledRulePackageIsPrivateAndSamePackageRulesUsePriority() = runTest {
+        val submitted = mutableListOf<TriggerSnapshot>()
+        val rules = listOf(
+            rule.copy(id = "later", sourcePackage = "shared.camera", priority = 2),
+            rule.copy(id = "first", sourcePackage = "shared.camera", priority = 1),
+            rule.copy(id = "disabled", sourcePackage = "disabled.camera", priority = 3, enabled = false)
+        )
+        val persisted = mutableListOf<IncomingNotification>()
+        val pipeline = TriggerPipeline(
+            Clock { 1_000 },
+            { TriggerConfiguration(true, null, rules) },
+            TtlDuplicateGuard(),
+            ValidTriggerSink { submitted += it; AlarmOutcome.SCHEDULED },
+            TriggerHistory { notification, _, _ -> persisted += notification }
+        )
+
+        assertEquals(TriggerDecision.SCHEDULED, pipeline.process(incoming("shared", "shared.camera")))
+        assertEquals("first", submitted.single().ruleId)
+        assertEquals(TriggerDecision.IGNORED_WRONG_PACKAGE, pipeline.process(incoming("disabled", "disabled.camera")))
+        assertTrue(persisted.none { it.packageName == "disabled.camera" })
     }
     @Test fun monitoringOffAndNoMatchNeverSubmit() = runTest {
         var count = 0

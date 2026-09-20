@@ -78,13 +78,13 @@ Ví dụ:
 Thứ tự bắt buộc:
 
 1. Monitoring enabled?
-2. Package matches selected source?
+2. Package belongs to at least one enabled rule?
 3. Dedupe check.
 4. Có rule enabled cho package?
 5. Keyword match.
 6. Submit `ValidTrigger` cho AlarmCoordinator.
 
-Lý do package check trước normalization/matcher: giảm work và tránh app khác vô tình chứa cùng keyword.
+`allowedPackages` được suy ra từ `enabledRules.map(sourcePackage).toSet()`. Global source cũ chỉ là default/preselect khi tạo rule và không còn block notification của rule khác. Lý do package check trước normalization/matcher: giảm work và bảo đảm nội dung package không thuộc rule bật không được persist.
 
 ## 6. Match modes
 
@@ -98,7 +98,7 @@ Rule match nếu mọi keyword normalized đều là substring.
 
 Rule có `keywords.isEmpty()` luôn invalid và không match.
 
-Nếu nhiều rule match, V1 chọn rule enabled đầu tiên theo `priority` tăng dần rồi `createdAt`.
+Nếu nhiều rule match, Rule V2 chọn rule enabled đầu tiên theo unique `priority` tăng dần; `createdAt` không còn dùng để giải quyết duplicate priority.
 
 Rule model bổ sung:
 
@@ -170,11 +170,11 @@ package name
 
 Nếu app camera không hiện trong picker, Advanced section cho nhập package name thủ công.
 
-Sau khi lưu source mới:
+Sau khi lưu global source mặc định mới:
 
 - rules cũ có source package khác không được silently chuyển;
 - user có thể tạo rule mới;
-- Monitoring Ready yêu cầu ít nhất một enabled rule khớp source đang chọn.
+- Monitoring Ready yêu cầu ít nhất một enabled rule có source app và keyword hợp lệ; rule có thể dùng source khác global default.
 
 ## 10. Default example rules
 

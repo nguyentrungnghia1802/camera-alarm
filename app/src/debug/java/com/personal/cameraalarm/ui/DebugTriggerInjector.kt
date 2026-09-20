@@ -15,7 +15,7 @@ object DebugTriggerInjector {
         app.container.alarmPolicy = AlarmPolicy(delayMs = intent.getLongExtra("delay_ms", 1_000).coerceIn(0, 5_000))
         val source = "com.personal.cameraalarm.debug"
         app.container.triggerConfiguration = TriggerConfiguration(true, source,
-            listOf(TriggerRule("debug", "Debug person", true, source, MatchMode.CONTAINS_ANY, listOf("human"), 0, 0)))
+            listOf(TriggerRule("debug", "Debug person", true, source, MatchMode.CONTAINS_ANY, listOf("human"), 1, 0)))
         val readiness = app.container.readiness.snapshot()
         val volume = app.container.readiness.volumeStatus()
         Log.d("CameraAlarm", "debug readiness exact=${readiness.exactAlarmGranted} notifications=${readiness.postNotificationsGranted} alarmVolume=${volume.current}/${volume.maximum} min=${volume.minimum} alarmVolumeNonZero=${readiness.alarmVolumeNonZero}")

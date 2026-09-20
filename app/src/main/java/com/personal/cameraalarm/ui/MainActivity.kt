@@ -27,6 +27,7 @@ import com.personal.cameraalarm.ui.theme.CameraAlarmTheme
 enum class AppScreen {
     DASHBOARD,
     SOURCE_PICKER,
+    RULE_SOURCE_PICKER,
     RULES,
     RULE_EDITOR,
     SETTINGS,
@@ -83,6 +84,7 @@ class MainActivity : ComponentActivity() {
                     BackHandler {
                         currentScreen = when (currentScreen) {
                             AppScreen.RULE_EDITOR -> AppScreen.RULES
+                            AppScreen.RULE_SOURCE_PICKER -> AppScreen.RULE_EDITOR
                             AppScreen.SOUND_PICKER -> AppScreen.SETTINGS
                             AppScreen.DIAGNOSTICS -> AppScreen.SETTINGS
                             else -> AppScreen.DASHBOARD
@@ -107,6 +109,13 @@ class MainActivity : ComponentActivity() {
                         viewModel = sourcePickerViewModel,
                         onBack = { currentScreen = AppScreen.DASHBOARD }
                     )
+                    AppScreen.RULE_SOURCE_PICKER -> SourcePickerScreen(
+                        viewModel = sourcePickerViewModel,
+                        onBack = { currentScreen = AppScreen.RULE_EDITOR },
+                        onAppSelected = { appInfo ->
+                            ruleViewModel.updateSourceApp(appInfo.packageName, appInfo.label)
+                        }
+                    )
                     AppScreen.RULES -> RuleListScreen(
                         viewModel = ruleViewModel,
                         onBack = { currentScreen = AppScreen.DASHBOARD },
@@ -116,7 +125,11 @@ class MainActivity : ComponentActivity() {
                     )
                     AppScreen.RULE_EDITOR -> RuleEditorScreen(
                         viewModel = ruleViewModel,
-                        onBack = { currentScreen = AppScreen.RULES }
+                        onBack = { currentScreen = AppScreen.RULES },
+                        onSelectSourceApp = {
+                            sourcePickerViewModel.loadApps(ruleViewModel.editorState.value.sourcePackage)
+                            currentScreen = AppScreen.RULE_SOURCE_PICKER
+                        }
                     )
                     AppScreen.SETTINGS -> SettingsScreen(
                         viewModel = settingsViewModel,

@@ -16,7 +16,8 @@ import kotlinx.coroutines.withContext
 
 data class AppInfo(
     val packageName: String,
-    val label: String
+    val label: String,
+    val icon: android.graphics.drawable.Drawable? = null
 )
 
 data class SourcePickerUiState(
@@ -40,7 +41,7 @@ class SourcePickerViewModel(
         loadApps()
     }
 
-    fun loadApps() {
+    fun loadApps(selectedPackageOverride: String? = null) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             val currentSettings = container.settingsRepository.settings.first()
@@ -51,14 +52,14 @@ class SourcePickerViewModel(
                 resolveInfos.map { info ->
                     val pkg = info.activityInfo.packageName
                     val label = info.loadLabel(pm).toString().takeIf(String::isNotBlank) ?: pkg
-                    AppInfo(pkg, label)
+                    AppInfo(pkg, label, info.loadIcon(pm))
                 }.distinctBy { it.packageName }.sortedBy { it.label.lowercase() }
             }
             _uiState.value = _uiState.value.copy(
                 allApps = apps,
                 filteredApps = filterApps(apps, _uiState.value.searchQuery),
-                selectedPackage = currentSettings.sourcePackage,
-                manualInput = currentSettings.sourcePackage ?: "",
+                selectedPackage = selectedPackageOverride ?: currentSettings.sourcePackage,
+                manualInput = selectedPackageOverride ?: currentSettings.sourcePackage ?: "",
                 isLoading = false
             )
         }
@@ -75,15 +76,15 @@ class SourcePickerViewModel(
         _uiState.value = _uiState.value.copy(manualInput = input, errorMessage = null)
     }
 
-    fun selectApp(app: AppInfo, onComplete: () -> Unit) {
+    fun selectApp(app: AppInfo, persistGlobal: Boolean = true, onComplete: (AppInfo) -> Unit) {
         viewModelScope.launch {
-            container.settingsRepository.setSourceApp(app.packageName, app.label)
+            if (persistGlobal) container.settingsRepository.setSourceApp(app.packageName, app.label)
             _uiState.value = _uiState.value.copy(selectedPackage = app.packageName)
-            onComplete()
+            onComplete(app)
         }
     }
 
-    fun submitManualInput(onComplete: () -> Unit) {
+    fun submitManualInput(persistGlobal: Boolean = true, onComplete: (AppInfo) -> Unit) {
         val trimmed = _uiState.value.manualInput.trim()
         if (trimmed.isBlank()) {
             _uiState.value = _uiState.value.copy(errorMessage = "Package name cannot be blank")
@@ -92,9 +93,10 @@ class SourcePickerViewModel(
         viewModelScope.launch {
             val matchingApp = _uiState.value.allApps.firstOrNull { it.packageName == trimmed }
             val label = matchingApp?.label ?: trimmed
-            container.settingsRepository.setSourceApp(trimmed, label)
+            val app = matchingApp ?: AppInfo(trimmed, label)
+            if (persistGlobal) container.settingsRepository.setSourceApp(trimmed, label)
             _uiState.value = _uiState.value.copy(selectedPackage = trimmed)
-            onComplete()
+            onComplete(app)
         }
     }
 

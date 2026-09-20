@@ -55,7 +55,12 @@ class TriggerPipeline(
     private suspend fun decide(notification: IncomingNotification): Pair<TriggerDecision, AlarmToken?> {
         val config = configuration.current()
         if (!config.monitoringEnabled) return TriggerDecision.IGNORED_MONITORING_OFF to null
-        if (config.sourcePackage.isNullOrBlank() || notification.packageName != config.sourcePackage)
+        val allowedPackages = config.rules.asSequence()
+            .filter { it.enabled }
+            .map { it.sourcePackage }
+            .filter(String::isNotBlank)
+            .toSet()
+        if (notification.packageName !in allowedPackages)
             return TriggerDecision.IGNORED_WRONG_PACKAGE to null
 
         val searchable = NotificationNormalizer.normalize(notification)

@@ -87,7 +87,7 @@ class RuleValidationTest {
     }
 
     @Test
-    fun commaSeparatedKeywordsAreNormalized() {
+    fun commasRemainPartOfOneKeywordBecauseCsvIsNoLongerTheEditorContract() {
         val state = RuleEditorState(
             name = "Comma Rule",
             sourcePackage = "com.camera.app",
@@ -95,10 +95,8 @@ class RuleValidationTest {
         )
         val error = RuleViewModel.validateRule(state)
         assertNull(error)
-        assertEquals(4, state.normalizedKeywords.size)
-        assertTrue(state.normalizedKeywords.contains("motion"))
-        assertTrue(state.normalizedKeywords.contains("person"))
-        assertTrue(state.normalizedKeywords.contains("intrusion"))
+        assertEquals(2, state.normalizedKeywords.size)
+        assertTrue(state.normalizedKeywords.contains("motion, person, intrusion"))
         assertTrue(state.normalizedKeywords.contains("break-in"))
     }
 
@@ -107,10 +105,32 @@ class RuleValidationTest {
         val state = RuleEditorState(
             name = "Short Keyword Rule",
             sourcePackage = "com.camera.app",
-            keywordsRaw = "a, motion"
+            keywordsRaw = "a\nmotion"
         )
         val error = RuleViewModel.validateRule(state)
         assertNotNull(error)
         assertTrue(error!!.contains("too short", ignoreCase = true))
+    }
+
+    @Test
+    fun duplicateKeywordsAfterCaseAndWhitespaceNormalizationAreRejected() {
+        val state = RuleEditorState(
+            name = "Duplicate Rule",
+            sourcePackage = "com.camera.app",
+            keywordsRaw = "Phát hiện   người\n phát hiện người "
+        )
+
+        val error = RuleViewModel.validateRule(state)
+
+        assertNotNull(error)
+        assertTrue(error!!.contains("duplicate", ignoreCase = true))
+    }
+
+    @Test
+    fun suggestedTemplateMatchesTheVietnameseProductContract() {
+        assertEquals("Camera an ninh phổ biến", RuleViewModel.SUGGESTED_TEMPLATE_NAME)
+        assertEquals(9, RuleViewModel.SUGGESTED_TEMPLATE_KEYWORDS.size)
+        assertTrue(RuleViewModel.SUGGESTED_TEMPLATE_KEYWORDS.contains("phát hiện người/phương tiện"))
+        assertTrue(RuleViewModel.SUGGESTED_TEMPLATE_KEYWORDS.contains("phát hiện xâm nhập"))
     }
 }

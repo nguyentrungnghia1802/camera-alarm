@@ -39,14 +39,18 @@ class ReadinessRepository(private val context: Context, private val exact: Exact
     }
     fun snapshot(): ReadinessState {
         val config = configuration()
-        val source = config.sourcePackage?.takeIf(String::isNotBlank)
+        val enabledValidRules = config.rules.filter { rule ->
+            rule.enabled &&
+                rule.sourcePackage.isNotBlank() &&
+                rule.keywords.any { word -> NotificationNormalizer.normalize(word).isNotEmpty() }
+        }
         return ReadinessState(
             notificationAccessGranted = notificationAccessGranted(),
             listenerConnected = listener.status.value == ListenerStatus.CONNECTED,
             exactAlarmGranted = exact.isGranted(),
             postNotificationsGranted = Build.VERSION.SDK_INT < 33 || ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED,
-            sourceConfigured = source != null,
-            ruleConfigured = source != null && config.rules.any { it.enabled && it.sourcePackage == source && it.keywords.any { word -> NotificationNormalizer.normalize(word).isNotEmpty() } },
+            sourceConfigured = enabledValidRules.any { it.sourcePackage.isNotBlank() },
+            ruleConfigured = enabledValidRules.isNotEmpty(),
             alarmVolumeNonZero = volumeStatus().isNonZero,
             listenerStatus = listener.status.value
         )
