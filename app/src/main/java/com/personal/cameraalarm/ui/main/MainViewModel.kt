@@ -1,8 +1,6 @@
 package com.personal.cameraalarm.ui.main
 
 import android.content.Context
-import android.content.Intent
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -33,6 +31,7 @@ data class MainUiState(
     val vibrationEnabled: Boolean = true,
     val isRinging: Boolean = false,
     val isTestingAlarm: Boolean = false,
+    val canStartTestAlarm: Boolean = true,
     val lastDecision: String? = null,
     val lastDecisionTime: Long? = null,
     val userMessage: String? = null,
@@ -64,7 +63,8 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
         val alarmState = args[2] as AlarmState
         @Suppress("UNCHECKED_CAST")
         val events = args[3] as List<com.personal.cameraalarm.data.history.AlertEventEntity>
-        val testing = args[4] != null
+        val testToken = args[4] as? AlarmToken
+        val testing = testToken != null
         val message = args[5] as String?
 
         val readiness = container.readiness.snapshot()
@@ -116,6 +116,7 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
             vibrationEnabled = settings.vibrationEnabled,
             isRinging = isRinging,
             isTestingAlarm = testing,
+            canStartTestAlarm = AlarmRuntimeOwnership.canStartTest(alarmState, testToken),
             lastDecision = lastEvent?.decision,
             lastDecisionTime = lastEvent?.createdAtEpochMs,
             userMessage = message,
@@ -154,40 +155,13 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     fun startTestAlarm(context: Context) {
-        if (container.testAlarmToken.value != null) return
-        val testToken = AlarmToken("test-${System.currentTimeMillis()}")
-        val intent = Intent(context, CameraAlarmService::class.java).apply {
-            action = CameraAlarmService.ACTION_START
-            putExtra(AlarmReceiver.EXTRA_TOKEN, testToken.value)
-            putExtra(CameraAlarmService.EXTRA_IS_TEST, true)
-        }
-        container.testAlarmToken.value = testToken
-        try {
-            ContextCompat.startForegroundService(context, intent)
-            val directIntent = Intent(context, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                data = android.net.Uri.parse("cameraalarm://alarm_full/${testToken.value}")
-                putExtra(AlarmReceiver.EXTRA_TOKEN, testToken.value)
-                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TITLE, context.getString(com.personal.cameraalarm.R.string.test_alarm_title))
-                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_PREVIEW, context.getString(com.personal.cameraalarm.R.string.test_alarm_preview))
-                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, System.currentTimeMillis())
-            }
-            context.startActivity(directIntent)
-        } catch (error: RuntimeException) {
-            container.testAlarmToken.compareAndSet(testToken, null)
+        container.testAlarmController.start(context).onFailure { error ->
             userMessage.value = "Unable to start Test Alarm: ${error.message ?: error.javaClass.simpleName}"
         }
     }
 
     fun stopAlarm(context: Context) {
-        val token = container.testAlarmToken.value
-            ?: (container.coordinator.state.value as? AlarmState.Ringing)?.trigger?.alarmToken
-            ?: return
-        val intent = Intent(context, StopAlarmReceiver::class.java).apply {
-            action = StopAlarmReceiver.ACTION_STOP
-            putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
-        }
-        context.sendBroadcast(intent)
+        container.testAlarmController.stop(context)
     }
 
     fun clearUserMessage() {

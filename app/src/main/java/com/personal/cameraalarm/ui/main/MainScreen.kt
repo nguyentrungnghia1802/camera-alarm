@@ -206,6 +206,7 @@ fun MainScreen(
                             if (state.isRinging) viewModel.stopAlarm(context)
                             else viewModel.startTestAlarm(context)
                         },
+                        enabled = state.isRinging || state.canStartTestAlarm,
                         colors = if (state.isRinging) {
                             ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                         } else {

@@ -3,16 +3,12 @@ package com.personal.cameraalarm.ui.diagnostics
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.PowerManager
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.personal.cameraalarm.alarm.AlarmReceiver
-import com.personal.cameraalarm.alarm.AlarmToken
-import com.personal.cameraalarm.alarm.CameraAlarmService
+import com.personal.cameraalarm.alarm.AlarmRuntimeOwnership
 import com.personal.cameraalarm.app.AppContainer
 import com.personal.cameraalarm.permission.AlarmVolumeStatus
 import com.personal.cameraalarm.permission.ReadinessState
@@ -44,7 +40,8 @@ data class DiagnosticsInfo(
     val enabledRuleCount: Int = 0,
     val alarmState: String = "Idle",
     val lastRuntimeError: String? = null,
-    val fullScreenIntentAllowed: Boolean = true
+    val fullScreenIntentAllowed: Boolean = true,
+    val canStartTestAlarm: Boolean = true
 )
 
 class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
@@ -58,26 +55,33 @@ class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
 
     fun currentAdvisor(): DeviceReliabilityAdvisor = advisorRegistry.getAdvisorByKey(selectedOemKey.value)
 
+    private val alarmOwnership = combine(
+        container.coordinator.state,
+        container.testAlarmToken
+    ) { state, testToken -> state to testToken }
+
     private val baseDiagnostics = combine(
         container.settingsRepository.settings,
         container.ruleRepository.rules,
-        container.coordinator.state,
+        alarmOwnership,
         container.runtimeDiagnostics.lastError,
         copyMessage
-    ) { settings, rules, alarmState, lastError, msg ->
+    ) { settings, rules, ownership, lastError, msg ->
+        val (alarmState, testToken) = ownership
         val readiness = container.readiness.snapshot()
         val volume = container.readiness.volumeStatus()
         val enabledRules = rules.filter { it.enabled && it.sourcePackage == settings.sourcePackage }
         val canFullScreen = container.readiness.canUseFullScreenIntent()
 
-        Tuple5(settings, enabledRules.size, alarmState, lastError, msg to Pair(readiness, Pair(volume, canFullScreen)))
+        Tuple5(settings, enabledRules.size, alarmState to testToken, lastError, msg to Pair(readiness, Pair(volume, canFullScreen)))
     }
 
     val uiState: StateFlow<Pair<DiagnosticsInfo, String?>> = combine(
         baseDiagnostics,
         selectedOemKey
     ) { base, oemKey ->
-        val (settings, ruleCount, alarmState, lastError, rest) = base
+        val (settings, ruleCount, ownership, lastError, rest) = base
+        val (alarmState, testToken) = ownership
         val (msg, readPair) = rest
         val (readiness, volPair) = readPair
         val (volume, canFullScreen) = volPair
@@ -102,7 +106,8 @@ class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
             enabledRuleCount = ruleCount,
             alarmState = alarmState::class.simpleName ?: "Unknown",
             lastRuntimeError = lastError,
-            fullScreenIntentAllowed = canFullScreen
+            fullScreenIntentAllowed = canFullScreen,
+            canStartTestAlarm = AlarmRuntimeOwnership.canStartTest(alarmState, testToken)
         )
         info to msg
     }.stateIn(
@@ -147,27 +152,7 @@ class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     fun startTestAlarm(context: Context) {
-        if (container.testAlarmToken.value != null) return
-        val testToken = AlarmToken("test-${System.currentTimeMillis()}")
-        val intent = Intent(context, CameraAlarmService::class.java).apply {
-            action = CameraAlarmService.ACTION_START
-            putExtra(AlarmReceiver.EXTRA_TOKEN, testToken.value)
-            putExtra(CameraAlarmService.EXTRA_IS_TEST, true)
-        }
-        container.testAlarmToken.value = testToken
-        try {
-            ContextCompat.startForegroundService(context, intent)
-            val directIntent = Intent(context, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                data = android.net.Uri.parse("cameraalarm://alarm_full/${testToken.value}")
-                putExtra(AlarmReceiver.EXTRA_TOKEN, testToken.value)
-                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TITLE, context.getString(com.personal.cameraalarm.R.string.test_alarm_title))
-                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_PREVIEW, context.getString(com.personal.cameraalarm.R.string.test_alarm_preview))
-                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, System.currentTimeMillis())
-            }
-            context.startActivity(directIntent)
-        } catch (error: RuntimeException) {
-            container.testAlarmToken.compareAndSet(testToken, null)
+        container.testAlarmController.start(context).onFailure { error ->
             copyMessage.value = "Unable to start Test Alarm: ${error.message ?: error.javaClass.simpleName}"
         }
     }

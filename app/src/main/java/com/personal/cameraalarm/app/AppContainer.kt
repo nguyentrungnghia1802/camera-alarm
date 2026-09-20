@@ -141,6 +141,8 @@ class AppContainer(context: Context) {
         }
     )
 
+    val testAlarmController = TestAlarmController(this)
+
     init {
         appScope.launch {
             var lastCooldown: Long? = null

@@ -40,12 +40,26 @@ class CameraAlarmService : Service() {
             return START_NOT_STICKY
         }
         if (intent?.action != ACTION_START || token == null) { stopSelf(); return START_NOT_STICKY }
-        if (runtime.activeToken != null && runtime.activeToken != token) return START_NOT_STICKY
+        val isTest = intent.getBooleanExtra(EXTRA_IS_TEST, false)
+        when (AlarmRuntimeOwnership.decideStart(runtime.activeToken, token, isTest)) {
+            AlarmStartDecision.REJECT -> return START_NOT_STICKY
+            AlarmStartDecision.REPLACE_ACTIVE_TEST -> {
+                val previousTestToken = runtime.activeToken
+                runtime.stop(previousTestToken).forEach { recordError(previousTestToken, it) }
+                if (previousTestToken != null) {
+                    app.container.testAlarmToken.compareAndSet(previousTestToken, null)
+                }
+            }
+            AlarmStartDecision.ACCEPT -> Unit
+        }
+        if (isTest && !AlarmRuntimeOwnership.canStartTest(
+                app.container.coordinator.state.value,
+                app.container.testAlarmToken.value
+            )) return START_NOT_STICKY
 
         Log.i("CameraAlarm", "FOREGROUND_SERVICE_STARTED: token=${token.value}")
         app.container.soundPreviewController.stop()
 
-        val isTest = intent.getBooleanExtra(EXTRA_IS_TEST, false)
         val runtimeConfig = app.container.alarmRuntimeConfig.current()
         val initialTrigger = if (isTest) {
             val configuredSource = app.container.triggerConfiguration.sourcePackage
@@ -87,6 +101,7 @@ class CameraAlarmService : Service() {
             stopSelf()
             return START_NOT_STICKY
         }
+        if (isTest) app.container.testAlarmToken.value = token
 
         // 2. Start audio & vibration immediately
         runtime.start(token, runtimeConfig.vibrationEnabled, runtimeConfig.soundKey).forEach { recordError(token, it) }
@@ -96,7 +111,11 @@ class CameraAlarmService : Service() {
         )
 
         // 3. Launch full-screen AlarmActivity (if enabled and permitted)
-        launchAlarmActivity(token, initialTrigger, runtimeConfig.fullScreenEnabled)
+        if (isTest) {
+            launchAcceptedTestActivity(token, initialTrigger)
+        } else {
+            launchAlarmActivity(token, initialTrigger, runtimeConfig.fullScreenEnabled)
+        }
 
         // 4. Verify state asynchronously if initial trigger was not provided via intent
         if (!isTest && initialTrigger == null) {
@@ -311,6 +330,25 @@ class CameraAlarmService : Service() {
                 if (com.personal.cameraalarm.BuildConfig.DEBUG) {
                     Log.d("CameraAlarm", "Direct activity start fallback skipped: ${e2.message}")
                 }
+            }
+        }
+    }
+
+    private fun launchAcceptedTestActivity(token: AlarmToken, trigger: TriggerSnapshot?) {
+        val intent = Intent(this, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            data = android.net.Uri.parse("cameraalarm://alarm_test/${token.value}")
+            putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
+            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_SOURCE, trigger?.sourcePackage)
+            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TITLE, trigger?.title)
+            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_PREVIEW, trigger?.textPreview)
+            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, trigger?.receivedAtEpochMs ?: System.currentTimeMillis())
+        }
+        try {
+            startActivity(intent)
+        } catch (error: RuntimeException) {
+            if (com.personal.cameraalarm.BuildConfig.DEBUG) {
+                Log.d("CameraAlarm", "Test alarm activity launch skipped: ${error.message}")
             }
         }
     }

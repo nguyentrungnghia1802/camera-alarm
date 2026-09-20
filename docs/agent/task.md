@@ -360,23 +360,23 @@ STOP
 
 ### Checklist
 
-- [ ] Audit test alarm token lifecycle.
-- [ ] Audit MainViewModel / Diagnostics / Settings STOP behavior.
-- [ ] Không publish test token trước khi service chấp nhận test start.
-- [ ] Disable Test Alarm UI khi production `Pending` hoặc `Ringing`.
-- [ ] Nếu production trigger xuất hiện khi test runtime active:
-  - [ ] stop test runtime;
-  - [ ] clear test token;
-  - [ ] start production path.
-- [ ] STOP ưu tiên production active token.
-- [ ] Repeated STOP idempotent.
-- [ ] Thêm regression tests cho tất cả interleavings chính.
+- [x] Audit test alarm token lifecycle.
+- [x] Audit MainViewModel / Diagnostics / Settings STOP behavior.
+- [x] Không publish test token trước khi service chấp nhận test start.
+- [x] Disable Test Alarm UI khi production `Pending` hoặc `Ringing`.
+- [x] Nếu production trigger xuất hiện khi test runtime active:
+  - [x] stop test runtime;
+  - [x] clear test token;
+  - [x] start production path.
+- [x] STOP ưu tiên production active token.
+- [x] Repeated STOP idempotent.
+- [x] Thêm regression tests cho tất cả interleavings chính.
 
 ### Acceptance
 
-- [ ] Test Alarm không thể chặn production alarm.
-- [ ] STOP không gửi stale test token khi production đang active.
-- [ ] Regression suite PASS.
+- [x] Test Alarm không thể chặn production alarm.
+- [x] STOP không gửi stale test token khi production đang active.
+- [x] Regression suite PASS.
 
 ### Commit gợi ý
 

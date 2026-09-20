@@ -85,6 +85,16 @@ Further phase results are appended below only after the corresponding command ac
 - Added a delayed-settings regression test proving cold reads return immediately and later reads use the loaded values.
 - `\.\gradlew.bat test lint assembleDebug :app:assembleAndroidTest`: PASS.
 
+## P1.5 — Test Alarm ownership
+
+- Added a single runtime ownership policy: production Pending/Ringing blocks Test Alarm; production START replaces an active test runtime; Test Alarm never replaces production.
+- The active test token is published by `CameraAlarmService` only after foreground promotion succeeds.
+- ViewModels use one `TestAlarmController`; they no longer pre-publish tokens or launch an activity before service acceptance.
+- Main/Diagnostics disable Test Alarm while production is Pending/Ringing. Settings exposes the same availability state.
+- STOP token selection always prefers the active production Ringing token over a test token.
+- Unit tests cover Pending/Ringing blocking, test-to-production replacement, rejection in the opposite direction, same-token idempotency, and STOP priority.
+- `\.\gradlew.bat test lint assembleDebug :app:assembleAndroidTest`: PASS.
+
 ## P1.4 — Notification listener recovery after boot
 
 - Removed the disable/enable component workaround entirely; boot recovery never mutates the listener component state.

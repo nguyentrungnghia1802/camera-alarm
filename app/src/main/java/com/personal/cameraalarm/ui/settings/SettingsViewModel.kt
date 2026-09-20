@@ -1,8 +1,6 @@
 package com.personal.cameraalarm.ui.settings
 
 import android.content.Context
-import android.content.Intent
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -22,6 +20,7 @@ data class SettingsUiState(
     val saveSuccess: Boolean = false,
     val volumeStatus: AlarmVolumeStatus = AlarmVolumeStatus(7, 0, 7),
     val isTestingAlarm: Boolean = false,
+    val canStartTestAlarm: Boolean = true,
     val previewPlayingKey: String? = null,
     val historyCount: Int = 0,
     val message: String? = null
@@ -39,6 +38,7 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
         saveSuccess,
         container.historyRepository.events,
         container.testAlarmToken,
+        container.coordinator.state,
         container.soundPreviewController.playingSoundKey,
         userMessage
     ) { args ->
@@ -46,9 +46,10 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
         val draft = (args[1] as? AppSettings) ?: persisted
         val saved = args[2] as Boolean
         val events = args[3] as List<*>
-        val testToken = args[4]
-        val previewKey = args[5] as? String
-        val message = args[6] as? String
+        val testToken = args[4] as? AlarmToken
+        val alarmState = args[5] as AlarmState
+        val previewKey = args[6] as? String
+        val message = args[7] as? String
         val volume = container.readiness.volumeStatus()
         val isModified = (draft != persisted)
 
@@ -59,6 +60,7 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
             saveSuccess = saved,
             volumeStatus = volume,
             isTestingAlarm = testToken != null,
+            canStartTestAlarm = AlarmRuntimeOwnership.canStartTest(alarmState, testToken),
             previewPlayingKey = previewKey,
             historyCount = events.size,
             message = message
@@ -206,38 +208,13 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     fun startTestAlarm(context: Context) {
-        if (container.testAlarmToken.value != null) return
-        val testToken = AlarmToken("test-${System.currentTimeMillis()}")
-        val intent = Intent(context, CameraAlarmService::class.java).apply {
-            action = CameraAlarmService.ACTION_START
-            putExtra(AlarmReceiver.EXTRA_TOKEN, testToken.value)
-            putExtra(CameraAlarmService.EXTRA_IS_TEST, true)
-        }
-        container.testAlarmToken.value = testToken
-        try {
-            ContextCompat.startForegroundService(context, intent)
-            val directIntent = Intent(context, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                data = android.net.Uri.parse("cameraalarm://alarm_full/${testToken.value}")
-                putExtra(AlarmReceiver.EXTRA_TOKEN, testToken.value)
-                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TITLE, context.getString(com.personal.cameraalarm.R.string.test_alarm_title))
-                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_PREVIEW, context.getString(com.personal.cameraalarm.R.string.test_alarm_preview))
-                putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, System.currentTimeMillis())
-            }
-            context.startActivity(directIntent)
-        } catch (error: RuntimeException) {
-            container.testAlarmToken.compareAndSet(testToken, null)
+        container.testAlarmController.start(context).onFailure { error ->
             userMessage.value = "Unable to start Test Alarm: ${error.message ?: error.javaClass.simpleName}"
         }
     }
 
     fun stopAlarm(context: Context) {
-        val token = container.testAlarmToken.value ?: return
-        val intent = Intent(context, StopAlarmReceiver::class.java).apply {
-            action = StopAlarmReceiver.ACTION_STOP
-            putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
-        }
-        context.sendBroadcast(intent)
+        container.testAlarmController.stop(context)
     }
 
     fun clearMessage() {

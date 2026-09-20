@@ -363,6 +363,7 @@ fun DiagnosticsScreen(
 
             OutlinedButton(
                 onClick = { viewModel.startTestAlarm(context) },
+                enabled = info.canStartTestAlarm,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Icon(Icons.Default.PlayArrow, contentDescription = null)
