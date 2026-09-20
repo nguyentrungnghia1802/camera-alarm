@@ -10,5 +10,6 @@ data class TriggerRule(
     val matchMode: MatchMode,
     val keywords: List<String>,
     val priority: Int,
-    val createdAtEpochMs: Long
+    val createdAtEpochMs: Long,
+    val updatedAtEpochMs: Long = createdAtEpochMs
 )

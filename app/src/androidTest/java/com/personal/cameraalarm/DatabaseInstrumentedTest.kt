@@ -46,7 +46,7 @@ class DatabaseInstrumentedTest {
             createdAtEpochMs = 1000L,
             updatedAtEpochMs = 1000L
         )
-        db.triggerRuleDao().insertOrUpdate(rule)
+        db.triggerRuleDao().insert(rule)
         val loaded = db.triggerRuleDao().getById("test-rule")
         assertNotNull(loaded)
         assertEquals("Person Detection", loaded?.name)

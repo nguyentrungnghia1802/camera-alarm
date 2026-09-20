@@ -113,3 +113,15 @@ Date: 2026-09-21. Commit candidate before the P1.6 milestone commit: `a512e07` p
 - `.\gradlew.bat test --rerun-tasks lint assembleDebug :app:assembleRelease :app:assembleAndroidTest`: PASS; 211 tasks executed, no unit-test failure, no lint error, debug/release APK and AndroidTest APK built.
 - `.\gradlew.bat connectedDebugAndroidTest` with `ANDROID_SERIAL=emulator-5554`: PASS, 10/10 app instrumentation tests on `CameraAlarm_API_31` / Android 12 (API 31).
 - Connected physical Samsung `SM-A505F` was detected but was not used for this P1.6 emulator gate; Samsung certification belongs to Phase 6 after Rule V2 and Settings V2.
+
+## Phase 2 — Rule V2 data contract prerequisite
+
+Date: 2026-09-21.
+
+- Enabled Room schema export and checked in schema versions 1 and 2; application startup registers only the explicit `MIGRATION_1_2` (no destructive fallback).
+- Schema 2 adds a unique priority index. Migration orders legacy rows by the previous deterministic evaluation order (`priority`, `createdAtEpochMs`, `id`) and assigns unique priorities `1..N` without deleting overflow rows.
+- The existing version-1 schema already persisted each rule's `sourcePackage`, keywords, ANY/ALL mode, creation and update timestamps; migration preserves those fields verbatim.
+- Repository writes enforce at most three rules for normal data, priorities 1–3, atomic occupied-priority swap, stable `createdAtEpochMs` on edit, and independent delete without renumbering.
+- `.\gradlew.bat :app:assembleAndroidTest test --rerun-tasks`: PASS.
+- Filtered API 31 instrumentation: `RuleMigrationInstrumentedTest` plus `RuleRepositoryInstrumentedTest`: PASS, 4/4.
+- `.\gradlew.bat test lint assembleDebug`: PASS; no lint error.

@@ -14,8 +14,13 @@ class TriggerRuleRepository(private val dao: TriggerRuleDao) {
 
     suspend fun getRule(id: String): TriggerRule? = dao.getById(id)?.toDomain()
 
-    suspend fun saveRule(rule: TriggerRule) {
-        dao.insertOrUpdate(TriggerRuleEntity.fromDomain(rule))
+    suspend fun saveRule(rule: TriggerRule, nowEpochMs: Long = System.currentTimeMillis()) {
+        val existing = dao.getById(rule.id)
+        val persisted = rule.copy(
+            createdAtEpochMs = existing?.createdAtEpochMs ?: rule.createdAtEpochMs,
+            updatedAtEpochMs = nowEpochMs
+        )
+        dao.saveWithPrioritySwap(TriggerRuleEntity.fromDomain(persisted))
     }
 
     suspend fun deleteRule(id: String) {

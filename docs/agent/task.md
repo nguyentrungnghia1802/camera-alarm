@@ -100,6 +100,8 @@ Rule V2 sẽ thêm source app theo từng rule và thay invariant priority, vì 
 
 ## P2.1 — Room schema + migration safety
 
+Status: **COMPLETE** on 2026-09-21 (Room schema 2, exported schemas, explicit `MIGRATION_1_2`, on-device upgrade test PASS).
+
 - Bật `exportSchema = true` nếu chưa có.
 - Thiết lập migration test infrastructure.
 - Không dùng destructive migration.
@@ -108,6 +110,8 @@ Rule V2 sẽ thêm source app theo từng rule và thay invariant priority, vì 
 - Nếu cần schema version mới, migration phải có test upgrade từ database hiện tại.
 
 ## P2.2 — Rule data contract mới
+
+Status: **COMPLETE** on 2026-09-21 (unique priority transaction, max-three enforcement for normal data, legacy overflow retained).
 
 Mỗi Rule có tối thiểu:
 

@@ -22,6 +22,10 @@ android {
     }
     kotlinOptions { jvmTarget = "17" }
     testOptions { unitTests.isReturnDefaultValues = true }
+    sourceSets.getByName("androidTest").assets.srcDir("$projectDir/schemas")
+}
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 dependencies {
     implementation("androidx.activity:activity-compose:1.10.1")
@@ -40,4 +44,5 @@ dependencies {
     testImplementation("androidx.room:room-testing:2.6.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.room:room-testing:2.6.1")
 }

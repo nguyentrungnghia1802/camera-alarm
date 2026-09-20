@@ -64,7 +64,7 @@ class V1IntegrationInstrumentedTest {
         context.deleteDatabase(databaseName)
         try {
             var database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName).build()
-            database.triggerRuleDao().insertOrUpdate(
+            database.triggerRuleDao().insert(
                 TriggerRuleEntity(
                     id = "persisted-rule",
                     name = "Persisted rule",

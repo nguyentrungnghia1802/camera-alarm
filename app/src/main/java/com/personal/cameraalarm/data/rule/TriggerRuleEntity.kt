@@ -1,11 +1,15 @@
 package com.personal.cameraalarm.data.rule
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.personal.cameraalarm.trigger.MatchMode
 import com.personal.cameraalarm.trigger.TriggerRule
 
-@Entity(tableName = "trigger_rules")
+@Entity(
+    tableName = "trigger_rules",
+    indices = [Index(value = ["priority"], unique = true)]
+)
 data class TriggerRuleEntity(
     @PrimaryKey val id: String,
     val name: String,
@@ -32,12 +36,16 @@ data class TriggerRuleEntity(
             matchMode = mode,
             keywords = keywordsList,
             priority = priority,
-            createdAtEpochMs = createdAtEpochMs
+            createdAtEpochMs = createdAtEpochMs,
+            updatedAtEpochMs = updatedAtEpochMs
         )
     }
 
     companion object {
-        fun fromDomain(rule: TriggerRule, updatedAtEpochMs: Long = System.currentTimeMillis()): TriggerRuleEntity {
+        fun fromDomain(
+            rule: TriggerRule,
+            updatedAtEpochMs: Long = rule.updatedAtEpochMs
+        ): TriggerRuleEntity {
             return TriggerRuleEntity(
                 id = rule.id,
                 name = rule.name,

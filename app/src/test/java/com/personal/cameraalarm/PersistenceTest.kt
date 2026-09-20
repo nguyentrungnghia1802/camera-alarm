@@ -52,6 +52,7 @@ class PersistenceTest {
         assertEquals(domain.keywords, restored.keywords)
         assertEquals(domain.priority, restored.priority)
         assertEquals(domain.createdAtEpochMs, restored.createdAtEpochMs)
+        assertEquals(987654321L, restored.updatedAtEpochMs)
     }
 
     @Test
