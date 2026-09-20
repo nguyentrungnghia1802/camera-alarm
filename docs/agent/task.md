@@ -242,36 +242,36 @@ async/non-blocking optional work
 
 ### Checklist
 
-- [ ] Tìm tất cả `runBlocking` trong `CameraAlarmService` và critical alarm path.
-- [ ] Phân loại setting nào bắt buộc ngay:
-  - [ ] sound key;
-  - [ ] vibration;
-  - [ ] full-screen preference;
-  - [ ] source/package metadata;
-  - [ ] alarm token.
-- [ ] Chọn một strategy rõ ràng:
-  - [ ] cached settings snapshot; hoặc
-  - [ ] immutable extras tại schedule/start time; hoặc
-  - [ ] application-level StateFlow cache đã warm.
-- [ ] Không đọc DataStore blocking trước `startForeground()`.
-- [ ] `startForeground()` phải hoàn tất bằng data sẵn có.
-- [ ] Audio fallback vẫn tồn tại nếu selected sound config unavailable.
-- [ ] Full-screen config unavailable không được chặn audio alarm.
-- [ ] Settings read chậm/fail không crash service.
-- [ ] Thêm test settings source delay lớn.
-- [ ] Thêm test cold process/service startup nếu có thể.
-- [ ] Đo/ghi timestamp:
-  - [ ] receiver fired;
-  - [ ] service start requested;
-  - [ ] startForeground completed;
-  - [ ] audio started.
+- [x] Tìm tất cả `runBlocking` trong `CameraAlarmService` và critical alarm path.
+- [x] Phân loại setting nào bắt buộc ngay:
+  - [x] sound key;
+  - [x] vibration;
+  - [x] full-screen preference;
+  - [x] source/package metadata;
+  - [x] alarm token.
+- [x] Chọn một strategy rõ ràng:
+  - [x] cached immutable settings snapshot;
+  - [x] immutable trigger metadata extras tại schedule/start time;
+  - [x] application-level cache được warm bởi settings flow.
+- [x] Không đọc DataStore blocking trước `startForeground()`.
+- [x] `startForeground()` phải hoàn tất bằng data sẵn có.
+- [x] Audio fallback vẫn tồn tại nếu selected sound config unavailable.
+- [x] Full-screen config unavailable không được chặn audio alarm.
+- [x] Settings read chậm/fail không crash service.
+- [x] Thêm test settings source delay lớn.
+- [x] Thêm test cold process/service startup bằng safe-default cache trước khi settings load.
+- [x] Đo/ghi timestamp:
+  - [x] receiver fired;
+  - [x] service start requested;
+  - [x] startForeground completed;
+  - [x] audio started.
 
 ### Acceptance
 
-- [ ] Không còn `runBlocking` trên service main-thread critical path.
-- [ ] startForeground không chờ DataStore.
-- [ ] Slow-settings regression test PASS.
-- [ ] Alarm vẫn dùng đúng setting trong normal path.
+- [x] Không còn `runBlocking` trên service main-thread critical path.
+- [x] startForeground không chờ DataStore.
+- [x] Slow-settings regression test PASS.
+- [x] Alarm vẫn dùng đúng setting trong normal path.
 
 ### Commit gợi ý
 

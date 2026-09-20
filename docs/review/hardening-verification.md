@@ -74,3 +74,13 @@ Further phase results are appended below only after the corresponding command ac
 - Selected-source decisions still persist normally; pipeline scheduling behavior is unchanged.
 - Release/debug logging on this path contains decision/package metadata only, not notification title or body.
 - `\.\gradlew.bat test :app:assembleAndroidTest lint assembleDebug`: PASS.
+
+## P1.3 — Non-blocking foreground startup
+
+- Added an application-level immutable `AlarmRuntimeConfig` cache with safe cold-start defaults.
+- Settings flow updates sound, vibration, and full-screen values atomically; the service snapshots them once per start.
+- Removed every `runBlocking` and direct DataStore read from `CameraAlarmService`; `startForeground()` now uses in-memory data only.
+- Alarm receiver also uses the cached full-screen preference after starting the service.
+- Added monotonic timing markers for receiver fire, service request, foreground completion, and runtime/audio start.
+- Added a delayed-settings regression test proving cold reads return immediately and later reads use the loaded values.
+- `\.\gradlew.bat test lint assembleDebug :app:assembleAndroidTest`: PASS.

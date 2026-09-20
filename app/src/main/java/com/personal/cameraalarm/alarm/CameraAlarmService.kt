@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
+import android.os.SystemClock
 import android.graphics.drawable.Icon
 import android.util.Log
 import com.personal.cameraalarm.app.CameraAlarmApp
@@ -25,6 +26,7 @@ class CameraAlarmService : Service() {
     private val runtime by lazy { AlarmRuntimeController(AndroidAlarmPlayer(this), AndroidVibrationController(this)) }
     override fun onBind(intent: Intent?): IBinder? = null
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val serviceStartElapsedMs = SystemClock.elapsedRealtime()
         val token = intent?.getStringExtra(AlarmReceiver.EXTRA_TOKEN)?.takeIf(String::isNotBlank)?.let(::AlarmToken)
         if (intent?.action == ACTION_STOP) {
             if (runtime.activeToken != null && runtime.activeToken != token) return START_NOT_STICKY
@@ -44,6 +46,7 @@ class CameraAlarmService : Service() {
         app.container.soundPreviewController.stop()
 
         val isTest = intent.getBooleanExtra(EXTRA_IS_TEST, false)
+        val runtimeConfig = app.container.alarmRuntimeConfig.current()
         val initialTrigger = if (isTest) {
             val configuredSource = app.container.triggerConfiguration.sourcePackage
             TriggerSnapshot(
@@ -72,7 +75,11 @@ class CameraAlarmService : Service() {
 
         // 1. Promote to foreground service immediately
         try {
-            promote(token, initialTrigger)
+            promote(token, initialTrigger, runtimeConfig.fullScreenEnabled)
+            Log.i(
+                "CameraAlarm",
+                "ALARM_TIMING foreground_ms=${SystemClock.elapsedRealtime() - serviceStartElapsedMs} token=${token.value}"
+            )
         } catch (e: RuntimeException) {
             recordError(token, "foreground: ${e.message ?: e.javaClass.simpleName}")
             if (isTest) app.container.testAlarmToken.compareAndSet(token, null)
@@ -82,13 +89,14 @@ class CameraAlarmService : Service() {
         }
 
         // 2. Start audio & vibration immediately
-        val soundKey = kotlinx.coroutines.runBlocking {
-            try { app.container.settingsRepository.current().alarmSoundKey } catch (_: Exception) { null }
-        }
-        runtime.start(token, app.container.alarmPolicy.vibrationEnabled, soundKey).forEach { recordError(token, it) }
+        runtime.start(token, runtimeConfig.vibrationEnabled, runtimeConfig.soundKey).forEach { recordError(token, it) }
+        Log.i(
+            "CameraAlarm",
+            "ALARM_TIMING runtime_started_ms=${SystemClock.elapsedRealtime() - serviceStartElapsedMs} token=${token.value}"
+        )
 
         // 3. Launch full-screen AlarmActivity (if enabled and permitted)
-        launchAlarmActivity(token, initialTrigger)
+        launchAlarmActivity(token, initialTrigger, runtimeConfig.fullScreenEnabled)
 
         // 4. Verify state asynchronously if initial trigger was not provided via intent
         if (!isTest && initialTrigger == null) {
@@ -103,8 +111,8 @@ class CameraAlarmService : Service() {
                     return@launch
                 }
                 try {
-                    promote(token, state.trigger)
-                    launchAlarmActivity(token, state.trigger)
+                    promote(token, state.trigger, runtimeConfig.fullScreenEnabled)
+                    launchAlarmActivity(token, state.trigger, runtimeConfig.fullScreenEnabled)
                 } catch (e: RuntimeException) {
                     recordError(token, "foreground update: ${e.message ?: e.javaClass.simpleName}")
                 }
@@ -114,7 +122,7 @@ class CameraAlarmService : Service() {
         return START_NOT_STICKY
     }
 
-    private fun promote(token: AlarmToken, trigger: TriggerSnapshot?) {
+    private fun promote(token: AlarmToken, trigger: TriggerSnapshot?, fullScreenEnabled: Boolean) {
         createNotificationChannel(this)
 
         // Wake screen from black when alarm triggers
@@ -209,7 +217,7 @@ class CameraAlarmService : Service() {
 
         builder.setContentIntent(contentPending)
 
-        val pendingFullScreen = createFullScreenPendingIntent(token, trigger)
+        val pendingFullScreen = createFullScreenPendingIntent(token, trigger, fullScreenEnabled)
         if (pendingFullScreen != null) {
             builder.setFullScreenIntent(pendingFullScreen, true)
         }
@@ -222,11 +230,12 @@ class CameraAlarmService : Service() {
         }
     }
 
-    private fun createFullScreenPendingIntent(token: AlarmToken, trigger: TriggerSnapshot?): PendingIntent? {
+    private fun createFullScreenPendingIntent(
+        token: AlarmToken,
+        trigger: TriggerSnapshot?,
+        fullScreenEnabled: Boolean
+    ): PendingIntent? {
         val canFullScreen = app.container.readiness.canUseFullScreenIntent()
-        val fullScreenEnabled = kotlinx.coroutines.runBlocking {
-            try { app.container.settingsRepository.current().fullScreenEnabled } catch (_: Exception) { true }
-        }
         if (!canFullScreen || !fullScreenEnabled) return null
 
         val fullScreenIntent = Intent(this, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
@@ -255,8 +264,8 @@ class CameraAlarmService : Service() {
         )
     }
 
-    private fun launchAlarmActivity(token: AlarmToken, trigger: TriggerSnapshot?) {
-        val pending = createFullScreenPendingIntent(token, trigger)
+    private fun launchAlarmActivity(token: AlarmToken, trigger: TriggerSnapshot?, fullScreenEnabled: Boolean) {
+        val pending = createFullScreenPendingIntent(token, trigger, fullScreenEnabled)
         if (pending != null) {
             Log.i("CameraAlarm", "FULLSCREEN_INTENT_SENT: token=${token.value}")
             try {
@@ -279,9 +288,6 @@ class CameraAlarmService : Service() {
 
         // Direct startActivity launch: ensures full-screen display when screen is on / unlocked
         val canFullScreen = app.container.readiness.canUseFullScreenIntent()
-        val fullScreenEnabled = kotlinx.coroutines.runBlocking {
-            try { app.container.settingsRepository.current().fullScreenEnabled } catch (_: Exception) { true }
-        }
         if (canFullScreen && fullScreenEnabled) {
             try {
                 val directIntent = Intent(this, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {

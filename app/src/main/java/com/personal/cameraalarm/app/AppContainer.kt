@@ -41,6 +41,8 @@ class AppContainer(context: Context) {
     @Volatile
     var alarmPolicy = AlarmPolicy()
 
+    val alarmRuntimeConfig = AlarmRuntimeConfigCache()
+
     val initialConfigLoaded = CompletableDeferred<Unit>()
 
     suspend fun awaitConfigLoaded(timeoutMs: Long = 3000L) {
@@ -79,6 +81,13 @@ class AppContainer(context: Context) {
                     delayMs = settings.alarmDelayMs,
                     cooldownMs = settings.cooldownMs,
                     vibrationEnabled = settings.vibrationEnabled
+                )
+                alarmRuntimeConfig.update(
+                    AlarmRuntimeConfig(
+                        vibrationEnabled = settings.vibrationEnabled,
+                        fullScreenEnabled = settings.fullScreenEnabled,
+                        soundKey = settings.alarmSoundKey
+                    )
                 )
                 if (!initialConfigLoaded.isCompleted) {
                     initialConfigLoaded.complete(Unit)

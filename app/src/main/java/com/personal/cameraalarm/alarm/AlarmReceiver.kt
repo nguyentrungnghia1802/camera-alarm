@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.PowerManager
+import android.os.SystemClock
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.personal.cameraalarm.app.CameraAlarmApp
@@ -14,7 +15,8 @@ class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent?.action != ACTION_FIRE) return
         val token = intent.getStringExtra(EXTRA_TOKEN)?.takeIf(String::isNotBlank) ?: return
-        Log.i("CameraAlarm", "ALARM_RECEIVER_FIRED: token=$token")
+        val receiverFiredElapsedMs = SystemClock.elapsedRealtime()
+        Log.i("CameraAlarm", "ALARM_RECEIVER_FIRED: token=$token elapsed_ms=$receiverFiredElapsedMs")
         val pending = goAsync()
         val app = context.applicationContext as CameraAlarmApp
 
@@ -42,11 +44,12 @@ class AlarmReceiver : BroadcastReceiver() {
                         .putExtra(CameraAlarmService.EXTRA_RULE, trigger.ruleId)
                         .putExtra(CameraAlarmService.EXTRA_KEY, trigger.notificationKey)
                     ContextCompat.startForegroundService(context, service)
-                    if (com.personal.cameraalarm.BuildConfig.DEBUG) Log.d("CameraAlarm", "receiver started alarm service token=$token")
+                    Log.i(
+                        "CameraAlarm",
+                        "ALARM_TIMING service_requested_ms=${SystemClock.elapsedRealtime() - receiverFiredElapsedMs} token=$token"
+                    )
 
-                    val fullScreenEnabled = try {
-                        app.container.settingsRepository.current().fullScreenEnabled
-                    } catch (_: Exception) { true }
+                    val fullScreenEnabled = app.container.alarmRuntimeConfig.current().fullScreenEnabled
 
                     if (fullScreenEnabled && app.container.readiness.canUseFullScreenIntent()) {
                         val directIntent = Intent(context, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
