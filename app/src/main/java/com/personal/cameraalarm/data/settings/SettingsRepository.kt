@@ -2,6 +2,8 @@ package com.personal.cameraalarm.data.settings
 
 import android.content.Context
 import androidx.datastore.preferences.core.*
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.personal.cameraalarm.alarm.sound.AlarmSoundCatalog
 import com.personal.cameraalarm.schedule.ActiveTimeRange
@@ -11,14 +13,18 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import java.io.IOException
 
 private val Context.appSettingsDataStore by preferencesDataStore(name = "camera_alarm_settings")
 
-class SettingsRepository(context: Context) {
-    private val dataStore = context.applicationContext.appSettingsDataStore
+class SettingsRepository(
+    context: Context,
+    private val dataStore: DataStore<Preferences> = context.applicationContext.appSettingsDataStore
+) {
 
     val settings: Flow<AppSettings> = dataStore.data
+        .onStart { migrateDefaultProfileIfNeeded() }
         .catch { exception ->
             if (exception is IOException) emit(emptyPreferences()) else throw exception
         }
@@ -28,14 +34,15 @@ class SettingsRepository(context: Context) {
                 sourcePackage = preferences[SOURCE_PACKAGE],
                 sourceLabel = preferences[SOURCE_LABEL],
                 alarmDelayMs = preferences[ALARM_DELAY_MS] ?: 1000L,
-                cooldownMs = preferences[COOLDOWN_MS] ?: 10000L,
+                cooldownMs = preferences[COOLDOWN_MS] ?: SettingsDefaults.COOLDOWN_MS,
                 vibrationEnabled = preferences[VIBRATION_ENABLED] ?: true,
                 fullScreenEnabled = preferences[FULL_SCREEN_ENABLED] ?: false,
-                alarmSoundKey = preferences[ALARM_SOUND_KEY] ?: AlarmSoundCatalog.DEFAULT_KEY,
+                alarmSoundKey = preferences[ALARM_SOUND_KEY] ?: AlarmSoundCatalog.OFFICIAL_PROFILE_DEFAULT_KEY,
                 scheduleMode = preferences[SCHEDULE_MODE]?.let {
                     runCatching { ScheduleMode.valueOf(it) }.getOrNull()
-                } ?: ScheduleMode.ALWAYS_ACTIVE,
-                scheduleRanges = ScheduleSerializer.deserialize(preferences[SCHEDULE_RANGES]),
+                } ?: ScheduleMode.CUSTOM,
+                scheduleRanges = preferences[SCHEDULE_RANGES]?.let(ScheduleSerializer::deserialize)
+                    ?: SettingsDefaults.scheduleRanges(),
                 language = preferences[LANGUAGE] ?: "vi"
             )
         }
@@ -98,6 +105,33 @@ class SettingsRepository(context: Context) {
             prefs[SCHEDULE_MODE] = newSettings.scheduleMode.name
             prefs[SCHEDULE_RANGES] = ScheduleSerializer.serialize(newSettings.scheduleRanges)
             prefs[LANGUAGE] = newSettings.language
+            prefs[SETTINGS_PROFILE_VERSION] = CURRENT_PROFILE_VERSION
+        }
+    }
+
+    suspend fun resetToDefaults(): AppSettings {
+        val defaults = SettingsDefaults.official()
+        updateAll(defaults)
+        return defaults
+    }
+
+    private suspend fun migrateDefaultProfileIfNeeded() {
+        dataStore.edit { prefs ->
+            if ((prefs[SETTINGS_PROFILE_VERSION] ?: 0) >= CURRENT_PROFILE_VERSION) return@edit
+            val isExistingInstall = prefs.asMap().isNotEmpty()
+            if (isExistingInstall) {
+                // Preserve the old effective behavior when V1 never persisted these fields.
+                if (prefs[COOLDOWN_MS] == null) prefs[COOLDOWN_MS] = SettingsDefaults.LEGACY_COOLDOWN_MS
+                if (prefs[ALARM_SOUND_KEY] == null) prefs[ALARM_SOUND_KEY] = AlarmSoundCatalog.DEFAULT_KEY
+                if (prefs[SCHEDULE_MODE] == null) prefs[SCHEDULE_MODE] = ScheduleMode.ALWAYS_ACTIVE.name
+                if (prefs[SCHEDULE_RANGES] == null) prefs[SCHEDULE_RANGES] = ScheduleSerializer.serialize(emptyList())
+            } else {
+                prefs[COOLDOWN_MS] = SettingsDefaults.COOLDOWN_MS
+                prefs[ALARM_SOUND_KEY] = AlarmSoundCatalog.OFFICIAL_PROFILE_DEFAULT_KEY
+                prefs[SCHEDULE_MODE] = ScheduleMode.CUSTOM.name
+                prefs[SCHEDULE_RANGES] = ScheduleSerializer.serialize(SettingsDefaults.scheduleRanges())
+            }
+            prefs[SETTINGS_PROFILE_VERSION] = CURRENT_PROFILE_VERSION
         }
     }
 
@@ -113,5 +147,7 @@ class SettingsRepository(context: Context) {
         private val SCHEDULE_MODE = stringPreferencesKey("schedule_mode")
         private val SCHEDULE_RANGES = stringPreferencesKey("schedule_ranges")
         private val LANGUAGE = stringPreferencesKey("language")
+        private val SETTINGS_PROFILE_VERSION = intPreferencesKey("settings_profile_version")
+        private const val CURRENT_PROFILE_VERSION = 2
     }
 }

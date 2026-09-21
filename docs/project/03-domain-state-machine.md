@@ -42,7 +42,7 @@ Snapshot phải đủ để service hiển thị alert mà không cần đọc l
 ```kotlin
 data class AlarmPolicy(
     val delayMs: Long = 1_000,
-    val cooldownMs: Long = 10_000,
+    val cooldownMs: Long = 600_000,
     val vibrationEnabled: Boolean = true
 )
 ```

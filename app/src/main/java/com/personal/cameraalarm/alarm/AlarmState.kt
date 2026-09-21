@@ -12,7 +12,7 @@ data class TriggerSnapshot(
     val receivedAtEpochMs: Long
 )
 
-data class AlarmPolicy(val delayMs: Long = 1_000, val cooldownMs: Long = 10_000, val vibrationEnabled: Boolean = true) {
+data class AlarmPolicy(val delayMs: Long = 1_000, val cooldownMs: Long = 600_000, val vibrationEnabled: Boolean = true) {
     init { require(delayMs >= 0 && cooldownMs >= 0) }
 }
 

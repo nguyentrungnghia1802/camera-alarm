@@ -189,6 +189,15 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
         }
     }
 
+    fun resetDefaults() {
+        viewModelScope.launch {
+            val defaults = container.settingsRepository.resetToDefaults()
+            draftState.value = defaults
+            container.coordinator.resetCooldown()
+            saveSuccess.value = true
+        }
+    }
+
     fun playPreview(sound: AlarmSound) {
         val result = container.soundPreviewController.play(sound)
         if (result.isFailure) {

@@ -289,6 +289,11 @@
     <string name="history_page_number">Trang %1$d / %2$d</string>
     <string name="history_page_range">(%1$d - %2$d trên %3$d)</string>
 
+    <string name="section_basic">Cơ bản</string>
+    <string name="btn_reset_defaults">Đặt lại mặc định</string>
+    <string name="dialog_reset_defaults_title">Đặt lại cài đặt?</string>
+    <string name="dialog_reset_defaults_message">Toàn bộ cài đặt sẽ trở về cấu hình mặc định chính thức. Điều kiện, lịch sử và quyền hệ thống không bị thay đổi.</string>
+
     <!-- Rule List & Editor Chips -->
     <string name="rule_match_any_chip">Khớp bất kỳ</string>
     <string name="rule_match_all_chip">Khớp tất cả</string>

@@ -289,6 +289,11 @@
     <string name="history_page_number">Page %1$d / %2$d</string>
     <string name="history_page_range">(%1$d - %2$d of %3$d)</string>
 
+    <string name="section_basic">Basic</string>
+    <string name="btn_reset_defaults">Reset to defaults</string>
+    <string name="dialog_reset_defaults_title">Reset settings?</string>
+    <string name="dialog_reset_defaults_message">All settings will return to the official defaults. Rules, history, and system permissions will not be changed.</string>
+
     <!-- Rule List & Editor Chips -->
     <string name="rule_match_any_chip">Match Any</string>
     <string name="rule_match_all_chip">Match All</string>

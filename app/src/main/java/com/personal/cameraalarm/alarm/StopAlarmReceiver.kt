@@ -12,14 +12,17 @@ class StopAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent?.action != ACTION_STOP) return
         val token = intent.getStringExtra(AlarmReceiver.EXTRA_TOKEN)?.takeIf(String::isNotBlank)?.let(::AlarmToken) ?: return
+        // Test alarms have no coordinator state to persist. Dispatch their STOP
+        // synchronously so it cannot be delayed behind unrelated application
+        // coroutine work after a cold process/emulator start.
+        if (isTestAlarm(token)) {
+            startStopService(context, token)
+            return
+        }
         val pending = goAsync()
         val app = context.applicationContext as CameraAlarmApp
         app.scope.launch {
             try {
-                if (isTestAlarm(token)) {
-                    startStopService(context, token)
-                    return@launch
-                }
                 app.container.coordinator.onStopRequested(token)
                 startStopService(context, token)
             } catch (e: Exception) { Log.e("CameraAlarm", "STOP failed for token=${token.value}", e) }

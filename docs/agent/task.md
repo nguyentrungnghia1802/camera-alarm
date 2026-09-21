@@ -348,6 +348,8 @@ Template chỉ là dữ liệu khởi tạo, không có matcher riêng.
 
 ## P4.1 — Default profile mới
 
+Status: **COMPLETE** on 2026-09-21 with versioned fresh/existing-install behavior.
+
 Chỉ thay các default sau:
 
 ```text
@@ -372,6 +374,8 @@ Fresh install dùng default mới.
 Nếu settings cũ có field chưa persist và đang phụ thuộc default code, phải có migration/versioning để **preserve effective value của user hiện tại**, không để update âm thầm thay behavior.
 
 ## P4.2 — Nút `Đặt lại mặc định`
+
+Status: **COMPLETE** on 2026-09-21.
 
 Settings có:
 
@@ -400,6 +404,8 @@ Không được:
 Test reset sau process restart.
 
 ## P4.3 — Tổ chức Settings thành Cơ bản / Nâng cao
+
+Status: **COMPLETE** on 2026-09-21; EN/VI share the same Compose structure.
 
 Không đổi semantics của setting hiện có.
 

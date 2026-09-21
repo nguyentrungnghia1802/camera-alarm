@@ -44,6 +44,7 @@ fun SettingsScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     var showClearHistoryDialog by remember { mutableStateOf(false) }
+    var showResetDefaultsDialog by remember { mutableStateOf(false) }
     var showAddRangeDialog by remember { mutableStateOf(false) }
     var editingRange by remember { mutableStateOf<ActiveTimeRange?>(null) }
     var showUnsavedDialog by remember { mutableStateOf(false) }
@@ -161,6 +162,25 @@ fun SettingsScreen(
         )
     }
 
+    if (showResetDefaultsDialog) {
+        AlertDialog(
+            onDismissRequest = { showResetDefaultsDialog = false },
+            title = { Text(stringResource(R.string.dialog_reset_defaults_title)) },
+            text = { Text(stringResource(R.string.dialog_reset_defaults_message)) },
+            confirmButton = {
+                Button(onClick = {
+                    viewModel.resetDefaults()
+                    showResetDefaultsDialog = false
+                }) { Text(stringResource(R.string.btn_reset_defaults)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showResetDefaultsDialog = false }) {
+                    Text(stringResource(R.string.btn_cancel))
+                }
+            }
+        )
+    }
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
@@ -219,6 +239,12 @@ fun SettingsScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            Text(
+                stringResource(R.string.section_basic),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
+
             // Sound Picker Navigation Card
             Card(
                 modifier = Modifier
@@ -579,7 +605,7 @@ fun SettingsScreen(
                 }
             }
 
-            // Vibration & Full-screen Card
+            // Basic behavior
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -612,26 +638,6 @@ fun SettingsScreen(
                         )
                     }
 
-                    HorizontalDivider()
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 12.dp)
-                        ) {
-                            Text(stringResource(R.string.setting_fullscreen), fontWeight = FontWeight.Bold)
-                            Text(stringResource(R.string.desc_fullscreen), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
-                        Switch(
-                            checked = state.draftSettings.fullScreenEnabled,
-                            onCheckedChange = { viewModel.setFullScreen(it) }
-                        )
-                    }
                 }
             }
 
@@ -688,6 +694,27 @@ fun SettingsScreen(
                 ) {
                     Text(stringResource(R.string.section_advanced), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
 
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column(modifier = Modifier.weight(1f).padding(end = 12.dp)) {
+                            Text(stringResource(R.string.setting_fullscreen), fontWeight = FontWeight.Bold)
+                            Text(
+                                stringResource(R.string.desc_fullscreen),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Switch(
+                            checked = state.draftSettings.fullScreenEnabled,
+                            onCheckedChange = { viewModel.setFullScreen(it) }
+                        )
+                    }
+
+                    HorizontalDivider()
+
                     OutlinedButton(
                         onClick = onNavigateToDiagnostics,
                         modifier = Modifier.fillMaxWidth()
@@ -708,6 +735,15 @@ fun SettingsScreen(
                             text = stringResource(R.string.btn_clear_history, state.historyCount),
                             textAlign = TextAlign.Center
                         )
+                    }
+
+                    OutlinedButton(
+                        onClick = { showResetDefaultsDialog = true },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(Icons.Default.RestartAlt, contentDescription = null)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(stringResource(R.string.btn_reset_defaults), textAlign = TextAlign.Center)
                     }
                 }
             }

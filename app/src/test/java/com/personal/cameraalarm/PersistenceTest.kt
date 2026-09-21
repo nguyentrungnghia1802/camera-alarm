@@ -3,6 +3,7 @@ package com.personal.cameraalarm
 import com.personal.cameraalarm.data.history.AlertEventEntity
 import com.personal.cameraalarm.data.rule.TriggerRuleEntity
 import com.personal.cameraalarm.data.settings.AppSettings
+import com.personal.cameraalarm.data.settings.SettingsDefaults
 import com.personal.cameraalarm.trigger.MatchMode
 import com.personal.cameraalarm.trigger.TriggerRule
 import org.junit.Assert.*
@@ -16,9 +17,13 @@ class PersistenceTest {
         assertNull("Source package should be null by default", settings.sourcePackage)
         assertNull("Source label should be null by default", settings.sourceLabel)
         assertEquals(1000L, settings.alarmDelayMs)
-        assertEquals(10000L, settings.cooldownMs)
+        assertEquals(600000L, settings.cooldownMs)
         assertTrue("Vibration should be enabled by default", settings.vibrationEnabled)
         assertFalse("Full-screen should be disabled by default", settings.fullScreenEnabled)
+        assertEquals("alarm_warning_aloud", settings.alarmSoundKey)
+        assertEquals(com.personal.cameraalarm.schedule.ScheduleMode.CUSTOM, settings.scheduleMode)
+        assertEquals(SettingsDefaults.OVERNIGHT_START_MINUTES, settings.scheduleRanges.single().startMinutes)
+        assertEquals(SettingsDefaults.OVERNIGHT_END_MINUTES, settings.scheduleRanges.single().endMinutes)
     }
 
     @Test

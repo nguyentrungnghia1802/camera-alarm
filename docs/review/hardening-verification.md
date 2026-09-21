@@ -138,3 +138,16 @@ Date: 2026-09-21.
 - Regression coverage includes three different packages, two same-package rules with deterministic priority, disabled-only package privacy, template contract, keyword normalization, max-three enforcement, swaps, stable creation time, delete gaps, and Room migration.
 - First full API 31 run exposed an obsolete instrumentation fixture using priority `0`; production now requires `1..3`. The fixture and debug injectors were corrected and the full suite then passed 14/14.
 - `.\gradlew.bat test --rerun-tasks lint assembleDebug :app:assembleAndroidTest`: PASS; 184 tasks executed, no lint error.
+
+## Phase 4 — Settings V2
+
+Date: 2026-09-21.
+
+- Official fresh/reset profile is Loud Warning 1 (`alarm_warning_aloud`), cooldown 600 seconds, and a daily custom overnight range 22:30–06:00 with existing start-inclusive/end-exclusive semantics.
+- Settings profile version 2 distinguishes an empty fresh store from an existing unversioned store. Missing V1 fields are materialized with their old effective defaults before the new code defaults can change behavior.
+- Reset writes the complete official profile in one DataStore edit, refreshes the draft immediately, and resets only coordinator cooldown. It does not access Room or Android permission APIs.
+- Settings UI now has the same Basic/Advanced organization in EN and VI; full-screen/reliability sits under Advanced while sound, schedule, delay, cooldown, vibration, and language remain Basic.
+- `SettingsDefaultsInstrumentedTest`: PASS 3/3 on API 31, covering fresh defaults, existing-install preservation, and reset persistence across repository recreation.
+- The first full instrumentation run exposed two real test regressions: the integration fixture implicitly relied on the old always-active default, and test-alarm STOP dispatch could be delayed by application coroutine scheduling after cold start. The fixture now states its schedule precondition explicitly, while test-alarm STOP (which has no coordinator state to persist) dispatches synchronously from the receiver; the existing STOP instrumentation remains the regression test.
+- `\.\gradlew.bat test --rerun-tasks lint assembleDebug :app:assembleAndroidTest`: PASS for all non-device gates. The combined command's first device attempt was interrupted by an ADB daemon restart and reported `No connected devices`; after relaunching the same API 31 AVD, this environmental failure was rerun rather than counted as PASS.
+- `\.\gradlew.bat :app:connectedDebugAndroidTest` with `ANDROID_SERIAL=emulator-5554`: PASS, 17/17 on `CameraAlarm_API_31` / Android 12 after the regression fixes.

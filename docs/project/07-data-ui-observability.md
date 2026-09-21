@@ -87,7 +87,7 @@ Setup
 
 Alarm
 Delay                      1 second
-Cooldown                   10 seconds
+Cooldown                   600 seconds
 Vibration                  ON
 
 [ TEST ALARM ]
@@ -113,7 +113,7 @@ Fields:
 Name
 Source app (read-only from selected source or selectable)
 Match mode: Any / All
-Keywords (one per line)
+Keywords (individual cards in a bounded scrolling region)
 Enabled
 Priority
 ```
@@ -128,13 +128,27 @@ Validation:
 
 ## 5. Settings screen
 
-V1 settings:
+Settings are grouped consistently in both EN and VI:
+
+```text
+Basic
+- sound, vibration, cooldown, active schedule, common behavior
+
+Advanced
+- full-screen/reliability, permissions/diagnostics, data actions
+```
+
+Settings behavior:
 
 - Alarm delay: 0 / 1 / 3 / 5 seconds.
-- Cooldown: 0 / 10 / 30 / 60 seconds.
+- Cooldown: numeric seconds; fresh/reset default 600 seconds.
+- Fresh/reset sound: Loud Warning 1 (`alarm_warning_aloud`).
+- Fresh/reset schedule: daily 22:30–06:00, start-inclusive/end-exclusive.
 - Vibration: on/off.
 - Clear history.
 - Diagnostics.
+- Reset defaults is atomic and never deletes rules/history or changes system permissions.
+- Profile versioning preserves the old effective defaults on upgrade when V1 had not persisted a field.
 
 Phase 2 enhancement:
 

@@ -22,13 +22,13 @@ Acceptance:
 
 ### FR-002 — Source app selection
 
-Người dùng phải chọn chính xác app camera cần theo dõi.
+Mỗi rule phải chọn chính xác app camera cần theo dõi. Global source cũ chỉ còn là default/preselect cho rule mới.
 
 Acceptance:
 
-- Lưu `packageName`, label và icon reference nếu có.
+- Rule lưu `packageName`; picker hiển thị label và icon khi platform cung cấp.
 - Matcher luôn kiểm tra package trước keyword.
-- Không có source app => Monitoring disabled.
+- Không có enabled rule với source app hợp lệ => Monitoring disabled.
 - Có advanced manual package-name input để xử lý app không hiện trong picker.
 
 ### FR-003 — Trigger rule
@@ -110,14 +110,9 @@ Giữ dedupe cache nhỏ theo TTL; default TTL 30 giây.
 
 Sau STOP, hệ thống chuyển sang cooldown.
 
-Default cooldown: `10 giây`.
+Default cooldown cho fresh install: `600 giây`.
 
-Preset UI:
-
-- 0 giây
-- 10 giây
-- 30 giây
-- 60 giây
+UI cho phép nhập số giây cooldown; reset mặc định đưa về 600 giây.
 
 Trong cooldown, trigger hợp lệ bị suppress và ghi history.
 

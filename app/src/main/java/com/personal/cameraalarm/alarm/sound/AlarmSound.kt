@@ -13,6 +13,7 @@ data class AlarmSound(
 
 object AlarmSoundCatalog {
     const val DEFAULT_KEY = "alarm_default"
+    const val OFFICIAL_PROFILE_DEFAULT_KEY = "alarm_warning_aloud"
 
     val allSounds: List<AlarmSound> = listOf(
         AlarmSound(

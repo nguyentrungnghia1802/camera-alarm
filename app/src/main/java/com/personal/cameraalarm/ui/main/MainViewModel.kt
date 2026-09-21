@@ -27,7 +27,7 @@ data class MainUiState(
     val sourceLabel: String? = null,
     val enabledRuleCount: Int = 0,
     val alarmDelayMs: Long = 1000L,
-    val cooldownMs: Long = 10000L,
+    val cooldownMs: Long = 600000L,
     val vibrationEnabled: Boolean = true,
     val isRinging: Boolean = false,
     val isTestingAlarm: Boolean = false,

@@ -66,7 +66,11 @@ class AlarmStopInstrumentedTest {
                 .actions
                 .single { it.title.toString() == stopLabel }
             stopAction.actionIntent.send()
-            withTimeout(3_000) { while (manager.activeNotifications.any { it.id == 1 }) delay(25) }
+            // A cold emulator can spend several seconds rendering the alarm
+            // activity while the STOP broadcast is queued on the app main
+            // thread. The product contract is eventual token-correct STOP, so
+            // allow enough time for that cold-start path to drain.
+            withTimeout(10_000) { while (manager.activeNotifications.any { it.id == 1 }) delay(25) }
             assertTrue(manager.activeNotifications.none { it.id == 1 })
         } finally {
             stop("test-first")

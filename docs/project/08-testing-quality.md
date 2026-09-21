@@ -60,7 +60,9 @@ Tối thiểu bao phủ tất cả transition trong `03-domain-state-machine.md`
 
 ## 3. Repository tests
 
-- Settings defaults đúng: delay 1000, cooldown 10000, vibration true, monitoring false.
+- Fresh settings defaults đúng: delay 1000, cooldown 600000, sound `alarm_warning_aloud`, custom schedule 22:30–06:00, vibration true, monitoring false.
+- Existing unversioned settings preserve old effective fallback values during profile migration.
+- Reset defaults persists across repository/process recreation without deleting rules/history or changing permissions.
 - Rule CRUD + validation.
 - History retention <= 100, không quá 3 ngày và tối đa 10 event suppressed/ignored.
 - Runtime metadata persistence/hydration.
@@ -139,8 +141,8 @@ Expected:
 #### M6 — Cooldown
 
 - STOP.
-- trigger trong 5 giây với cooldown 10 => suppressed.
-- trigger sau 10 giây => scheduled.
+- trigger trước cooldown deadline => suppressed.
+- trigger tại/sau deadline => scheduled (default profile deadline is 600 seconds after STOP).
 
 #### M7 — Permission revoke
 

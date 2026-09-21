@@ -13,6 +13,7 @@ import com.personal.cameraalarm.data.history.AlertEventEntity
 import com.personal.cameraalarm.data.rule.TriggerRuleEntity
 import com.personal.cameraalarm.data.settings.SettingsRepository
 import com.personal.cameraalarm.notification.IncomingNotification
+import com.personal.cameraalarm.schedule.ScheduleMode
 import com.personal.cameraalarm.trigger.MatchMode
 import com.personal.cameraalarm.trigger.TriggerConfiguration
 import com.personal.cameraalarm.trigger.TriggerDecision
@@ -126,12 +127,19 @@ class V1IntegrationInstrumentedTest {
             container.stateStore.write(AlarmState.Idle)
             container.settingsRepository.setSourceApp("com.camera.instrumented", "Instrumented Camera")
             container.settingsRepository.setAlarmDelayMs(5_000)
+            // This test exercises persisted rule/monitoring integration, not the
+            // time-window policy. Make that precondition explicit now that the
+            // official fresh-install profile uses an overnight schedule.
+            container.settingsRepository.setScheduleMode(ScheduleMode.ALWAYS_ACTIVE)
             container.settingsRepository.setMonitoringEnabled(true)
             container.ruleRepository.saveRule(
                 TriggerRule(ruleId, "Person", true, "com.camera.instrumented", MatchMode.CONTAINS_ANY, listOf("person detected"), 1, 1_000)
             )
             awaitConfiguration {
-                it.monitoringEnabled && it.sourcePackage == "com.camera.instrumented" && it.rules.any { rule -> rule.id == ruleId }
+                it.monitoringEnabled &&
+                    it.sourcePackage == "com.camera.instrumented" &&
+                    it.scheduleConfiguration.mode == ScheduleMode.ALWAYS_ACTIVE &&
+                    it.rules.any { rule -> rule.id == ruleId }
             }
 
             assertEquals(TriggerDecision.SCHEDULED, container.pipeline.process(incoming("integration-scheduled")))
@@ -151,6 +159,7 @@ class V1IntegrationInstrumentedTest {
             container.settingsRepository.setMonitoringEnabled(false)
             container.settingsRepository.setSourceApp(null, null)
             container.settingsRepository.setAlarmDelayMs(1_000)
+            container.settingsRepository.resetToDefaults()
             container.stateStore.write(AlarmState.Idle)
         }
     }
