@@ -630,6 +630,8 @@ Status: **COMPLETE for scoped debt**. New tests call the production history mapp
 # Phase 8 — Release Engineering + Final Audit
 
 ## P8.1 Lint/dependency
+Status: **PASS with triaged non-blocking warnings**. Lint has no behavior, permission/policy, accessibility, deprecated-API, or context-leak warning. Remaining warnings are dependency-update candidates, unused legacy resources, plural/typography suggestions, and one obsolete resource qualifier; dependency upgrades are deferred to a separate compatibility batch.
+
 - Triage behavior/policy/accessibility trước.
 - Không cần zero-warning tuyệt đối.
 - Dependency upgrade theo batch riêng nếu thực sự cần.

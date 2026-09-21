@@ -216,3 +216,11 @@ Date: 2026-09-21. Candidate: `0d76d41`.
 - `BootActionPolicyTest` covers accepted/rejected receiver actions; `ManifestSecurityInstrumentedTest` checks the merged receiver exposure; `LocalizationInstrumentedTest` checks actual localized resources and OEM advisors.
 - `TestAlarmController` remains the shared start/stop boundary used by Main, Settings, and Diagnostics. No duplicate controller was added.
 - `AppContainer` remains the composition root. The policy/history mapping was extracted to a pure production mapper; a wider dependency-injection refactor was intentionally avoided.
+
+## P8.1 — Lint and dependency triage
+
+- `test --rerun-tasks lint assembleDebug :app:assembleAndroidTest`: PASS; 184 tasks executed.
+- App lint reports 92 non-blocking warnings: 34 unused legacy resources, 26 plural suggestions, 15 dependency-update notices, 9 ellipsis typography suggestions, 6 dash typography suggestions, 1 densityless icon location, and 1 obsolete min-SDK resource qualifier.
+- Behavior/policy/accessibility were prioritized: direct battery-exemption request, silent settings failures, deprecated alarm wake/full-screen APIs, dynamic-language split, and ViewModel context leak were resolved. No warning remains in those categories.
+- AndroidX/Room/coroutines upgrades are intentionally deferred to a separate batch because they cross migration, Compose, and platform boundaries; no upgrade is required to close this release gate.
+- Release identity advanced to versionCode `2`, versionName `1.1.0`.
