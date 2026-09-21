@@ -180,3 +180,10 @@ Date: 2026-09-21. Candidate: `0d76d41`.
 - `AlarmHistoryEventFactoryTest` covers the production lifecycle mapper. Trigger pipeline, history repository, reducer/coordinator tests, and AndroidTest assembly passed.
 - Wrong-package and monitoring-off notifications remain excluded from persistent history. Retention remains 3 days, at most 100 total rows, and at most 10 suppressed/ignored rows.
 - Affected gate: `:app:testDebugUnitTest` filtered to history/pipeline/reducer/coordinator plus `:app:assembleAndroidTest`: PASS.
+
+## P7.2 — Backup / restore
+
+- Android 11-and-earlier `fullBackupContent` and Android 12+ `dataExtractionRules` use a settings-only allowlist.
+- `camera_alarm_database` is excluded, preventing notification previews/history from cloud backup or device transfer. Rule rows share that database and are intentionally treated as local-only rather than weakening the privacy boundary.
+- `datastore/alarm_runtime_state.preferences_pb` is explicitly excluded. Pending/Ringing state, alarm token, boot/process nonce, notification key/title/preview, and cooldown runtime metadata cannot be restored into a phantom alarm.
+- `camera_alarm_settings.preferences_pb` is the only included data. Cloud backup additionally requires client-side encryption capability.

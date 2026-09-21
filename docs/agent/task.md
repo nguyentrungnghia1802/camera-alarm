@@ -591,6 +591,8 @@ Status: **COMPLETE**. Lifecycle mapping now preserves the matched Rule V2 `ruleI
 - Không lưu nội dung unrelated app.
 
 ## P7.2 Backup / restore
+Status: **COMPLETE**. Backup is an explicit settings-only allowlist for both Android 11-and-earlier Auto Backup and Android 12+ cloud/device transfer. Room data and `alarm_runtime_state` are excluded, so notification previews, Pending/Ringing state, token, owner nonce, and runtime snapshot cannot be restored.
+
 - Exclude history preview nhạy cảm.
 - Exclude runtime Pending/Ringing/token/nonce.
 - Restore không tạo phantom alarm.

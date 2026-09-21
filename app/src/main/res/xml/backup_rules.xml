@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Only durable, non-runtime user settings may leave the device. -->
+    <include
+        domain="file"
+        path="datastore/camera_alarm_settings.preferences_pb" />
+
+    <!-- An include switches backup to an allowlist. Database/history and the
+         separate alarm_runtime_state DataStore are therefore excluded. -->
+</full-backup-content>
