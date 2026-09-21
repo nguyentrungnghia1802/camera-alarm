@@ -36,7 +36,12 @@ class Phase3IntegrationTest {
 
     private class RecordingHistory : TriggerHistory {
         val events = mutableListOf<Pair<IncomingNotification, TriggerDecision>>()
-        override suspend fun record(notification: IncomingNotification, decision: TriggerDecision, token: AlarmToken?) {
+        override suspend fun record(
+            notification: IncomingNotification,
+            decision: TriggerDecision,
+            token: AlarmToken?,
+            ruleId: String?
+        ) {
             events += notification to decision
         }
     }

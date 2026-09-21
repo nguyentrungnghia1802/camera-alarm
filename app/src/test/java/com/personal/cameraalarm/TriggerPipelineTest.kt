@@ -16,7 +16,7 @@ class TriggerPipelineTest {
         val history = mutableListOf<TriggerDecision>()
         val pipeline = TriggerPipeline(Clock { 1000 }, { TriggerConfiguration(true, "camera.app", listOf(rule)) }, TtlDuplicateGuard(), ValidTriggerSink {
             submitted += it; AlarmOutcome.SCHEDULED
-        }, TriggerHistory { _, decision, _ -> history += decision })
+        }, TriggerHistory { _, decision, _, _ -> history += decision })
         pipeline.process(incoming("other", "different"))
         pipeline.process(incoming("k"))
         pipeline.process(incoming("k"))
@@ -32,7 +32,7 @@ class TriggerPipelineTest {
             { TriggerConfiguration(true, "camera.app", listOf(rule)) },
             TtlDuplicateGuard(),
             ValidTriggerSink { AlarmOutcome.SCHEDULED },
-            TriggerHistory { notification, _, _ -> persisted += notification }
+            TriggerHistory { notification, _, _, _ -> persisted += notification }
         )
 
         val decision = pipeline.process(
@@ -48,16 +48,21 @@ class TriggerPipelineTest {
 
     @Test fun selectedPackageStillPersistsHistory() = runTest {
         val persisted = mutableListOf<IncomingNotification>()
+        val persistedRuleIds = mutableListOf<String?>()
         val pipeline = TriggerPipeline(
             Clock { 1000 },
             { TriggerConfiguration(true, "camera.app", listOf(rule)) },
             TtlDuplicateGuard(),
             ValidTriggerSink { AlarmOutcome.SCHEDULED },
-            TriggerHistory { notification, _, _ -> persisted += notification }
+            TriggerHistory { notification, _, _, ruleId ->
+                persisted += notification
+                persistedRuleIds += ruleId
+            }
         )
 
         assertEquals(TriggerDecision.SCHEDULED, pipeline.process(incoming("selected")))
         assertEquals("Human detected", persisted.single().title)
+        assertEquals("r", persistedRuleIds.single())
     }
 
     @Test fun enabledRulesDefineMultipleAllowedPackagesInsteadOfGlobalSource() = runTest {
@@ -72,7 +77,7 @@ class TriggerPipelineTest {
             { TriggerConfiguration(true, "legacy.global", rules) },
             TtlDuplicateGuard(),
             ValidTriggerSink { submitted += it; AlarmOutcome.SCHEDULED },
-            TriggerHistory { _, _, _ -> }
+            TriggerHistory { _, _, _, _ -> }
         )
 
         assertEquals(TriggerDecision.SCHEDULED, pipeline.process(incoming("two", "camera.two")))
@@ -93,7 +98,7 @@ class TriggerPipelineTest {
             { TriggerConfiguration(true, null, rules) },
             TtlDuplicateGuard(),
             ValidTriggerSink { submitted += it; AlarmOutcome.SCHEDULED },
-            TriggerHistory { notification, _, _ -> persisted += notification }
+            TriggerHistory { notification, _, _, _ -> persisted += notification }
         )
 
         assertEquals(TriggerDecision.SCHEDULED, pipeline.process(incoming("shared", "shared.camera")))
@@ -105,7 +110,7 @@ class TriggerPipelineTest {
         var count = 0
         val sink = ValidTriggerSink { count++; AlarmOutcome.SCHEDULED }
         val decisions = mutableListOf<TriggerDecision>()
-        val history = TriggerHistory { _, decision, _ -> decisions += decision }
+        val history = TriggerHistory { _, decision, _, _ -> decisions += decision }
         TriggerPipeline(Clock { 0 }, { TriggerConfiguration(false, "camera.app", listOf(rule)) }, TtlDuplicateGuard(), sink, history).process(incoming("a"))
         TriggerPipeline(Clock { 0 }, { TriggerConfiguration(true, "camera.app", listOf(rule.copy(keywords = listOf("missing")))) }, TtlDuplicateGuard(), sink, history).process(incoming("b"))
         assertEquals(0, count)
@@ -120,7 +125,7 @@ class TriggerPipelineTest {
             TriggerConfigurationSource { TriggerConfiguration(true, "camera.app", listOf(rule)) },
             TtlDuplicateGuard(),
             ValidTriggerSink { scheduled++; AlarmOutcome.SCHEDULED },
-            TriggerHistory { _, _, _ -> error("database unavailable") },
+            TriggerHistory { _, _, _, _ -> error("database unavailable") },
             historyFailure = { reported = it }
         )
 
@@ -158,7 +163,7 @@ class TriggerPipelineTest {
             TriggerConfigurationSource { TriggerConfiguration(true, "camera.app", listOf(rule), schedule) },
             duplicates,
             ValidTriggerSink { scheduled++; AlarmOutcome.SCHEDULED },
-            TriggerHistory { _, decision, _ -> history += decision }
+            TriggerHistory { _, decision, _, _ -> history += decision }
         )
 
         // Midday notification -> suppressed outside active hours
@@ -176,7 +181,7 @@ class TriggerPipelineTest {
             TriggerConfigurationSource { TriggerConfiguration(true, "camera.app", listOf(rule), schedule) },
             duplicates,
             ValidTriggerSink { scheduled++; AlarmOutcome.SCHEDULED },
-            TriggerHistory { _, decision, _ -> history += decision }
+            TriggerHistory { _, decision, _, _ -> history += decision }
         )
         val scheduledDecision = nightPipeline.process(
             IncomingNotification("notif-1", "camera.app", 1, null, nightEpoch, "Human detected", null, null, emptyList(), null)
@@ -203,7 +208,7 @@ class TriggerPipelineTest {
             TriggerConfigurationSource { TriggerConfiguration(true, "camera.app", listOf(rule), schedule) },
             TtlDuplicateGuard(),
             ValidTriggerSink { snapshot -> scheduledSnapshot = snapshot; AlarmOutcome.SCHEDULED },
-            TriggerHistory { _, _, _ -> }
+            TriggerHistory { _, _, _, _ -> }
         )
 
         val decision = pipeline.process(
@@ -222,7 +227,7 @@ class TriggerPipelineTest {
             { TriggerConfiguration(true, "camera.app", listOf(rule)) },
             TtlDuplicateGuard(),
             ValidTriggerSink { AlarmOutcome.SUPPRESSED_COOLDOWN },
-            TriggerHistory { _, decision, _ -> history += decision }
+            TriggerHistory { _, decision, _, _ -> history += decision }
         )
 
         val decision = pipeline.process(incoming("cooldown-notif"))

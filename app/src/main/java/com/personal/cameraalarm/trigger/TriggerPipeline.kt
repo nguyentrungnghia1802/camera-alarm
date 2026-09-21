@@ -27,7 +27,20 @@ enum class TriggerDecision {
     SUPPRESSED_OUTSIDE_ACTIVE_HOURS
 }
 
-fun interface TriggerHistory { suspend fun record(notification: IncomingNotification, decision: TriggerDecision, token: AlarmToken?) }
+fun interface TriggerHistory {
+    suspend fun record(
+        notification: IncomingNotification,
+        decision: TriggerDecision,
+        token: AlarmToken?,
+        ruleId: String?
+    )
+}
+
+private data class PipelineResult(
+    val decision: TriggerDecision,
+    val token: AlarmToken? = null,
+    val ruleId: String? = null
+)
 
 class TriggerPipeline(
     private val clock: Clock,
@@ -40,10 +53,11 @@ class TriggerPipeline(
     private val mutex = Mutex()
 
     suspend fun process(notification: IncomingNotification): TriggerDecision {
-        val (decision, token) = mutex.withLock { decide(notification) }
+        val result = mutex.withLock { decide(notification) }
+        val decision = result.decision
         if (decision.shouldPersistHistory()) {
             try {
-                history.record(notification, decision, token)
+                history.record(notification, decision, result.token, result.ruleId)
             } catch (error: Exception) {
                 if (error is CancellationException) throw error
                 historyFailure(error)
@@ -52,20 +66,20 @@ class TriggerPipeline(
         return decision
     }
 
-    private suspend fun decide(notification: IncomingNotification): Pair<TriggerDecision, AlarmToken?> {
+    private suspend fun decide(notification: IncomingNotification): PipelineResult {
         val config = configuration.current()
-        if (!config.monitoringEnabled) return TriggerDecision.IGNORED_MONITORING_OFF to null
+        if (!config.monitoringEnabled) return PipelineResult(TriggerDecision.IGNORED_MONITORING_OFF)
         val allowedPackages = config.rules.asSequence()
             .filter { it.enabled }
             .map { it.sourcePackage }
             .filter(String::isNotBlank)
             .toSet()
         if (notification.packageName !in allowedPackages)
-            return TriggerDecision.IGNORED_WRONG_PACKAGE to null
+            return PipelineResult(TriggerDecision.IGNORED_WRONG_PACKAGE)
 
         val searchable = NotificationNormalizer.normalize(notification)
         val rule = TriggerMatcher.match(notification.packageName, searchable, config.rules)
-            ?: return TriggerDecision.IGNORED_NO_RULE_MATCH to null
+            ?: return PipelineResult(TriggerDecision.IGNORED_NO_RULE_MATCH)
         try {
             android.util.Log.i("CameraAlarm", "TRIGGER_MATCHED: rule=${rule.name} pkg=${notification.packageName}")
         } catch (_: Throwable) {}
@@ -73,18 +87,20 @@ class TriggerPipeline(
         val eventTime = notification.postTimeEpochMs.takeIf { it > 0 } ?: clock.nowEpochMs()
         val scheduleDecision = ActiveScheduleGate.evaluate(config.scheduleConfiguration, eventTime)
         if (scheduleDecision == ScheduleDecision.OUTSIDE_ACTIVE_HOURS) {
-            return TriggerDecision.SUPPRESSED_OUTSIDE_ACTIVE_HOURS to null
+            return PipelineResult(TriggerDecision.SUPPRESSED_OUTSIDE_ACTIVE_HOURS, ruleId = rule.id)
         }
 
         val key = notification.key.ifBlank { fallbackKey(notification, searchable) }
         val now = clock.nowEpochMs()
-        if (duplicates.isDuplicate(key, now)) return TriggerDecision.IGNORED_DUPLICATE to null
+        if (duplicates.isDuplicate(key, now)) {
+            return PipelineResult(TriggerDecision.IGNORED_DUPLICATE, ruleId = rule.id)
+        }
         duplicates.markSeen(key, now)
 
         val token = AlarmToken(UUID.randomUUID().toString())
         val trigger = TriggerSnapshot(token, notification.packageName, key, rule.id, notification.title?.take(300), searchable.take(300), now)
         val outcome = coordinator.onValidTrigger(trigger)
-        return TriggerDecision.valueOf(outcome.name) to token
+        return PipelineResult(TriggerDecision.valueOf(outcome.name), token, rule.id)
     }
 
     private fun fallbackKey(n: IncomingNotification, normalized: String): String {

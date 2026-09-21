@@ -205,6 +205,7 @@
     <string name="decision_ignored_duplicate">Ignored (duplicate notification)</string>
     <string name="decision_ignored_monitoring_off">Ignored (monitoring off)</string>
     <string name="decision_alarm_stopped">Alarm stopped</string>
+    <string name="decision_alarm_cancelled">Pending alarm cancelled</string>
     <string name="alarm_stopped_event_title">Alarm Stopped</string>
     <string name="alarm_stopped_event_preview">Alarm runtime stopped</string>
 

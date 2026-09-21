@@ -92,7 +92,7 @@ class AlarmCoordinator(
                     observer.onEffect(AlarmEffect.RecordFailure(result.toString()))
                 } else observer.onEffect(effect)
             }
-            is AlarmEffect.CancelExact -> { scheduler.cancel(effect.alarmToken); observer.onEffect(effect) }
+            is AlarmEffect.CancelExact -> { scheduler.cancel(effect.trigger.alarmToken); observer.onEffect(effect) }
             else -> observer.onEffect(effect)
         }
     }

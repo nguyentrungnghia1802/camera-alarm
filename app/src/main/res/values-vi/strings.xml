@@ -205,6 +205,7 @@
     <string name="decision_ignored_duplicate">Đã bỏ qua (thông báo trùng lặp)</string>
     <string name="decision_ignored_monitoring_off">Đã bỏ qua (chưa bật bảo vệ)</string>
     <string name="decision_alarm_stopped">Đã tắt chuông cảnh báo</string>
+    <string name="decision_alarm_cancelled">Đã hủy chuông đang chờ</string>
     <string name="alarm_stopped_event_title">Đã tắt chuông cảnh báo</string>
     <string name="alarm_stopped_event_preview">Chuông báo đã được tắt thành công</string>
 

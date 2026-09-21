@@ -512,6 +512,8 @@ Thực hiện device certification **sau Rule V2 + Settings V2**, không dùng P
 
 ## P6.1 — API matrix
 
+Status: **PASS on API 31 / 33 / 34 / 36** for the Phase 6 candidate. API 36 exposed a real foreground-service/full-screen launch defect; commit `0d76d41` fixed foreground promotion and STOP dispatch, and the full instrumentation suite passed afterward. Later Phase 7 production changes require affected final-commit instrumentation when an emulator is available.
+
 Chạy API 31 / 33 / 34 / 36 theo khả năng môi trường.
 
 Bao gồm:
@@ -532,6 +534,8 @@ Bao gồm:
 - history lifecycle.
 
 ## P6.2 — Samsung A50 physical validation
+
+Status: **NOT VERIFIED**. The Samsung A50 disconnected from ADB before Phase 6 physical certification. Earlier Samsung database instrumentation is not promoted to this device-certification gate.
 
 Bắt buộc vì đây là thiết bị mục tiêu hiện có.
 
@@ -555,6 +559,13 @@ Ghi evidence và commit SHA.
 
 ## P6.3 — Xiaomi
 
+Status:
+
+```text
+Xiaomi implementation: COMPLETE
+Xiaomi physical validation: NOT VERIFIED
+```
+
 Chỉ ghi:
 
 ```text
@@ -571,6 +582,8 @@ nếu không có máy thật.
 Sau device certification mới xử lý các phần còn lại không bị feature mới thay thế.
 
 ## P7.1 History contract
+Status: **COMPLETE**. Lifecycle mapping now preserves the matched Rule V2 `ruleId` and `alarmToken` directly from `TriggerSnapshot` for scheduled, fired, stopped, and pending-cancelled events; it does not depend on asynchronous Room lookup order. Wrong-package/monitoring-off content remains excluded and the existing 3-day / 100-row / 10-suppressed retention contract is unchanged.
+
 - Chuẩn hóa lifecycle events.
 - `ruleId` phải phản ánh Rule V2.
 - `alarmToken` xuyên lifecycle.

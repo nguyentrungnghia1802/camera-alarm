@@ -34,8 +34,8 @@ enum class SuppressionReason { PENDING, RINGING, COOLDOWN, STALE_ALARM }
 sealed interface AlarmEffect {
     data class ScheduleExact(val trigger: TriggerSnapshot, val triggerAtEpochMs: Long) : AlarmEffect
     data class StartRinging(val trigger: TriggerSnapshot) : AlarmEffect
-    data class StopRuntime(val alarmToken: AlarmToken?) : AlarmEffect
-    data class CancelExact(val alarmToken: AlarmToken) : AlarmEffect
+    data class StopRuntime(val trigger: TriggerSnapshot) : AlarmEffect
+    data class CancelExact(val trigger: TriggerSnapshot) : AlarmEffect
     data class RecordSuppression(val reason: SuppressionReason) : AlarmEffect
     data class RecordFailure(val reason: String) : AlarmEffect
 }

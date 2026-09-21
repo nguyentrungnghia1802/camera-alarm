@@ -14,10 +14,10 @@ object AlarmReducer {
         } else AlarmTransition(state, listOf(AlarmEffect.RecordSuppression(SuppressionReason.STALE_ALARM)))
         is AlarmEvent.StopRequested -> when (state) {
             is AlarmState.Ringing -> if (event.alarmToken == null || event.alarmToken == state.trigger.alarmToken)
-                AlarmTransition(AlarmState.Cooldown(nowEpochMs + settings.cooldownMs, state.trigger.alarmToken), listOf(AlarmEffect.StopRuntime(state.trigger.alarmToken)))
+                AlarmTransition(AlarmState.Cooldown(nowEpochMs + settings.cooldownMs, state.trigger.alarmToken), listOf(AlarmEffect.StopRuntime(state.trigger)))
                 else AlarmTransition(state)
             is AlarmState.Pending -> if (event.alarmToken == null || event.alarmToken == state.trigger.alarmToken)
-                AlarmTransition(AlarmState.Cooldown(nowEpochMs + settings.cooldownMs, state.trigger.alarmToken), listOf(AlarmEffect.CancelExact(state.trigger.alarmToken)))
+                AlarmTransition(AlarmState.Cooldown(nowEpochMs + settings.cooldownMs, state.trigger.alarmToken), listOf(AlarmEffect.CancelExact(state.trigger)))
                 else AlarmTransition(state)
             else -> AlarmTransition(state)
         }

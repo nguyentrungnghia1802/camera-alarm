@@ -4,6 +4,7 @@ import android.content.Context
 import com.personal.cameraalarm.alarm.*
 import com.personal.cameraalarm.data.AppDatabase
 import com.personal.cameraalarm.data.history.HistoryRepository
+import com.personal.cameraalarm.data.history.AlarmHistoryEventFactory
 import com.personal.cameraalarm.data.rule.TriggerRuleRepository
 import com.personal.cameraalarm.data.settings.SettingsRepository
 import com.personal.cameraalarm.notification.ListenerConnectionState
@@ -102,41 +103,35 @@ class AppContainer(context: Context) {
         stateStore,
         { alarmPolicy },
         AlarmEffectObserver { effect ->
-            when (effect) {
-                is AlarmEffect.RecordFailure -> {
-                    runtimeDiagnostics.record(effect.reason)
-                    appScope.launch {
+            if (effect is AlarmEffect.RecordFailure) {
+                runtimeDiagnostics.record(effect.reason)
+            }
+            val event = AlarmHistoryEventFactory.fromEffect(
+                effect = effect,
+                createdAtEpochMs = System.currentTimeMillis(),
+                fallbackSourcePackage = triggerConfiguration.sourcePackage
+            )
+            if (event != null) {
+                appScope.launch {
+                    try {
                         historyRepository.recordEvent(
-                            createdAtEpochMs = System.currentTimeMillis(),
-                            sourcePackage = triggerConfiguration.sourcePackage,
-                            notificationKey = null,
-                            title = "Alarm Failure",
-                            textPreview = effect.reason,
-                            normalizedHash = null,
-                            decision = "SCHEDULE_FAILED",
-                            ruleId = null,
-                            alarmToken = null,
-                            details = effect.reason
+                            createdAtEpochMs = event.createdAtEpochMs,
+                            sourcePackage = event.sourcePackage,
+                            notificationKey = event.notificationKey,
+                            title = event.title,
+                            textPreview = event.textPreview,
+                            normalizedHash = event.normalizedHash,
+                            decision = event.decision,
+                            ruleId = event.ruleId,
+                            alarmToken = event.alarmToken,
+                            details = event.details
+                        )
+                    } catch (error: Exception) {
+                        runtimeDiagnostics.record(
+                            "history lifecycle: ${error.message ?: error.javaClass.simpleName}"
                         )
                     }
                 }
-                is AlarmEffect.StopRuntime -> {
-                    appScope.launch {
-                        historyRepository.recordEvent(
-                            createdAtEpochMs = System.currentTimeMillis(),
-                            sourcePackage = triggerConfiguration.sourcePackage,
-                            notificationKey = null,
-                            title = "Alarm Stopped",
-                            textPreview = "Alarm runtime stopped",
-                            normalizedHash = null,
-                            decision = "ALARM_STOPPED",
-                            ruleId = null,
-                            alarmToken = effect.alarmToken?.value,
-                            details = null
-                        )
-                    }
-                }
-                else -> {}
             }
         }
     )
@@ -166,14 +161,12 @@ class AppContainer(context: Context) {
         },
         TtlDuplicateGuard(),
         coordinator,
-        TriggerHistory { notification, decision, token ->
+        TriggerHistory { notification, decision, token, ruleId ->
             if (com.personal.cameraalarm.BuildConfig.DEBUG) {
                 android.util.Log.d("CameraAlarm", "decision=$decision source=${notification.packageName}")
             }
             val details = if (decision == TriggerDecision.SUPPRESSED_COOLDOWN) {
-                val state = try {
-                    kotlinx.coroutines.runBlocking { stateStore.read() }
-                } catch (_: Exception) { null }
+                val state = try { stateStore.read() } catch (_: Exception) { null }
                 if (state is AlarmState.Cooldown) {
                     val remainingMs = (state.untilEpochMs - System.currentTimeMillis()).coerceAtLeast(0)
                     val min = (remainingMs / 1000) / 60
@@ -190,7 +183,7 @@ class AppContainer(context: Context) {
                 textPreview = notification.text ?: notification.bigText ?: notification.subText,
                 normalizedHash = null,
                 decision = decision.name,
-                ruleId = null,
+                ruleId = ruleId,
                 alarmToken = token?.value,
                 details = details
             )

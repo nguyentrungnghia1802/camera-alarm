@@ -162,3 +162,21 @@ Date: 2026-09-21. Clean candidate: `71a9315`.
 - Manual layout exercise on API 31 used a 360 dp-wide viewport (`720x1280 @ 320 dpi`) with font scale `1.5`. Main and Settings remained scrollable; Basic, Advanced controls, and Reset Defaults were reachable. Emulator size, density, and font scale were restored afterward.
 - Required build gate: `test --rerun-tasks` PASS (98 tasks executed); `lint` PASS; `assembleDebug` PASS; `:app:assembleRelease` PASS; `:app:assembleAndroidTest` PASS.
 - Available-device instrumentation on the candidate: PASS, 17/17 on API 31. Phase 6 owns cross-API and physical-device certification.
+
+## Phase 6 — Runtime / device certification
+
+Date: 2026-09-21. Candidate: `0d76d41`.
+
+- API 31 / 33 / 34 / 36 instrumentation was run for the Phase 6 candidate and passed after the API 36 fix.
+- API 36 initially exposed a real foreground-service/full-screen launch failure. Foreground promotion and STOP dispatch were hardened in `0d76d41`; the full suite then passed. This is retained as defect evidence, not hidden as an environmental retry.
+- Samsung A50 physical certification: **NOT VERIFIED**. The device disconnected from ADB before the required background/locked/reboot/real-camera matrix could be run. Earlier database-only instrumentation on this device does not satisfy P6.2.
+- Xiaomi implementation: **COMPLETE**. Xiaomi physical validation: **NOT VERIFIED** because no physical Xiaomi device is available.
+- Phase 7 production changes must receive affected final-commit instrumentation when an emulator is available; the historical Phase 6 pass is not automatically promoted over later code.
+
+## P7.1 — History contract
+
+- Trigger history carries the Rule V2 match ID for scheduled and suppressed outcomes.
+- Fired, stopped, and pending-cancelled lifecycle effects now carry the original `TriggerSnapshot`; `ruleId`, `alarmToken`, source, and notification key do not depend on asynchronous Room query ordering.
+- `AlarmHistoryEventFactoryTest` covers the production lifecycle mapper. Trigger pipeline, history repository, reducer/coordinator tests, and AndroidTest assembly passed.
+- Wrong-package and monitoring-off notifications remain excluded from persistent history. Retention remains 3 days, at most 100 total rows, and at most 10 suppressed/ignored rows.
+- Affected gate: `:app:testDebugUnitTest` filtered to history/pipeline/reducer/coordinator plus `:app:assembleAndroidTest`: PASS.
