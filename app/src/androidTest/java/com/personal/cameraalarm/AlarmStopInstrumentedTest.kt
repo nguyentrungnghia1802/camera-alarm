@@ -6,9 +6,12 @@ import android.os.ParcelFileDescriptor
 import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
+import androidx.test.runner.lifecycle.Stage
 import androidx.test.platform.app.InstrumentationRegistry
 import com.personal.cameraalarm.alarm.AlarmReceiver
 import com.personal.cameraalarm.alarm.CameraAlarmService
+import com.personal.cameraalarm.ui.alarm.AlarmActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -57,6 +60,18 @@ class AlarmStopInstrumentedTest {
         try {
             start("test-first")
             withTimeout(5_000) { while (manager.activeNotifications.none { it.id == 1 }) delay(25) }
+            withTimeout(10_000) {
+                while (true) {
+                    var resumed = false
+                    instrumentation.runOnMainSync {
+                        resumed = ActivityLifecycleMonitorRegistry.getInstance()
+                            .getActivitiesInStage(Stage.RESUMED)
+                            .any { it is AlarmActivity }
+                    }
+                    if (resumed) break
+                    delay(25)
+                }
+            }
             start("test-second")
             instrumentation.waitForIdleSync()
             val stopLabel = context.getString(R.string.btn_stop_alarm)

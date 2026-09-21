@@ -61,14 +61,8 @@ class AlarmReceiver : BroadcastReceiver() {
                             putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_PREVIEW, trigger.textPreview)
                             putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, trigger.receivedAtEpochMs)
                         }
-                        val options = android.app.ActivityOptions.makeBasic()
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                            options.setPendingIntentBackgroundActivityStartMode(
-                                android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
-                            )
-                        }
                         try {
-                            context.startActivity(directIntent, options.toBundle())
+                            context.startActivity(directIntent)
                             Log.i("CameraAlarm", "AlarmReceiver direct startActivity succeeded for token=$token")
                         } catch (e: Exception) {
                             Log.w("CameraAlarm", "AlarmReceiver direct startActivity failed: ${e.message}")

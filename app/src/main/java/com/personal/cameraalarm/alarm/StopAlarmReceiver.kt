@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.core.content.ContextCompat
 import com.personal.cameraalarm.app.CameraAlarmApp
 import kotlinx.coroutines.launch
 
@@ -12,6 +11,7 @@ class StopAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent?.action != ACTION_STOP) return
         val token = intent.getStringExtra(AlarmReceiver.EXTRA_TOKEN)?.takeIf(String::isNotBlank)?.let(::AlarmToken) ?: return
+        Log.i("CameraAlarm", "STOP_RECEIVER_FIRED: token=${token.value}")
         // Test alarms have no coordinator state to persist. Dispatch their STOP
         // synchronously so it cannot be delayed behind unrelated application
         // coroutine work after a cold process/emulator start.
@@ -33,7 +33,11 @@ class StopAlarmReceiver : BroadcastReceiver() {
         val stop = Intent(context, CameraAlarmService::class.java)
             .setAction(CameraAlarmService.ACTION_STOP)
             .putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
-        ContextCompat.startForegroundService(context, stop)
+        // This command targets the already-running foreground service. Starting
+        // a second foreground-service request for a STOP command can be deferred
+        // by newer Android versions and also creates a promotion obligation the
+        // STOP branch intentionally never fulfills.
+        context.startService(stop)
     }
 
     companion object {

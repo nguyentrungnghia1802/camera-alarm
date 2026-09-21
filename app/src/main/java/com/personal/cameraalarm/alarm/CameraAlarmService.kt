@@ -220,18 +220,11 @@ class CameraAlarmService : Service() {
             putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_PREVIEW, trigger?.textPreview)
             putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, trigger?.receivedAtEpochMs ?: System.currentTimeMillis())
         }
-        val contentOptions = android.app.ActivityOptions.makeBasic()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            contentOptions.setPendingIntentBackgroundActivityStartMode(
-                android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
-            )
-        }
         val contentPending = PendingIntent.getActivity(
             this,
             (token.value + "_view").hashCode(),
             contentIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-            contentOptions.toBundle()
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         builder.setContentIntent(contentPending)
@@ -267,19 +260,11 @@ class CameraAlarmService : Service() {
             putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, trigger?.receivedAtEpochMs ?: System.currentTimeMillis())
         }
 
-        val options = android.app.ActivityOptions.makeBasic()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            options.setPendingIntentBackgroundActivityStartMode(
-                android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
-            )
-        }
-
         return PendingIntent.getActivity(
             this,
             (token.value + "_full").hashCode(),
             fullScreenIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-            options.toBundle()
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
 
@@ -318,13 +303,7 @@ class CameraAlarmService : Service() {
                     putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_PREVIEW, trigger?.textPreview)
                     putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, trigger?.receivedAtEpochMs ?: System.currentTimeMillis())
                 }
-                val options = android.app.ActivityOptions.makeBasic()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                    options.setPendingIntentBackgroundActivityStartMode(
-                        android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
-                    )
-                }
-                startActivity(directIntent, options.toBundle())
+                startActivity(directIntent)
                 Log.i("CameraAlarm", "Direct startActivity called for token=${token.value}")
             } catch (e2: Exception) {
                 if (com.personal.cameraalarm.BuildConfig.DEBUG) {
