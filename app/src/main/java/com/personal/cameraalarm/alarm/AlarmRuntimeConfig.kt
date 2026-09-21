@@ -4,7 +4,7 @@ import com.personal.cameraalarm.alarm.sound.AlarmSoundCatalog
 
 data class AlarmRuntimeConfig(
     val vibrationEnabled: Boolean = true,
-    val fullScreenEnabled: Boolean = false,
+    val fullScreenEnabled: Boolean = true,
     val soundKey: String = AlarmSoundCatalog.DEFAULT_KEY
 )
 

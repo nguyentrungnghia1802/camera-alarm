@@ -145,6 +145,11 @@ class V1IntegrationInstrumentedTest {
             assertEquals(TriggerDecision.SCHEDULED, container.pipeline.process(incoming("integration-scheduled")))
             val pending = container.stateStore.read() as AlarmState.Pending
             container.coordinator.onStopRequested(pending.trigger.alarmToken)
+            assertTrue(
+                "Stopping an alert must not disable camera monitoring",
+                container.settingsRepository.current().monitoringEnabled
+            )
+            awaitConfiguration { it.monitoringEnabled }
             val delayFromNotification = pending.scheduledAtEpochMs - pending.trigger.receivedAtEpochMs
             assertTrue("Exact alarm must not be scheduled early", delayFromNotification >= 5_000)
             assertTrue("Pipeline overhead should stay bounded", delayFromNotification < 5_500)

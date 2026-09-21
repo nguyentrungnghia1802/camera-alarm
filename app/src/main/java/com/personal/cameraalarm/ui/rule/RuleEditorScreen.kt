@@ -1,10 +1,14 @@
 package com.personal.cameraalarm.ui.rule
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -14,6 +18,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -21,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.personal.cameraalarm.R
 import com.personal.cameraalarm.trigger.MatchMode
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun RuleEditorScreen(
     viewModel: RuleViewModel,
@@ -36,6 +42,34 @@ fun RuleEditorScreen(
 
     val isModified = remember(state.name, state.keywordsRaw, state.sourcePackage, state.matchMode, state.priority, state.enabled) {
         state.name.isNotBlank() || state.keywordsRaw.isNotBlank()
+    }
+
+    val nameBringIntoViewRequester = remember { BringIntoViewRequester() }
+    val sourceBringIntoViewRequester = remember { BringIntoViewRequester() }
+    val keywordsBringIntoViewRequester = remember { BringIntoViewRequester() }
+    val nameFocusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(state.validationTrigger) {
+        if (state.validationTrigger > 0L) {
+            when (state.error) {
+                RuleEditorError.NameBlank -> {
+                    nameBringIntoViewRequester.bringIntoView()
+                    runCatching { nameFocusRequester.requestFocus() }
+                }
+                RuleEditorError.SourceBlank -> {
+                    sourceBringIntoViewRequester.bringIntoView()
+                }
+                RuleEditorError.KeywordsRequired,
+                RuleEditorError.KeywordBlank,
+                RuleEditorError.KeywordTooLong,
+                RuleEditorError.KeywordDuplicate,
+                RuleEditorError.TooManyKeywords,
+                is RuleEditorError.KeywordTooShort -> {
+                    keywordsBringIntoViewRequester.bringIntoView()
+                }
+                else -> {}
+            }
+        }
     }
 
     if (showKeywordDialog) {
@@ -135,14 +169,6 @@ fun RuleEditorScreen(
                     }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.btn_cancel))
                     }
-                },
-                actions = {
-                    Button(
-                        onClick = { viewModel.saveRule(onBack) },
-                        modifier = Modifier.padding(end = 8.dp)
-                    ) {
-                        Text(stringResource(R.string.btn_save), fontWeight = FontWeight.Bold)
-                    }
                 }
             )
         }
@@ -156,41 +182,74 @@ fun RuleEditorScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Rule Name
+            val isNameError = state.error == RuleEditorError.NameBlank
             OutlinedTextField(
                 value = state.name,
                 onValueChange = viewModel::updateName,
                 label = { Text(stringResource(R.string.rule_name)) },
                 placeholder = { Text(stringResource(R.string.rule_name_placeholder)) },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                isError = isNameError,
+                supportingText = if (isNameError) {
+                    {
+                        Text(
+                            text = stringResource(R.string.rule_error_name_blank),
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                } else null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .bringIntoViewRequester(nameBringIntoViewRequester)
+                    .focusRequester(nameFocusRequester)
             )
 
             // Source App
-            Card(
-                modifier = Modifier.fillMaxWidth().clickable(onClick = onSelectSourceApp),
-                shape = RoundedCornerShape(12.dp)
+            val isSourceError = state.error == RuleEditorError.SourceBlank
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .bringIntoViewRequester(sourceBringIntoViewRequester),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(14.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClick = onSelectSourceApp),
+                    shape = RoundedCornerShape(12.dp),
+                    border = if (isSourceError) BorderStroke(1.5.dp, MaterialTheme.colorScheme.error) else null
                 ) {
-                    Text("📷", fontSize = 24.sp)
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(stringResource(R.string.rule_source_app), style = MaterialTheme.typography.labelMedium)
-                        Text(
-                            state.sourceLabel.ifBlank { stringResource(R.string.rule_source_app_empty_hint) },
-                            fontWeight = FontWeight.Bold
-                        )
-                        if (state.sourcePackage.isNotBlank()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Text("📷", fontSize = 24.sp)
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(stringResource(R.string.rule_source_app), style = MaterialTheme.typography.labelMedium)
                             Text(
-                                state.sourcePackage,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                state.sourceLabel.ifBlank { stringResource(R.string.rule_source_app_empty_hint) },
+                                fontWeight = FontWeight.Bold
                             )
+                            if (state.sourcePackage.isNotBlank()) {
+                                Text(
+                                    state.sourcePackage,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
                         }
+                        Text("›", fontSize = 28.sp)
                     }
-                    Text("›", fontSize = 28.sp)
+                }
+                if (isSourceError) {
+                    Text(
+                        text = stringResource(R.string.rule_error_source_blank),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
                 }
             }
 
@@ -222,10 +281,26 @@ fun RuleEditorScreen(
                 )
             }
 
+            val isKeywordError = state.error is RuleEditorError.KeywordsRequired ||
+                state.error is RuleEditorError.KeywordBlank ||
+                state.error is RuleEditorError.KeywordTooLong ||
+                state.error is RuleEditorError.KeywordDuplicate ||
+                state.error is RuleEditorError.TooManyKeywords ||
+                state.error is RuleEditorError.KeywordTooShort
+
             // Keyword cards keep the matcher unchanged while removing CSV editing from the UI.
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .bringIntoViewRequester(keywordsBringIntoViewRequester),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 Text(stringResource(R.string.rule_keywords), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp)) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    border = if (isKeywordError) BorderStroke(1.5.dp, MaterialTheme.colorScheme.error) else null
+                ) {
                     if (state.keywordItems.isEmpty()) {
                         Text(
                             stringResource(R.string.rule_no_normalized_keywords),
@@ -252,6 +327,17 @@ fun RuleEditorScreen(
                                 }
                             }
                         }
+                    }
+                }
+                if (isKeywordError) {
+                    state.error?.let { err ->
+                        Text(
+                            text = err.localizedText(),
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.padding(start = 4.dp)
+                        )
                     }
                 }
                 OutlinedButton(onClick = {
@@ -390,14 +476,16 @@ fun RuleEditorScreen(
                 )
             }
 
-            // Error message if any
+            // General error message if any (field-specific errors are displayed directly at their fields)
             state.error?.let { error ->
-                Text(
-                    text = error.localizedText(),
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
+                if (error == RuleEditorError.MaxRules || error == RuleEditorError.SaveFailed) {
+                    Text(
+                        text = error.localizedText(),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
 
             // Save Button

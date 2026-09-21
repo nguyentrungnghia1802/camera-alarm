@@ -1,6 +1,7 @@
 package com.personal.cameraalarm
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
@@ -37,6 +38,7 @@ class SettingsDefaultsInstrumentedTest {
         assertEquals(ScheduleMode.CUSTOM, settings.scheduleMode)
         assertEquals(SettingsDefaults.OVERNIGHT_START_MINUTES, settings.scheduleRanges.single().startMinutes)
         assertEquals(SettingsDefaults.OVERNIGHT_END_MINUTES, settings.scheduleRanges.single().endMinutes)
+        assertTrue(settings.fullScreenEnabled)
     }
 
     @Test
@@ -53,6 +55,7 @@ class SettingsDefaultsInstrumentedTest {
             assertEquals(AlarmSoundCatalog.DEFAULT_KEY, settings.alarmSoundKey)
             assertEquals(ScheduleMode.ALWAYS_ACTIVE, settings.scheduleMode)
             assertTrue(settings.scheduleRanges.isEmpty())
+            assertFalse(settings.fullScreenEnabled)
         } finally {
             scope.cancel()
             file.delete()
@@ -84,10 +87,47 @@ class SettingsDefaultsInstrumentedTest {
             assertFalse(restored.monitoringEnabled)
             assertNull(restored.sourcePackage)
             assertEquals("vi", restored.language)
+            assertTrue(restored.fullScreenEnabled)
         } finally {
             scope.cancel()
             file.delete()
         }
+    }
+
+    @Test
+    fun existingV2StorePreservesFalseWhenUpgradedToV3() = runBlocking {
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+        val file = context.preferencesDataStoreFile("settings-v2-${UUID.randomUUID()}")
+        val store = PreferenceDataStoreFactory.create(scope = scope, produceFile = { file })
+        try {
+            store.edit {
+                it[intPreferencesKey("settings_profile_version")] = 2
+                it[booleanPreferencesKey("monitoring_enabled")] = true
+            }
+            val settings = SettingsRepository(context, store).current()
+
+            assertTrue(settings.monitoringEnabled)
+            // fullScreenEnabled was false in V2 and wasn't explicitly set; migration must preserve false
+            assertFalse(settings.fullScreenEnabled)
+        } finally {
+            scope.cancel()
+            file.delete()
+        }
+    }
+
+    @Test
+    fun savingStaleSettingsDraftDoesNotDisableMonitoring() = withRepository { repository ->
+        val staleDraft = repository.current().copy(
+            monitoringEnabled = false,
+            cooldownMs = 45_000
+        )
+        repository.setMonitoringEnabled(true)
+
+        repository.updateEditableSettings(staleDraft)
+
+        val restored = repository.current()
+        assertTrue(restored.monitoringEnabled)
+        assertEquals(45_000, restored.cooldownMs)
     }
 
     private fun withRepository(block: suspend (SettingsRepository) -> Unit) = runBlocking {

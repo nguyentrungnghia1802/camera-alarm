@@ -19,7 +19,7 @@ class PersistenceTest {
         assertEquals(1000L, settings.alarmDelayMs)
         assertEquals(600000L, settings.cooldownMs)
         assertTrue("Vibration should be enabled by default", settings.vibrationEnabled)
-        assertFalse("Full-screen should be disabled by default", settings.fullScreenEnabled)
+        assertTrue("Full-screen should be enabled by default", settings.fullScreenEnabled)
         assertEquals("alarm_warning_aloud", settings.alarmSoundKey)
         assertEquals(com.personal.cameraalarm.schedule.ScheduleMode.CUSTOM, settings.scheduleMode)
         assertEquals(SettingsDefaults.OVERNIGHT_START_MINUTES, settings.scheduleRanges.single().startMinutes)

@@ -36,7 +36,7 @@ class SettingsRepository(
                 alarmDelayMs = preferences[ALARM_DELAY_MS] ?: 1000L,
                 cooldownMs = preferences[COOLDOWN_MS] ?: SettingsDefaults.COOLDOWN_MS,
                 vibrationEnabled = preferences[VIBRATION_ENABLED] ?: true,
-                fullScreenEnabled = preferences[FULL_SCREEN_ENABLED] ?: false,
+                fullScreenEnabled = preferences[FULL_SCREEN_ENABLED] ?: true,
                 alarmSoundKey = preferences[ALARM_SOUND_KEY] ?: AlarmSoundCatalog.OFFICIAL_PROFILE_DEFAULT_KEY,
                 scheduleMode = preferences[SCHEDULE_MODE]?.let {
                     runCatching { ScheduleMode.valueOf(it) }.getOrNull()
@@ -94,18 +94,18 @@ class SettingsRepository(
 
     suspend fun updateAll(newSettings: AppSettings) {
         dataStore.edit { prefs ->
-            prefs[MONITORING_ENABLED] = newSettings.monitoringEnabled
-            if (newSettings.sourcePackage != null) prefs[SOURCE_PACKAGE] = newSettings.sourcePackage else prefs.remove(SOURCE_PACKAGE)
-            if (newSettings.sourceLabel != null) prefs[SOURCE_LABEL] = newSettings.sourceLabel else prefs.remove(SOURCE_LABEL)
-            prefs[ALARM_DELAY_MS] = newSettings.alarmDelayMs
-            prefs[COOLDOWN_MS] = newSettings.cooldownMs
-            prefs[VIBRATION_ENABLED] = newSettings.vibrationEnabled
-            prefs[FULL_SCREEN_ENABLED] = newSettings.fullScreenEnabled
-            prefs[ALARM_SOUND_KEY] = newSettings.alarmSoundKey
-            prefs[SCHEDULE_MODE] = newSettings.scheduleMode.name
-            prefs[SCHEDULE_RANGES] = ScheduleSerializer.serialize(newSettings.scheduleRanges)
-            prefs[LANGUAGE] = newSettings.language
-            prefs[SETTINGS_PROFILE_VERSION] = CURRENT_PROFILE_VERSION
+            writeSettings(prefs, newSettings, includeMonitoring = true)
+        }
+    }
+
+    /**
+     * Persists fields owned by the Settings screen without changing whether
+     * camera monitoring is enabled. Monitoring is controlled independently
+     * from the dashboard and a stale settings draft must never disable it.
+     */
+    suspend fun updateEditableSettings(newSettings: AppSettings) {
+        dataStore.edit { prefs ->
+            writeSettings(prefs, newSettings, includeMonitoring = false)
         }
     }
 
@@ -117,7 +117,8 @@ class SettingsRepository(
 
     private suspend fun migrateDefaultProfileIfNeeded() {
         dataStore.edit { prefs ->
-            if ((prefs[SETTINGS_PROFILE_VERSION] ?: 0) >= CURRENT_PROFILE_VERSION) return@edit
+            val version = prefs[SETTINGS_PROFILE_VERSION] ?: 0
+            if (version >= CURRENT_PROFILE_VERSION) return@edit
             val isExistingInstall = prefs.asMap().isNotEmpty()
             if (isExistingInstall) {
                 // Preserve the old effective behavior when V1 never persisted these fields.
@@ -125,14 +126,40 @@ class SettingsRepository(
                 if (prefs[ALARM_SOUND_KEY] == null) prefs[ALARM_SOUND_KEY] = AlarmSoundCatalog.DEFAULT_KEY
                 if (prefs[SCHEDULE_MODE] == null) prefs[SCHEDULE_MODE] = ScheduleMode.ALWAYS_ACTIVE.name
                 if (prefs[SCHEDULE_RANGES] == null) prefs[SCHEDULE_RANGES] = ScheduleSerializer.serialize(emptyList())
+                // In versions < 3, fullScreenEnabled defaulted to false.
+                // For an existing install that had not explicitly set FULL_SCREEN_ENABLED,
+                // preserve their old effective behavior (false) so update never overwrites user setting!
+                if (prefs[FULL_SCREEN_ENABLED] == null) {
+                    prefs[FULL_SCREEN_ENABLED] = false
+                }
             } else {
                 prefs[COOLDOWN_MS] = SettingsDefaults.COOLDOWN_MS
                 prefs[ALARM_SOUND_KEY] = AlarmSoundCatalog.OFFICIAL_PROFILE_DEFAULT_KEY
                 prefs[SCHEDULE_MODE] = ScheduleMode.CUSTOM.name
                 prefs[SCHEDULE_RANGES] = ScheduleSerializer.serialize(SettingsDefaults.scheduleRanges())
+                prefs[FULL_SCREEN_ENABLED] = true
             }
             prefs[SETTINGS_PROFILE_VERSION] = CURRENT_PROFILE_VERSION
         }
+    }
+
+    private fun writeSettings(
+        prefs: MutablePreferences,
+        settings: AppSettings,
+        includeMonitoring: Boolean
+    ) {
+        if (includeMonitoring) prefs[MONITORING_ENABLED] = settings.monitoringEnabled
+        if (settings.sourcePackage != null) prefs[SOURCE_PACKAGE] = settings.sourcePackage else prefs.remove(SOURCE_PACKAGE)
+        if (settings.sourceLabel != null) prefs[SOURCE_LABEL] = settings.sourceLabel else prefs.remove(SOURCE_LABEL)
+        prefs[ALARM_DELAY_MS] = settings.alarmDelayMs
+        prefs[COOLDOWN_MS] = settings.cooldownMs
+        prefs[VIBRATION_ENABLED] = settings.vibrationEnabled
+        prefs[FULL_SCREEN_ENABLED] = settings.fullScreenEnabled
+        prefs[ALARM_SOUND_KEY] = settings.alarmSoundKey
+        prefs[SCHEDULE_MODE] = settings.scheduleMode.name
+        prefs[SCHEDULE_RANGES] = ScheduleSerializer.serialize(settings.scheduleRanges)
+        prefs[LANGUAGE] = settings.language
+        prefs[SETTINGS_PROFILE_VERSION] = CURRENT_PROFILE_VERSION
     }
 
     companion object {
@@ -148,6 +175,6 @@ class SettingsRepository(
         private val SCHEDULE_RANGES = stringPreferencesKey("schedule_ranges")
         private val LANGUAGE = stringPreferencesKey("language")
         private val SETTINGS_PROFILE_VERSION = intPreferencesKey("settings_profile_version")
-        private const val CURRENT_PROFILE_VERSION = 2
+        private const val CURRENT_PROFILE_VERSION = 3
     }
 }

@@ -20,7 +20,7 @@ class AlarmRuntimeConfigCacheTest {
             cache.update(
                 AlarmRuntimeConfig(
                     vibrationEnabled = false,
-                    fullScreenEnabled = true,
+                    fullScreenEnabled = false,
                     soundKey = "alarm_digital"
                 )
             )
@@ -28,13 +28,13 @@ class AlarmRuntimeConfigCacheTest {
 
         val coldSnapshot = cache.current()
         assertTrue(coldSnapshot.vibrationEnabled)
-        assertFalse(coldSnapshot.fullScreenEnabled)
+        assertTrue(coldSnapshot.fullScreenEnabled)
 
         releaseSettings.complete(Unit)
         slowSettingsLoad.await()
         val loadedSnapshot = cache.current()
         assertFalse(loadedSnapshot.vibrationEnabled)
-        assertTrue(loadedSnapshot.fullScreenEnabled)
+        assertFalse(loadedSnapshot.fullScreenEnabled)
         assertEquals("alarm_digital", loadedSnapshot.soundKey)
     }
 }

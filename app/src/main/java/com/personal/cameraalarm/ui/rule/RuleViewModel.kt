@@ -35,7 +35,8 @@ data class RuleEditorState(
     val priority: Int = 1,
     val enabled: Boolean = true,
     val createdAtEpochMs: Long = 0L,
-    val error: RuleEditorError? = null
+    val error: RuleEditorError? = null,
+    val validationTrigger: Long = 0L
 ) {
     val keywordItems: List<String>
         get() = keywordsRaw.lines().map(String::trim).filter(String::isNotEmpty)
@@ -178,7 +179,10 @@ class RuleViewModel(private val container: AppContainer) : ViewModel() {
         val s = _editorState.value
         val validation = validateRule(s)
         if (validation != null) {
-            _editorState.value = s.copy(error = validation)
+            _editorState.value = s.copy(
+                error = validation,
+                validationTrigger = s.validationTrigger + 1
+            )
             return
         }
 

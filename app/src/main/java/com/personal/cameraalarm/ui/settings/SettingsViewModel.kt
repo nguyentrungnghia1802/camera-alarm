@@ -44,7 +44,12 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
         userMessage
     ) { args ->
         val persisted = args[0] as AppSettings
-        val draft = (args[1] as? AppSettings) ?: persisted
+        // Monitoring is owned by the dashboard. Always project its live value
+        // into the settings draft so a stale, invisible field cannot make this
+        // screen look modified or overwrite the monitoring switch on save.
+        val draft = (args[1] as? AppSettings)
+            ?.copy(monitoringEnabled = persisted.monitoringEnabled)
+            ?: persisted
         val saved = args[2] as Boolean
         val events = args[3] as List<*>
         val testToken = args[4] as? AlarmToken
@@ -96,7 +101,7 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
         setCooldown(cooldownMs)
         val draft = draftState.value ?: return
         viewModelScope.launch {
-            container.settingsRepository.updateAll(draft)
+            container.settingsRepository.updateEditableSettings(draft)
             container.coordinator.resetCooldown()
             saveSuccess.value = true
             onSuccess?.invoke()
@@ -164,7 +169,7 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
         val draft = draftState.value ?: return
         viewModelScope.launch {
             val oldCooldown = try { container.settingsRepository.current().cooldownMs } catch (_: Exception) { null }
-            container.settingsRepository.updateAll(draft)
+            container.settingsRepository.updateEditableSettings(draft)
             if (oldCooldown != null && oldCooldown != draft.cooldownMs) {
                 container.coordinator.resetCooldown()
             }

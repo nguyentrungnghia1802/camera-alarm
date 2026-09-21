@@ -11,7 +11,7 @@ data class AppSettings(
     val alarmDelayMs: Long = 1000L,
     val cooldownMs: Long = SettingsDefaults.COOLDOWN_MS,
     val vibrationEnabled: Boolean = true,
-    val fullScreenEnabled: Boolean = false,
+    val fullScreenEnabled: Boolean = true,
     val alarmSoundKey: String = AlarmSoundCatalog.OFFICIAL_PROFILE_DEFAULT_KEY,
     val scheduleMode: ScheduleMode = ScheduleMode.CUSTOM,
     val scheduleRanges: List<ActiveTimeRange> = SettingsDefaults.scheduleRanges(),

@@ -127,4 +127,27 @@ class RuleValidationTest {
         assertTrue(RuleViewModel.SUGGESTED_TEMPLATE_KEYWORDS.contains("phát hiện người/phương tiện"))
         assertTrue(RuleViewModel.SUGGESTED_TEMPLATE_KEYWORDS.contains("phát hiện xâm nhập"))
     }
+
+    @Test
+    fun validationTriggerDefaultIsZeroAndIncrementsOnCopy() {
+        val state = RuleEditorState()
+        assertEquals(0L, state.validationTrigger)
+        val updated = state.copy(validationTrigger = state.validationTrigger + 1)
+        assertEquals(1L, updated.validationTrigger)
+    }
+
+    @Test
+    fun fieldErrorsFollowPrioritizedValidationHierarchy() {
+        // 1. Name is first required field
+        val nameMissing = RuleEditorState(name = "", sourcePackage = "", keywordsRaw = "")
+        assertEquals(RuleEditorError.NameBlank, RuleViewModel.validateRule(nameMissing))
+
+        // 2. Source app is second required field
+        val sourceMissing = RuleEditorState(name = "Valid Name", sourcePackage = "", keywordsRaw = "")
+        assertEquals(RuleEditorError.SourceBlank, RuleViewModel.validateRule(sourceMissing))
+
+        // 3. Keywords are third required field
+        val keywordsMissing = RuleEditorState(name = "Valid Name", sourcePackage = "com.camera", keywordsRaw = "")
+        assertEquals(RuleEditorError.KeywordsRequired, RuleViewModel.validateRule(keywordsMissing))
+    }
 }
