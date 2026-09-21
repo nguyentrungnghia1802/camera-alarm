@@ -151,3 +151,14 @@ Date: 2026-09-21.
 - The first full instrumentation run exposed two real test regressions: the integration fixture implicitly relied on the old always-active default, and test-alarm STOP dispatch could be delayed by application coroutine scheduling after cold start. The fixture now states its schedule precondition explicitly, while test-alarm STOP (which has no coordinator state to persist) dispatches synchronously from the receiver; the existing STOP instrumentation remains the regression test.
 - `\.\gradlew.bat test --rerun-tasks lint assembleDebug :app:assembleAndroidTest`: PASS for all non-device gates. The combined command's first device attempt was interrupted by an ADB daemon restart and reported `No connected devices`; after relaunching the same API 31 AVD, this environmental failure was rerun rather than counted as PASS.
 - `\.\gradlew.bat :app:connectedDebugAndroidTest` with `ANDROID_SERIAL=emulator-5554`: PASS, 17/17 on `CameraAlarm_API_31` / Android 12 after the regression fixes.
+
+## Phase 5 — Product update integration gate
+
+Date: 2026-09-21. Clean candidate: `71a9315`.
+
+- Rule regression is covered by matcher/validation/pipeline unit tests plus Room migration/repository instrumentation: 0–3/max-three, unique priority and swap, stable creation time, delete gaps, ANY/ALL, normalized keyword add/edit/delete contract, per-rule/multiple app sources, disabled-source privacy, and the exact template seed.
+- Settings regression covers the official fresh profile, legacy effective-value preservation, atomic reset/recreation, persisted settings, and schedule boundaries. Alarm regression covers scheduler identity, pipeline/coordinator cooldown and active hours, ownership/isolation, boot recovery, runtime audio/vibration controller, and notification STOP routing.
+- Privacy regression confirms wrong-package and disabled-only package content never reach persistent history. Release-path logs on that gate contain only decision/package metadata, not unrelated notification title/body.
+- Manual layout exercise on API 31 used a 360 dp-wide viewport (`720x1280 @ 320 dpi`) with font scale `1.5`. Main and Settings remained scrollable; Basic, Advanced controls, and Reset Defaults were reachable. Emulator size, density, and font scale were restored afterward.
+- Required build gate: `test --rerun-tasks` PASS (98 tasks executed); `lint` PASS; `assembleDebug` PASS; `:app:assembleRelease` PASS; `:app:assembleAndroidTest` PASS.
+- Available-device instrumentation on the candidate: PASS, 17/17 on API 31. Phase 6 owns cross-API and physical-device certification.

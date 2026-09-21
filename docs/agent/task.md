@@ -441,6 +441,8 @@ Trước device certification phải có một commit candidate sạch.
 
 ## P5.1 — Regression
 
+Status: **COMPLETE** on 2026-09-21; automated contracts and API 31 integration suite PASS, with the large-font/small-screen Settings path manually exercised.
+
 Bắt buộc test:
 
 ### Rule
@@ -487,6 +489,8 @@ Bắt buộc test:
 - Active hours.
 
 ## P5.2 — Build gate
+
+Status: **COMPLETE** on 2026-09-21 at candidate `71a9315`.
 
 ```bash
 ./gradlew test --rerun-tasks
