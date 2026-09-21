@@ -2,6 +2,7 @@ package com.personal.cameraalarm.reliability
 
 import android.content.Context
 import android.os.Build
+import com.personal.cameraalarm.R
 import com.personal.cameraalarm.permission.ReadinessRepository
 
 open class AndroidDefaultAdvisor(
@@ -11,7 +12,7 @@ open class AndroidDefaultAdvisor(
 ) : DeviceReliabilityAdvisor {
 
     override val isApplicable: Boolean get() = true
-    override val deviceFamilyName: String get() = "Google Pixel / AOSP / Chuẩn"
+    override val deviceFamilyName: String get() = "Google Pixel / AOSP"
     override val oemKey: String get() = "generic"
 
     override fun getStandardItems(context: Context): List<ReliabilityItem> {
@@ -23,10 +24,10 @@ open class AndroidDefaultAdvisor(
         items.add(
             ReliabilityItem(
                 id = "notification_access",
-                title = "Quyền truy cập thông báo",
-                description = "Bắt buộc để ứng dụng lắng nghe và phát hiện thông báo từ camera.",
+                title = context.getString(R.string.reliability_notification_access_title),
+                description = context.getString(R.string.reliability_notification_access_desc),
                 status = if (notifGranted) ReliabilityStatus.READY else ReliabilityStatus.MISSING,
-                actionLabel = if (!notifGranted) "Cấp quyền" else null,
+                actionLabel = if (!notifGranted) context.getString(R.string.btn_grant) else null,
                 actionIntent = readinessRepo?.notificationAccessSettingsIntent()
             )
         )
@@ -36,10 +37,10 @@ open class AndroidDefaultAdvisor(
         items.add(
             ReliabilityItem(
                 id = "exact_alarm",
-                title = "Quyền báo thức chính xác",
-                description = "Bắt buộc để kích hoạt chuông báo khẩn cấp không bị hệ thống trì hoãn.",
+                title = context.getString(R.string.reliability_exact_alarm_title),
+                description = context.getString(R.string.reliability_exact_alarm_desc),
                 status = if (exactGranted) ReliabilityStatus.READY else ReliabilityStatus.MISSING,
-                actionLabel = if (!exactGranted) "Cấp quyền" else null,
+                actionLabel = if (!exactGranted) context.getString(R.string.btn_grant) else null,
                 actionIntent = readinessRepo?.exactAlarmSettingsIntent()
             )
         )
@@ -49,10 +50,10 @@ open class AndroidDefaultAdvisor(
         items.add(
             ReliabilityItem(
                 id = "post_notifications",
-                title = "Thông báo ứng dụng",
-                description = "Cho phép hiển thị thông báo chạy nền và nút DỪNG chuông khi có sự cố.",
+                title = context.getString(R.string.reliability_notifications_title),
+                description = context.getString(R.string.reliability_notifications_desc),
                 status = if (postGranted) ReliabilityStatus.READY else ReliabilityStatus.MISSING,
-                actionLabel = if (!postGranted) "Cài đặt" else null,
+                actionLabel = if (!postGranted) context.getString(R.string.btn_open_settings) else null,
                 actionIntent = readinessRepo?.appNotificationSettingsIntent()
             )
         )
@@ -62,10 +63,10 @@ open class AndroidDefaultAdvisor(
         items.add(
             ReliabilityItem(
                 id = "full_screen",
-                title = "Bật sáng màn hình khóa (Full-Screen Alarm)",
-                description = "Cho phép hiển thị màn hình báo động đè lên màn hình khóa để bạn xử lý ngay.",
+                title = context.getString(R.string.reliability_fullscreen_title),
+                description = context.getString(R.string.reliability_fullscreen_desc),
                 status = if (canFullScreen) ReliabilityStatus.READY else ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
-                actionLabel = if (!canFullScreen && readinessRepo?.fullScreenIntentSettingsIntent() != null) "Cài đặt" else null,
+                actionLabel = if (!canFullScreen && readinessRepo?.fullScreenIntentSettingsIntent() != null) context.getString(R.string.btn_open_settings) else null,
                 actionIntent = readinessRepo?.fullScreenIntentSettingsIntent()
             )
         )
@@ -75,10 +76,10 @@ open class AndroidDefaultAdvisor(
         items.add(
             ReliabilityItem(
                 id = "battery_optimization",
-                title = "Không tối ưu hóa pin (Unrestricted)",
-                description = "Ngăn hệ thống tạm dừng ứng dụng hoặc đóng băng bộ đếm khi màn hình tắt lâu.",
+                title = context.getString(R.string.reliability_battery_title),
+                description = context.getString(R.string.reliability_battery_desc),
                 status = if (isIgnoringBattery) ReliabilityStatus.READY else ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
-                actionLabel = if (!isIgnoringBattery) "Bỏ tối ưu pin" else null,
+                actionLabel = if (!isIgnoringBattery) context.getString(R.string.reliability_battery_action) else null,
                 actionIntent = if (!isIgnoringBattery) DeviceReliabilityAdvisor.getBatteryOptimizationIntent(context) else null
             )
         )

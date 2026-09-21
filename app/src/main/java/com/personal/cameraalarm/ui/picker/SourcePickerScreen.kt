@@ -213,7 +213,7 @@ private fun AppRow(
             if (isSelected) {
                 Icon(
                     Icons.Default.CheckCircle,
-                    contentDescription = "Đã chọn",
+                    contentDescription = stringResource(R.string.content_description_selected),
                     tint = Color(0xFF2E7D32),
                     modifier = Modifier.size(24.dp)
                 )

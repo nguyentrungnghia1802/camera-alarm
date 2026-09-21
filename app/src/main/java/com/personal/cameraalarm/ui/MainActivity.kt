@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val settings by app.container.settingsRepository.settings.collectAsState(initial = com.personal.cameraalarm.data.settings.AppSettings())
             val currentLang = settings.language
-            val locale = remember(currentLang) { java.util.Locale(currentLang) }
+            val locale = remember(currentLang) { java.util.Locale.forLanguageTag(currentLang) }
             val configuration = remember(locale) {
                 val conf = android.content.res.Configuration(resources.configuration)
                 conf.setLocale(locale)

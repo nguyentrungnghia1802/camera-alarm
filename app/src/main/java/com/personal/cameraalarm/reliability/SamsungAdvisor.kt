@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import com.personal.cameraalarm.permission.ReadinessRepository
+import com.personal.cameraalarm.R
 
 class SamsungAdvisor(
     readinessRepo: ReadinessRepository? = null,
@@ -17,7 +18,7 @@ class SamsungAdvisor(
     private val isSamsungDevice = isSamsungFamily(manufacturer, brand)
 
     override val isApplicable: Boolean get() = isSamsungDevice
-    override val deviceFamilyName: String get() = if (isSamsungDevice) "Samsung One UI" else "Samsung (Không khớp)"
+    override val deviceFamilyName: String get() = "Samsung One UI"
     override val oemKey: String get() = "samsung"
 
     override fun getOemItems(context: Context): List<ReliabilityItem> {
@@ -28,13 +29,13 @@ class SamsungAdvisor(
         items.add(
             ReliabilityItem(
                 id = "samsung_battery_unrestricted",
-                title = "Đặt Pin thành 'Không hạn chế'",
-                description = "Ngăn Samsung One UI tự động đóng băng app khi tắt màn hình hoặc không mở trong vài ngày.",
+                title = context.getString(R.string.reliability_samsung_unrestricted_title),
+                description = context.getString(R.string.reliability_samsung_unrestricted_desc),
                 status = if (isIgnoringBattery) ReliabilityStatus.READY else ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
                 isOemSpecific = true,
-                actionLabel = "Mở Cài đặt App",
+                actionLabel = context.getString(R.string.reliability_open_app_settings),
                 actionIntent = getAppDetailsIntent(context),
-                userInstruction = "1. Bấm 'Mở Cài đặt App'.\n2. Chọn mục 'Pin' (Battery).\n3. Đổi từ 'Tối ưu hóa' (Optimized) sang 'Không hạn chế' (Unrestricted)."
+                userInstruction = context.getString(R.string.reliability_samsung_unrestricted_steps)
             )
         )
 
@@ -42,13 +43,13 @@ class SamsungAdvisor(
         items.add(
             ReliabilityItem(
                 id = "samsung_never_sleeping",
-                title = "Ứng dụng không bao giờ nghỉ (Never Sleeping Apps)",
-                description = "Đưa Camera Alarm vào danh sách miễn trừ ngủ sâu của hệ điều hành Samsung.",
+                title = context.getString(R.string.reliability_samsung_never_sleep_title),
+                description = context.getString(R.string.reliability_samsung_never_sleep_desc),
                 status = ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
                 isOemSpecific = true,
-                actionLabel = "Mở Chăm sóc pin",
-                actionIntent = getSamsungBatteryCareIntent(),
-                userInstruction = "1. Bấm 'Mở Chăm sóc pin' (hoặc Cài đặt > Pin & Chăm sóc thiết bị > Pin).\n2. Chọn 'Giới hạn sử dụng nền' (Background usage limits).\n3. Chọn 'Ứng dụng không bao giờ nghỉ' (Never sleeping apps) và bấm '+' để thêm Camera Alarm."
+                actionLabel = context.getString(R.string.reliability_samsung_battery_care_action),
+                actionIntent = getSamsungBatteryCareIntent(context),
+                userInstruction = context.getString(R.string.reliability_samsung_never_sleep_steps)
             )
         )
 
@@ -56,11 +57,11 @@ class SamsungAdvisor(
         items.add(
             ReliabilityItem(
                 id = "samsung_lock_recents",
-                title = "Khóa ứng dụng trong Đa nhiệm (Recents)",
-                description = "Ngăn tính năng 'Đóng tất cả' (Close All) của Samsung tắt tiến trình nhận thông báo.",
+                title = context.getString(R.string.reliability_lock_recents_title),
+                description = context.getString(R.string.reliability_samsung_lock_recents_desc),
                 status = ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
                 isOemSpecific = true,
-                userInstruction = "1. Vuốt mở màn hình ứng dụng gần đây (Recent Apps).\n2. Nhấn và giữ biểu tượng Camera Alarm phía trên cửa sổ app.\n3. Chọn 'Khóa ứng dụng này' (Lock this app)."
+                userInstruction = context.getString(R.string.reliability_samsung_lock_recents_steps)
             )
         )
 
@@ -73,18 +74,19 @@ class SamsungAdvisor(
         }
     }
 
-    private fun getSamsungBatteryCareIntent(): Intent {
-        // Attempt to launch Samsung Device Care Battery settings directly
-        return try {
-            Intent().apply {
-                component = ComponentName(
-                    "com.samsung.android.lool",
-                    "com.samsung.android.sm.battery.ui.BatteryActivity"
-                )
-            }
-        } catch (_: Exception) {
-            Intent(Settings.ACTION_SETTINGS)
+    private fun getSamsungBatteryCareIntent(context: Context): Intent {
+        val direct = Intent().apply {
+            component = ComponentName(
+                "com.samsung.android.lool",
+                "com.samsung.android.sm.battery.ui.BatteryActivity"
+            )
         }
+        val resolves = try {
+            direct.resolveActivity(context.packageManager) != null
+        } catch (_: RuntimeException) {
+            false
+        }
+        return if (resolves) direct else getAppDetailsIntent(context)
     }
 
     companion object {

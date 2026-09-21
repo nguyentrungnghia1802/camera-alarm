@@ -13,6 +13,8 @@ import com.personal.cameraalarm.app.AppContainer
 import com.personal.cameraalarm.permission.AlarmVolumeStatus
 import com.personal.cameraalarm.permission.ReadinessState
 import com.personal.cameraalarm.reliability.DeviceReliabilityAdvisor
+import com.personal.cameraalarm.BuildConfig
+import com.personal.cameraalarm.R
 import kotlinx.coroutines.flow.*
 
 data class DiagnosticsInfo(
@@ -90,7 +92,7 @@ class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
         val currentAdvisor = advisorRegistry.getAdvisorByKey(oemKey)
 
         val info = DiagnosticsInfo(
-            appVersion = "1.0 (1)",
+            appVersion = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
             sdkInt = Build.VERSION.SDK_INT,
             manufacturer = Build.MANUFACTURER,
             brand = Build.BRAND,
@@ -124,36 +126,34 @@ class DiagnosticsViewModel(private val container: AppContainer) : ViewModel() {
         val batteryIgnored = pm?.isIgnoringBatteryOptimizations(context.packageName)
 
         val report = buildString {
-            appendLine("=== CAMERA ALARM DIAGNOSTICS & RELIABILITY ===")
-            appendLine("App Version: ${info.appVersion}")
-            appendLine("Android SDK: API ${info.sdkInt} (${Build.VERSION.RELEASE})")
-            appendLine("Device: ${info.deviceModel}")
-            appendLine("Manufacturer: ${info.manufacturer}")
-            appendLine("Brand: ${info.brand}")
-            appendLine("Detected OEM Family: ${info.activeOemName}")
-            appendLine("Selected Guide: ${info.selectedOemKey}")
-            appendLine("Battery Optimizations Ignored: ${batteryIgnored ?: "UNKNOWN"}")
-            appendLine("Notification Access: ${if (info.readiness.notificationAccessGranted) "GRANTED" else "REQUIRED"}")
-            appendLine("Listener Connection: ${info.readiness.listenerStatus.name}")
-            appendLine("Exact Alarm: ${if (info.readiness.exactAlarmGranted) "GRANTED" else "REQUIRED"}")
-            appendLine("Post Notifications: ${if (info.readiness.postNotificationsGranted) "GRANTED" else "DENIED"}")
-            appendLine("Full Screen Intent: ${if (info.fullScreenIntentAllowed) "ALLOWED" else "DISALLOWED"}")
-            appendLine("Alarm Volume: current=${info.volumeStatus.current}, min=${info.volumeStatus.minimum}, max=${info.volumeStatus.maximum}")
-            appendLine("Monitoring Enabled: ${info.monitoringEnabled}")
-            appendLine("Source Package: ${info.sourcePackage ?: "None"}")
-            appendLine("Enabled Rules: ${info.enabledRuleCount}")
-            appendLine("Current State: ${info.alarmState}")
-            appendLine("Last Runtime Error: ${info.lastRuntimeError ?: "None"}")
-            appendLine("==============================================")
+            appendLine("=== ${context.getString(R.string.title_diagnostics).uppercase()} ===")
+            appendLine("${context.getString(R.string.diag_app_version)}: ${info.appVersion}")
+            appendLine("${context.getString(R.string.diag_android_version)}: API ${info.sdkInt} (${Build.VERSION.RELEASE})")
+            appendLine("${context.getString(R.string.diag_device)}: ${info.deviceModel}")
+            appendLine("${context.getString(R.string.diag_manufacturer)}: ${info.manufacturer} / ${info.brand}")
+            appendLine("${context.getString(R.string.diag_active_oem)}: ${info.activeOemName}")
+            appendLine("${context.getString(R.string.diag_battery_unrestricted)}: ${batteryIgnored ?: context.getString(R.string.status_unknown)}")
+            appendLine("${context.getString(R.string.diag_notif_access)}: ${if (info.readiness.notificationAccessGranted) context.getString(R.string.status_granted) else context.getString(R.string.status_required)}")
+            appendLine("${context.getString(R.string.diag_listener_conn)}: ${info.readiness.listenerStatus.name}")
+            appendLine("${context.getString(R.string.diag_exact_alarm)}: ${if (info.readiness.exactAlarmGranted) context.getString(R.string.status_granted) else context.getString(R.string.status_required)}")
+            appendLine("${context.getString(R.string.diag_app_notif)}: ${if (info.readiness.postNotificationsGranted) context.getString(R.string.status_granted) else context.getString(R.string.status_denied)}")
+            appendLine("${context.getString(R.string.diag_fullscreen)}: ${if (info.fullScreenIntentAllowed) context.getString(R.string.diag_allowed) else context.getString(R.string.diag_disallowed)}")
+            appendLine(context.getString(R.string.diag_volume_detail, info.volumeStatus.current, info.volumeStatus.minimum, info.volumeStatus.maximum))
+            appendLine("${context.getString(R.string.diag_monitoring_enabled)}: ${info.monitoringEnabled}")
+            appendLine("${context.getString(R.string.diag_active_source)}: ${info.sourcePackage ?: context.getString(R.string.diag_none)}")
+            appendLine(context.getString(R.string.diag_rules_count_format, info.enabledRuleCount))
+            appendLine("${context.getString(R.string.diag_alarm_state)}: ${info.alarmState}")
+            appendLine("${context.getString(R.string.diag_last_error)}: ${info.lastRuntimeError ?: context.getString(R.string.diag_none)}")
         }
         val clipboard = context.getSystemService(ClipboardManager::class.java)
         clipboard.setPrimaryClip(ClipData.newPlainText("Camera Alarm Diagnostics", report))
-        copyMessage.value = "Diagnostics copied to clipboard."
+        copyMessage.value = context.getString(R.string.message_diagnostics_copied)
     }
 
     fun startTestAlarm(context: Context) {
         container.testAlarmController.start(context).onFailure { error ->
-            copyMessage.value = "Unable to start Test Alarm: ${error.message ?: error.javaClass.simpleName}"
+            container.runtimeDiagnostics.record("test alarm: ${error.message ?: error.javaClass.simpleName}")
+            copyMessage.value = context.getString(R.string.message_test_alarm_failed)
         }
     }
 

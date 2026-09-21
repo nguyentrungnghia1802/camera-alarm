@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import com.personal.cameraalarm.permission.ReadinessRepository
+import com.personal.cameraalarm.R
 
 class XiaomiReliabilityAdvisor(
     readinessRepo: ReadinessRepository? = null,
@@ -27,13 +28,13 @@ class XiaomiReliabilityAdvisor(
         items.add(
             ReliabilityItem(
                 id = "xiaomi_autostart",
-                title = "Tự khởi động chạy nền (Autostart)",
-                description = "Bắt buộc trên HyperOS/MIUI để dịch vụ nhận thông báo camera không bị tắt khi đóng app.",
+                title = context.getString(R.string.reliability_xiaomi_autostart_title),
+                description = context.getString(R.string.reliability_xiaomi_autostart_desc),
                 status = ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
                 isOemSpecific = true,
-                actionLabel = "Mở Tự khởi động",
+                actionLabel = context.getString(R.string.reliability_xiaomi_autostart_action),
                 actionIntent = getAutostartIntent(context),
-                userInstruction = "1. Bấm 'Mở Tự khởi động'.\n2. Tìm 'Camera Alarm'.\n3. BẬT công tắc cho phép tự khởi chạy."
+                userInstruction = context.getString(R.string.reliability_xiaomi_autostart_steps)
             )
         )
 
@@ -42,13 +43,13 @@ class XiaomiReliabilityAdvisor(
         items.add(
             ReliabilityItem(
                 id = "xiaomi_battery",
-                title = "Tiết kiệm pin: Không giới hạn (No restrictions)",
-                description = "Đặt cấu hình Tiết kiệm pin của MIUI/HyperOS thành 'Không giới hạn'.",
+                title = context.getString(R.string.reliability_xiaomi_battery_title),
+                description = context.getString(R.string.reliability_xiaomi_battery_desc),
                 status = if (isIgnoringBattery) ReliabilityStatus.READY else ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
                 isOemSpecific = true,
-                actionLabel = "Mở Cài đặt Pin",
+                actionLabel = context.getString(R.string.reliability_open_battery_settings),
                 actionIntent = getBatterySettingsIntent(context),
-                userInstruction = "1. Bấm 'Mở Cài đặt Pin'.\n2. Chọn 'Không giới hạn' (No restrictions) cho Camera Alarm."
+                userInstruction = context.getString(R.string.reliability_xiaomi_battery_steps)
             )
         )
 
@@ -56,11 +57,11 @@ class XiaomiReliabilityAdvisor(
         items.add(
             ReliabilityItem(
                 id = "xiaomi_lock_recents",
-                title = "Khóa ứng dụng trong Đa nhiệm (Recents)",
-                description = "Khóa Camera Alarm trong màn hình ứng dụng gần đây để không bị tính năng dọn dẹp tắt mất.",
+                title = context.getString(R.string.reliability_lock_recents_title),
+                description = context.getString(R.string.reliability_xiaomi_lock_recents_desc),
                 status = ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
                 isOemSpecific = true,
-                userInstruction = "1. Vuốt giữ mở màn hình Recent Apps.\n2. Nhấn và giữ thẻ Camera Alarm hoặc kéo nhẹ xuống.\n3. Bấm biểu tượng Ổ khóa (Padlock) để khóa."
+                userInstruction = context.getString(R.string.reliability_xiaomi_lock_recents_steps)
             )
         )
 
@@ -68,13 +69,13 @@ class XiaomiReliabilityAdvisor(
         items.add(
             ReliabilityItem(
                 id = "xiaomi_popup",
-                title = "Hiển thị trên Màn hình khóa & Cửa sổ pop-up",
-                description = "Cho phép 'Hiển thị trên màn hình khóa' và 'Hiển thị cửa sổ pop-up khi chạy dưới nền'.",
+                title = context.getString(R.string.reliability_xiaomi_popup_title),
+                description = context.getString(R.string.reliability_xiaomi_popup_desc),
                 status = ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
                 isOemSpecific = true,
-                actionLabel = "Mở Quyền khác",
+                actionLabel = context.getString(R.string.reliability_xiaomi_other_permissions_action),
                 actionIntent = getOtherPermissionsIntent(context),
-                userInstruction = "1. Bấm 'Mở Quyền khác'.\n2. Bật 'Hiển thị trên Màn hình khóa'.\n3. Bật 'Hiển thị cửa sổ pop-up khi chạy dưới nền'."
+                userInstruction = context.getString(R.string.reliability_xiaomi_popup_steps)
             )
         )
 

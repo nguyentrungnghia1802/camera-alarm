@@ -187,3 +187,32 @@ Date: 2026-09-21. Candidate: `0d76d41`.
 - `camera_alarm_database` is excluded, preventing notification previews/history from cloud backup or device transfer. Rule rows share that database and are intentionally treated as local-only rather than weakening the privacy boundary.
 - `datastore/alarm_runtime_state.preferences_pb` is explicitly excluded. Pending/Ringing state, alarm token, boot/process nonce, notification key/title/preview, and cooldown runtime metadata cannot be restored into a phantom alarm.
 - `camera_alarm_settings.preferences_pb` is the only included data. Cloud backup additionally requires client-side encryption capability.
+
+## P7.3 — Battery and OEM guidance
+
+- Removed the direct `ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` flow, which had no matching manifest permission and carried store-policy risk. The app now opens the general battery-optimization list and falls back to app details.
+- Diagnostics no longer catches settings-launch failures silently. Standard and OEM actions use bounded fallbacks and show a localized snackbar if no settings activity is available.
+- Samsung explicit Device Care intent is used only when it resolves; otherwise app details is opened. Xiaomi, Oppo/Realme, Huawei/Honor, and Vivo/iQOO explicit intents retain package-manager checks and defensive fallbacks.
+- Guidance never claims that an OEM setting was changed automatically. Samsung/Xiaomi physical behavior remains subject to Phase 6 device evidence.
+
+## P7.4 — Localization and UI
+
+- Replaced hard-coded Rule V2 validation, Source Picker, Main, Settings, Diagnostics, battery, and OEM guidance messages with EN/VI resources.
+- Diagnostics clipboard labels now follow the active locale and omit notification text as before.
+- `LocalizationInstrumentedTest` loads explicit English and Vietnamese configurations and covers core Rule/Settings strings plus Samsung/Xiaomi guidance.
+- Filtered Rule validation/reliability unit tests, debug APK, and AndroidTest APK: PASS. Final locale/layout smoke remains tied to emulator availability.
+
+## P7.5 — Boot receiver and full-screen cleanup
+
+- `BootReceiver` is explicitly non-exported; Android system/privileged-system broadcasts remain eligible while third-party explicit broadcasts cannot invoke reconciliation. A fixed action policy rejects all unrecognized actions.
+- Removed the duplicate direct Activity launch from `AlarmReceiver`. `CameraAlarmService` is now the sole owner of full-screen notification and measured fallback launch behavior.
+- Preserved the service launch paths that fixed the real API 36 failure in `0d76d41`; cleanup does not revert that validated behavior.
+- Removed deprecated screen-bright wake-lock and legacy notification priority. Lock-screen presentation relies on the high-importance alarm channel, full-screen `PendingIntent`, and `AlarmActivity.setShowWhenLocked` / `setTurnScreenOn`.
+- API 36 uses `MODE_BACKGROUND_ACTIVITY_START_ALLOW_ALWAYS` for the trusted, user-configured alarm `PendingIntent`; API 34/35 retain the compatible legacy mode.
+
+## P7.6 — Test quality and scoped technical debt
+
+- `AlarmHistoryEventFactoryTest` exercises the production lifecycle mapping instead of a logic replica.
+- `BootActionPolicyTest` covers accepted/rejected receiver actions; `ManifestSecurityInstrumentedTest` checks the merged receiver exposure; `LocalizationInstrumentedTest` checks actual localized resources and OEM advisors.
+- `TestAlarmController` remains the shared start/stop boundary used by Main, Settings, and Diagnostics. No duplicate controller was added.
+- `AppContainer` remains the composition root. The policy/history mapping was extracted to a pure production mapper; a wider dependency-injection refactor was intentionally avoided.

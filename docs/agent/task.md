@@ -598,21 +598,29 @@ Status: **COMPLETE**. Backup is an explicit settings-only allowlist for both And
 - Restore không tạo phantom alarm.
 
 ## P7.3 Battery/OEM guidance
+Status: **COMPLETE (implementation)**. Battery guidance opens the policy-safe optimization list rather than directly requesting exemption, all intents have defensive app-settings fallback, and failures are surfaced to the user. Samsung/Xiaomi guidance is localized and remains manual/defensive; physical OEM behavior is still reported separately as NOT VERIFIED where hardware is unavailable.
+
 - Hoàn thiện battery optimization flow.
 - Không fail silent.
 - Giữ Samsung/Xiaomi guidance defensive.
 
 ## P7.4 Localization/UI
+Status: **COMPLETE for code/resources; final emulator smoke pending environment availability**. Rule V2, Settings V2, Main, Diagnostics, battery, and OEM user-facing messages use EN/VI resources. A locale instrumentation contract covers core Rule/Settings and Samsung/Xiaomi guidance. Existing Phase 5 large-font/small-screen evidence remains valid for the unchanged screen structure; final-commit smoke is rerun if an emulator is available.
+
 - Không hard-code user-facing EN/VI.
 - Review Rule V2 + Settings V2 ở cả hai locale.
 - Font scale lớn, small screen, dark mode.
 
 ## P7.5 BootReceiver / full-screen cleanup
+Status: **COMPLETE (affected instrumentation pending final emulator run)**. `BootReceiver` is non-exported and validates a fixed action allowlist. AlarmReceiver no longer launches UI directly; CameraAlarmService remains the single full-screen launch owner and keeps the API 36-proven notification/fallback behavior. Deprecated screen wake-lock and notification-priority calls were removed; API 36 uses the current BAL mode.
+
 - Giới hạn receiver exposure.
 - Chỉ đơn giản hóa full-screen launch path sau khi có device evidence.
 - Không làm regression locked-screen alarm.
 
 ## P7.6 Test quality / technical debt
+Status: **COMPLETE for scoped debt**. New tests call the production history mapper, boot action policy, manifest component metadata, localized resource contexts, and existing shared `TestAlarmController`; no broad composition-root refactor was introduced. Final device instrumentation remains an environment gate.
+
 - Ưu tiên production-path tests.
 - Triage AppContainer/Test Alarm controller nếu còn debt.
 - Không refactor rộng chỉ để “đẹp code”.

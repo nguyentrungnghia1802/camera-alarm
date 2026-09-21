@@ -29,7 +29,7 @@
         </service>
         <receiver android:name=".alarm.AlarmReceiver" android:exported="false" />
         <receiver android:name=".alarm.StopAlarmReceiver" android:exported="false" />
-        <receiver android:name=".boot.BootReceiver" android:exported="true">
+        <receiver android:name=".boot.BootReceiver" android:exported="false">
             <intent-filter android:priority="999">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
@@ -41,9 +41,6 @@
         <activity
             android:name=".ui.alarm.AlarmActivity"
             android:exported="false"
-            android:showOnLockScreen="true"
-            android:showWhenLocked="true"
-            android:turnScreenOn="true"
             android:excludeFromRecents="true"
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Material.Light.NoActionBar" />

@@ -81,15 +81,9 @@ class ReadinessRepository(private val context: Context, private val exact: Exact
     }
 
     fun appNotificationSettingsIntent(): android.content.Intent {
-        return if (Build.VERSION.SDK_INT >= 26) {
-            android.content.Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
-                putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
-                flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-        } else {
-            android.content.Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, android.net.Uri.parse("package:${context.packageName}")).apply {
-                flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-            }
+        return android.content.Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+            putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+            flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
         }
     }
 

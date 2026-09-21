@@ -11,6 +11,19 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.UUID
 
+sealed interface RuleEditorError {
+    data object MaxRules : RuleEditorError
+    data object KeywordBlank : RuleEditorError
+    data object KeywordTooLong : RuleEditorError
+    data object KeywordDuplicate : RuleEditorError
+    data object NameBlank : RuleEditorError
+    data object SourceBlank : RuleEditorError
+    data object KeywordsRequired : RuleEditorError
+    data object TooManyKeywords : RuleEditorError
+    data class KeywordTooShort(val keyword: String) : RuleEditorError
+    data object SaveFailed : RuleEditorError
+}
+
 data class RuleEditorState(
     val id: String? = null,
     val isNew: Boolean = true,
@@ -22,7 +35,7 @@ data class RuleEditorState(
     val priority: Int = 1,
     val enabled: Boolean = true,
     val createdAtEpochMs: Long = 0L,
-    val errorMessage: String? = null
+    val error: RuleEditorError? = null
 ) {
     val keywordItems: List<String>
         get() = keywordsRaw.lines().map(String::trim).filter(String::isNotEmpty)
@@ -52,9 +65,7 @@ class RuleViewModel(private val container: AppContainer) : ViewModel() {
                 keywordsRaw = "",
                 priority = firstAvailablePriority(currentRules),
                 enabled = true,
-                errorMessage = if (currentRules.size >= MAX_RULES) {
-                    "At most $MAX_RULES rules are allowed. Delete a rule before creating another."
-                } else null
+                error = if (currentRules.size >= MAX_RULES) RuleEditorError.MaxRules else null
             )
         }
     }
@@ -72,9 +83,7 @@ class RuleViewModel(private val container: AppContainer) : ViewModel() {
                 keywordsRaw = SUGGESTED_TEMPLATE_KEYWORDS.joinToString("\n"),
                 priority = firstAvailablePriority(rules.value),
                 enabled = true,
-                errorMessage = if (rules.value.size >= MAX_RULES) {
-                    "At most $MAX_RULES rules are allowed. Delete a rule before creating another."
-                } else null
+                error = if (rules.value.size >= MAX_RULES) RuleEditorError.MaxRules else null
             )
         }
     }
@@ -91,12 +100,12 @@ class RuleViewModel(private val container: AppContainer) : ViewModel() {
             priority = rule.priority,
             enabled = rule.enabled,
             createdAtEpochMs = rule.createdAtEpochMs,
-            errorMessage = null
+            error = null
         )
     }
 
     fun updateName(name: String) {
-        _editorState.value = _editorState.value.copy(name = name, errorMessage = null)
+        _editorState.value = _editorState.value.copy(name = name, error = null)
     }
 
     fun updateMatchMode(mode: MatchMode) {
@@ -104,7 +113,7 @@ class RuleViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     fun updateKeywordsRaw(raw: String) {
-        _editorState.value = _editorState.value.copy(keywordsRaw = raw, errorMessage = null)
+        _editorState.value = _editorState.value.copy(keywordsRaw = raw, error = null)
     }
 
     fun addKeyword(value: String): Boolean = updateKeywordAt(null, value)
@@ -117,7 +126,7 @@ class RuleViewModel(private val container: AppContainer) : ViewModel() {
             items.removeAt(index)
             _editorState.value = _editorState.value.copy(
                 keywordsRaw = items.joinToString("\n"),
-                errorMessage = null
+                error = null
             )
         }
     }
@@ -125,11 +134,11 @@ class RuleViewModel(private val container: AppContainer) : ViewModel() {
     private fun updateKeywordAt(index: Int?, value: String): Boolean {
         val trimmed = value.trim()
         if (trimmed.isEmpty()) {
-            _editorState.value = _editorState.value.copy(errorMessage = "Keyword cannot be blank.")
+            _editorState.value = _editorState.value.copy(error = RuleEditorError.KeywordBlank)
             return false
         }
         if (trimmed.length > 100) {
-            _editorState.value = _editorState.value.copy(errorMessage = "Each keyword must be 100 characters or fewer.")
+            _editorState.value = _editorState.value.copy(error = RuleEditorError.KeywordTooLong)
             return false
         }
         val normalized = NotificationNormalizer.normalize(trimmed)
@@ -138,13 +147,13 @@ class RuleViewModel(private val container: AppContainer) : ViewModel() {
             other != index && NotificationNormalizer.normalize(items[other]) == normalized
         }
         if (duplicate) {
-            _editorState.value = _editorState.value.copy(errorMessage = "Duplicate keyword.")
+            _editorState.value = _editorState.value.copy(error = RuleEditorError.KeywordDuplicate)
             return false
         }
         if (index == null) items += trimmed else if (index in items.indices) items[index] = trimmed else return false
         _editorState.value = _editorState.value.copy(
             keywordsRaw = items.joinToString("\n"),
-            errorMessage = null
+            error = null
         )
         return true
     }
@@ -153,7 +162,7 @@ class RuleViewModel(private val container: AppContainer) : ViewModel() {
         _editorState.value = _editorState.value.copy(
             sourcePackage = packageName.trim(),
             sourceLabel = label.trim(),
-            errorMessage = null
+            error = null
         )
     }
 
@@ -169,7 +178,7 @@ class RuleViewModel(private val container: AppContainer) : ViewModel() {
         val s = _editorState.value
         val validation = validateRule(s)
         if (validation != null) {
-            _editorState.value = s.copy(errorMessage = validation)
+            _editorState.value = s.copy(error = validation)
             return
         }
 
@@ -188,8 +197,11 @@ class RuleViewModel(private val container: AppContainer) : ViewModel() {
             runCatching { container.ruleRepository.saveRule(rule) }
                 .onSuccess { onSuccess() }
                 .onFailure { error ->
+                    container.runtimeDiagnostics.record(
+                        "rule save: ${error.message ?: error.javaClass.simpleName}"
+                    )
                     _editorState.value = _editorState.value.copy(
-                        errorMessage = error.message ?: "Unable to save rule."
+                        error = RuleEditorError.SaveFailed
                     )
                 }
         }
@@ -208,19 +220,19 @@ class RuleViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     companion object {
-        fun validateRule(state: RuleEditorState): String? {
-            if (state.name.isBlank()) return "Rule name cannot be blank."
-            if (state.sourcePackage.isBlank()) return "Source package cannot be blank. Select a source app first."
+        fun validateRule(state: RuleEditorState): RuleEditorError? {
+            if (state.name.isBlank()) return RuleEditorError.NameBlank
+            if (state.sourcePackage.isBlank()) return RuleEditorError.SourceBlank
             val rawLines = state.keywordItems
-            if (rawLines.isEmpty()) return "At least one valid keyword is required."
-            if (rawLines.any { it.length > 100 }) return "Each keyword must be 100 characters or fewer."
+            if (rawLines.isEmpty()) return RuleEditorError.KeywordsRequired
+            if (rawLines.any { it.length > 100 }) return RuleEditorError.KeywordTooLong
             val normalized = state.normalizedKeywords
-            if (normalized.isEmpty()) return "At least one valid keyword is required."
-            if (normalized.size != rawLines.size) return "Duplicate keywords are not allowed."
-            if (normalized.size > 30) return "A maximum of 30 keywords is allowed."
+            if (normalized.isEmpty()) return RuleEditorError.KeywordsRequired
+            if (normalized.size != rawLines.size) return RuleEditorError.KeywordDuplicate
+            if (normalized.size > 30) return RuleEditorError.TooManyKeywords
             val shortKw = normalized.firstOrNull { it.length < 2 }
             if (shortKw != null) {
-                return "Keyword \"$shortKw\" is too short (under 2 characters) and may cause false alarms."
+                return RuleEditorError.KeywordTooShort(shortKw)
             }
             return null
         }

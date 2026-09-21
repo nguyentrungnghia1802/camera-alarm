@@ -391,9 +391,9 @@ fun RuleEditorScreen(
             }
 
             // Error message if any
-            if (state.errorMessage != null) {
+            state.error?.let { error ->
                 Text(
-                    text = state.errorMessage!!,
+                    text = error.localizedText(),
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold
@@ -412,4 +412,18 @@ fun RuleEditorScreen(
             }
         }
     }
+}
+
+@Composable
+private fun RuleEditorError.localizedText(): String = when (this) {
+    RuleEditorError.MaxRules -> stringResource(R.string.rule_error_max_rules)
+    RuleEditorError.KeywordBlank -> stringResource(R.string.rule_error_keyword_blank)
+    RuleEditorError.KeywordTooLong -> stringResource(R.string.rule_error_keyword_too_long)
+    RuleEditorError.KeywordDuplicate -> stringResource(R.string.rule_error_keyword_duplicate)
+    RuleEditorError.NameBlank -> stringResource(R.string.rule_error_name_blank)
+    RuleEditorError.SourceBlank -> stringResource(R.string.rule_error_source_blank)
+    RuleEditorError.KeywordsRequired -> stringResource(R.string.rule_error_keywords_required)
+    RuleEditorError.TooManyKeywords -> stringResource(R.string.rule_error_too_many_keywords)
+    is RuleEditorError.KeywordTooShort -> stringResource(R.string.rule_error_keyword_too_short, keyword)
+    RuleEditorError.SaveFailed -> stringResource(R.string.rule_error_save_failed)
 }

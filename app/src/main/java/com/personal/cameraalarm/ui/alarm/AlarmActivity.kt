@@ -131,7 +131,7 @@ class AlarmActivity : ComponentActivity() {
             }
             if (launchIntent != null) {
                 val km = getSystemService(android.app.KeyguardManager::class.java)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && km?.isKeyguardLocked == true) {
+                if (km?.isKeyguardLocked == true) {
                     km.requestDismissKeyguard(this, object : android.app.KeyguardManager.KeyguardDismissCallback() {
                         override fun onDismissSucceeded() {
                             try {

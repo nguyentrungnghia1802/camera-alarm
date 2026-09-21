@@ -2,7 +2,6 @@ package com.personal.cameraalarm.reliability
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings
 
@@ -41,13 +40,20 @@ interface DeviceReliabilityAdvisor {
             return pm?.isIgnoringBatteryOptimizations(context.packageName) ?: true
         }
 
+        const val BATTERY_OPTIMIZATION_SETTINGS_ACTION =
+            Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
+
         fun getBatteryOptimizationIntent(context: Context): Intent {
-            return try {
-                Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                    data = Uri.parse("package:${context.packageName}")
-                }
-            } catch (_: Exception) {
-                Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+            val generalSettings = Intent(BATTERY_OPTIMIZATION_SETTINGS_ACTION)
+            val canOpenGeneralSettings = try {
+                generalSettings.resolveActivity(context.packageManager) != null
+            } catch (_: RuntimeException) {
+                false
+            }
+            if (canOpenGeneralSettings) return generalSettings
+
+            return Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = android.net.Uri.fromParts("package", context.packageName, null)
             }
         }
     }

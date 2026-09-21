@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.personal.cameraalarm.app.AppContainer
+import com.personal.cameraalarm.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,8 +33,9 @@ data class SourcePickerUiState(
 
 class SourcePickerViewModel(
     private val container: AppContainer,
-    private val context: Context
+    context: Context
 ) : ViewModel() {
+    private val appContext = context.applicationContext
     private val _uiState = MutableStateFlow(SourcePickerUiState())
     val uiState: StateFlow<SourcePickerUiState> = _uiState.asStateFlow()
 
@@ -46,7 +48,7 @@ class SourcePickerViewModel(
             _uiState.value = _uiState.value.copy(isLoading = true)
             val currentSettings = container.settingsRepository.settings.first()
             val apps = withContext(Dispatchers.IO) {
-                val pm = context.packageManager
+                val pm = appContext.packageManager
                 val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
                 val resolveInfos = pm.queryIntentActivities(intent, 0)
                 resolveInfos.map { info ->
@@ -87,7 +89,7 @@ class SourcePickerViewModel(
     fun submitManualInput(persistGlobal: Boolean = true, onComplete: (AppInfo) -> Unit) {
         val trimmed = _uiState.value.manualInput.trim()
         if (trimmed.isBlank()) {
-            _uiState.value = _uiState.value.copy(errorMessage = "Package name cannot be blank")
+            _uiState.value = _uiState.value.copy(errorMessage = appContext.getString(R.string.error_source_package_blank))
             return
         }
         viewModelScope.launch {

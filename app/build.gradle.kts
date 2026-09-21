@@ -22,6 +22,7 @@ android {
     }
     kotlinOptions { jvmTarget = "17" }
     testOptions { unitTests.isReturnDefaultValues = true }
+    bundle { language { enableSplit = false } }
     sourceSets.getByName("androidTest").assets.srcDir("$projectDir/schemas")
 }
 ksp {

@@ -3,8 +3,21 @@ package com.personal.cameraalarm
 import com.personal.cameraalarm.reliability.*
 import org.junit.Assert.*
 import org.junit.Test
+import android.provider.Settings
 
 class DeviceReliabilityRegistryTest {
+
+    @Test
+    fun batteryGuidanceUsesThePolicySafeGeneralSettingsScreen() {
+        assertEquals(
+            Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS,
+            DeviceReliabilityAdvisor.BATTERY_OPTIMIZATION_SETTINGS_ACTION
+        )
+        assertNotEquals(
+            Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+            DeviceReliabilityAdvisor.BATTERY_OPTIMIZATION_SETTINGS_ACTION
+        )
+    }
 
     @Test
     fun detectsSamsungDevices() {

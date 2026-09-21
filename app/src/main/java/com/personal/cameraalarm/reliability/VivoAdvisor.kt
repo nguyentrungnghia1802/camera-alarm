@@ -3,10 +3,10 @@ package com.personal.cameraalarm.reliability
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import com.personal.cameraalarm.permission.ReadinessRepository
+import com.personal.cameraalarm.R
 
 class VivoAdvisor(
     readinessRepo: ReadinessRepository? = null,
@@ -17,7 +17,7 @@ class VivoAdvisor(
     private val isVivoDevice = isVivoFamily(manufacturer, brand)
 
     override val isApplicable: Boolean get() = isVivoDevice
-    override val deviceFamilyName: String get() = if (isVivoDevice) "Vivo / iQOO (Funtouch OS / OriginOS)" else "Vivo (Không khớp)"
+    override val deviceFamilyName: String get() = "Vivo / iQOO (Funtouch OS / OriginOS)"
     override val oemKey: String get() = "vivo"
 
     override fun getOemItems(context: Context): List<ReliabilityItem> {
@@ -28,13 +28,13 @@ class VivoAdvisor(
         items.add(
             ReliabilityItem(
                 id = "vivo_high_power",
-                title = "Tiêu thụ pin nền cao (High background power consumption)",
-                description = "Cho phép ứng dụng tiếp tục chạy ngầm khi màn hình tắt trên Funtouch OS.",
+                title = context.getString(R.string.reliability_vivo_battery_title),
+                description = context.getString(R.string.reliability_vivo_battery_desc),
                 status = if (isIgnoringBattery) ReliabilityStatus.READY else ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
                 isOemSpecific = true,
-                actionLabel = "Mở Cài đặt Pin",
+                actionLabel = context.getString(R.string.reliability_open_battery_settings),
                 actionIntent = getVivoBatteryIntent(context),
-                userInstruction = "1. Mở Cài đặt > Pin (Battery).\n2. Chọn 'Mức tiêu thụ pin dưới nền cao' (High background power consumption).\n3. Bật công tắc cho 'Camera Alarm'."
+                userInstruction = context.getString(R.string.reliability_vivo_battery_steps)
             )
         )
 
@@ -42,13 +42,13 @@ class VivoAdvisor(
         items.add(
             ReliabilityItem(
                 id = "vivo_autostart",
-                title = "Quản lý tự khởi động (Autostart)",
-                description = "Cho phép Camera Alarm tự chạy sau khi khởi động máy hoặc khi có cảnh báo.",
+                title = context.getString(R.string.reliability_vivo_autostart_title),
+                description = context.getString(R.string.reliability_vivo_autostart_desc),
                 status = ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
                 isOemSpecific = true,
-                actionLabel = "Mở Quản lý quyền",
+                actionLabel = context.getString(R.string.reliability_vivo_autostart_action),
                 actionIntent = getVivoAutostartIntent(context),
-                userInstruction = "1. Mở Cài đặt > Ứng dụng & Quyền > Quản lý quyền (Permission management).\n2. Chọn 'Tự khởi động' (Autostart) và BẬT cho Camera Alarm."
+                userInstruction = context.getString(R.string.reliability_vivo_autostart_steps)
             )
         )
 
@@ -56,11 +56,11 @@ class VivoAdvisor(
         items.add(
             ReliabilityItem(
                 id = "vivo_lock_recents",
-                title = "Khóa ứng dụng trong Đa nhiệm (Recents)",
-                description = "Khóa app để tránh bị trình quản lý RAM của Vivo dọn dẹp.",
+                title = context.getString(R.string.reliability_lock_recents_title),
+                description = context.getString(R.string.reliability_vivo_lock_recents_desc),
                 status = ReliabilityStatus.USER_CONFIRMATION_REQUIRED,
                 isOemSpecific = true,
-                userInstruction = "1. Mở màn hình ứng dụng gần đây.\n2. Vuốt nhẹ thẻ Camera Alarm xuống để hiển thị biểu tượng ổ khóa.\n3. Bấm khóa app."
+                userInstruction = context.getString(R.string.reliability_vivo_lock_recents_steps)
             )
         )
 
@@ -89,7 +89,7 @@ class VivoAdvisor(
             val intent = Intent().setComponent(cmp)
             if (resolves(context, intent)) return intent
         }
-        return Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+        return DeviceReliabilityAdvisor.getBatteryOptimizationIntent(context)
     }
 
     companion object {

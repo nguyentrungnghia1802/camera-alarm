@@ -26,6 +26,7 @@ import com.personal.cameraalarm.R
 import com.personal.cameraalarm.permission.ReadinessRepository
 import com.personal.cameraalarm.reliability.DeviceReliabilityAdvisor
 import com.personal.cameraalarm.reliability.ReliabilityStatus
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,6 +40,21 @@ fun DiagnosticsScreen(
     val msg = statePair.second
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    fun launchSettings(vararg candidates: Intent?) {
+        for (candidate in candidates.filterNotNull()) {
+            try {
+                context.startActivity(candidate.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                return
+            } catch (_: RuntimeException) {
+                // Try the next defensive fallback below.
+            }
+        }
+        coroutineScope.launch {
+            snackbarHostState.showSnackbar(context.getString(R.string.reliability_settings_unavailable))
+        }
+    }
 
     LaunchedEffect(msg) {
         msg?.let {
@@ -111,7 +127,7 @@ fun DiagnosticsScreen(
                         ok = info.readiness.notificationAccessGranted,
                         detail = if (info.readiness.notificationAccessGranted) stringResource(R.string.status_granted) else stringResource(R.string.status_required),
                         actionLabel = stringResource(R.string.btn_open_settings),
-                        onAction = { context.startActivity(readinessRepo.notificationAccessSettingsIntent()) }
+                        onAction = { launchSettings(readinessRepo.notificationAccessSettingsIntent()) }
                     )
 
                     DiagStatusItem(
@@ -127,7 +143,7 @@ fun DiagnosticsScreen(
                         ok = info.readiness.exactAlarmGranted,
                         detail = if (info.readiness.exactAlarmGranted) stringResource(R.string.status_granted) else stringResource(R.string.status_required),
                         actionLabel = stringResource(R.string.btn_grant),
-                        onAction = { readinessRepo.exactAlarmSettingsIntent()?.let { context.startActivity(it) } }
+                        onAction = { launchSettings(readinessRepo.exactAlarmSettingsIntent()) }
                     )
 
                     DiagStatusItem(
@@ -135,7 +151,7 @@ fun DiagnosticsScreen(
                         ok = info.readiness.postNotificationsGranted,
                         detail = if (info.readiness.postNotificationsGranted) stringResource(R.string.status_granted) else stringResource(R.string.status_required),
                         actionLabel = stringResource(R.string.btn_open_settings),
-                        onAction = { context.startActivity(readinessRepo.appNotificationSettingsIntent()) }
+                        onAction = { launchSettings(readinessRepo.appNotificationSettingsIntent()) }
                     )
 
                     DiagStatusItem(
@@ -143,7 +159,7 @@ fun DiagnosticsScreen(
                         ok = info.fullScreenIntentAllowed,
                         detail = if (info.fullScreenIntentAllowed) stringResource(R.string.diag_allowed) else stringResource(R.string.diag_disallowed),
                         actionLabel = if (!info.fullScreenIntentAllowed && readinessRepo.fullScreenIntentSettingsIntent() != null) stringResource(R.string.btn_open_settings) else null,
-                        onAction = { readinessRepo.fullScreenIntentSettingsIntent()?.let { context.startActivity(it) } }
+                        onAction = { launchSettings(readinessRepo.fullScreenIntentSettingsIntent()) }
                     )
 
                     // Battery Optimization Item
@@ -153,11 +169,7 @@ fun DiagnosticsScreen(
                         ok = isIgnoringBattery,
                         detail = if (isIgnoringBattery) stringResource(R.string.diag_battery_status_ok) else stringResource(R.string.diag_battery_status_needed),
                         actionLabel = if (!isIgnoringBattery) stringResource(R.string.btn_grant) else null,
-                        onAction = {
-                            try {
-                                context.startActivity(DeviceReliabilityAdvisor.getBatteryOptimizationIntent(context).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-                            } catch (_: Exception) {}
-                        }
+                        onAction = { launchSettings(DeviceReliabilityAdvisor.getBatteryOptimizationIntent(context)) }
                     )
 
                     DiagStatusItem(
@@ -287,18 +299,12 @@ fun DiagnosticsScreen(
                                     if (item.actionLabel != null && item.actionIntent != null) {
                                         OutlinedButton(
                                             onClick = {
-                                                try {
-                                                    context.startActivity(item.actionIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-                                                } catch (_: Exception) {
-                                                    try {
-                                                        context.startActivity(
-                                                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                                                data = Uri.fromParts("package", context.packageName, null)
-                                                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                                            }
-                                                        )
-                                                    } catch (_: Exception) {}
-                                                }
+                                                launchSettings(
+                                                    item.actionIntent,
+                                                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                                        data = Uri.fromParts("package", context.packageName, null)
+                                                    }
+                                                )
                                             },
                                             contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
                                             modifier = Modifier.height(32.dp)

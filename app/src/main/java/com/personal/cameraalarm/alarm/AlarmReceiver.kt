@@ -49,25 +49,6 @@ class AlarmReceiver : BroadcastReceiver() {
                         "ALARM_TIMING service_requested_ms=${SystemClock.elapsedRealtime() - receiverFiredElapsedMs} token=$token"
                     )
 
-                    val fullScreenEnabled = app.container.alarmRuntimeConfig.current().fullScreenEnabled
-
-                    if (fullScreenEnabled && app.container.readiness.canUseFullScreenIntent()) {
-                        val directIntent = Intent(context, com.personal.cameraalarm.ui.alarm.AlarmActivity::class.java).apply {
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                            data = android.net.Uri.parse("cameraalarm://alarm_full/${token}")
-                            putExtra(EXTRA_TOKEN, token)
-                            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_SOURCE, trigger.sourcePackage)
-                            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TITLE, trigger.title)
-                            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_PREVIEW, trigger.textPreview)
-                            putExtra(com.personal.cameraalarm.ui.alarm.AlarmActivity.EXTRA_TIME, trigger.receivedAtEpochMs)
-                        }
-                        try {
-                            context.startActivity(directIntent)
-                            Log.i("CameraAlarm", "AlarmReceiver direct startActivity succeeded for token=$token")
-                        } catch (e: Exception) {
-                            Log.w("CameraAlarm", "AlarmReceiver direct startActivity failed: ${e.message}")
-                        }
-                    }
                 }
             } catch (e: Exception) {
                 Log.e("CameraAlarm", "Alarm receiver failed for token=$token", e)

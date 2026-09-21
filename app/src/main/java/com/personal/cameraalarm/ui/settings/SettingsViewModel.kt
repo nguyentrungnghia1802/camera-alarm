@@ -10,6 +10,7 @@ import com.personal.cameraalarm.alarm.sound.AlarmSoundCatalog
 import com.personal.cameraalarm.app.AppContainer
 import com.personal.cameraalarm.data.settings.AppSettings
 import com.personal.cameraalarm.permission.AlarmVolumeStatus
+import com.personal.cameraalarm.R
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -201,7 +202,9 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
     fun playPreview(sound: AlarmSound) {
         val result = container.soundPreviewController.play(sound)
         if (result.isFailure) {
-            userMessage.value = "Failed to preview sound: ${result.exceptionOrNull()?.message}"
+            val error = result.exceptionOrNull()
+            container.runtimeDiagnostics.record("sound preview: ${error?.message ?: error?.javaClass?.simpleName ?: "unknown"}")
+            userMessage.value = container.getString(R.string.message_sound_preview_failed)
         }
     }
 
@@ -212,13 +215,14 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
     fun clearHistory() {
         viewModelScope.launch {
             container.historyRepository.clearHistory()
-            userMessage.value = "History cleared."
+            userMessage.value = container.getString(R.string.message_history_cleared)
         }
     }
 
     fun startTestAlarm(context: Context) {
         container.testAlarmController.start(context).onFailure { error ->
-            userMessage.value = "Unable to start Test Alarm: ${error.message ?: error.javaClass.simpleName}"
+            container.runtimeDiagnostics.record("test alarm: ${error.message ?: error.javaClass.simpleName}")
+            userMessage.value = container.getString(R.string.message_test_alarm_failed)
         }
     }
 

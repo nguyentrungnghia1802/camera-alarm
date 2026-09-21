@@ -144,14 +144,6 @@ class CameraAlarmService : Service() {
     private fun promote(token: AlarmToken, trigger: TriggerSnapshot?, fullScreenEnabled: Boolean) {
         createNotificationChannel(this)
 
-        // Wake screen from black when alarm triggers
-        val pm = getSystemService(android.os.PowerManager::class.java)
-        val screenLock = pm?.newWakeLock(
-            android.os.PowerManager.SCREEN_BRIGHT_WAKE_LOCK or android.os.PowerManager.ACQUIRE_CAUSES_WAKEUP,
-            "CameraAlarm:ScreenWakeLock"
-        )
-        screenLock?.acquire(3_000)
-
         val stop = PendingIntent.getBroadcast(
             this,
             1,
@@ -195,7 +187,6 @@ class CameraAlarmService : Service() {
             .setOngoing(true)
             .setAutoCancel(false)
             .setVisibility(Notification.VISIBILITY_PUBLIC)
-            .setPriority(Notification.PRIORITY_MAX)
             .addAction(
                 Notification.Action.Builder(
                     Icon.createWithResource(this, android.R.drawable.ic_menu_camera),
@@ -275,9 +266,13 @@ class CameraAlarmService : Service() {
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     val launchOpts = android.app.ActivityOptions.makeBasic().apply {
-                        setPendingIntentBackgroundActivityStartMode(
+                        val mode = if (Build.VERSION.SDK_INT >= 36) {
+                            android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOW_ALWAYS
+                        } else {
+                            @Suppress("DEPRECATION")
                             android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
-                        )
+                        }
+                        setPendingIntentBackgroundActivityStartMode(mode)
                     }
                     pending.send(this, 0, null, null, null, null, launchOpts.toBundle())
                 } else {
@@ -360,18 +355,16 @@ class CameraAlarmService : Service() {
         private const val NOTIFICATION_ID = 1
 
         fun createNotificationChannel(context: Context) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val manager = context.getSystemService(NotificationManager::class.java) ?: return
-                val channelName = context.getString(com.personal.cameraalarm.R.string.notification_channel_alarm)
-                val channelDesc = context.getString(com.personal.cameraalarm.R.string.notification_channel_alarm_desc)
-                val channel = NotificationChannel(CHANNEL, channelName, NotificationManager.IMPORTANCE_HIGH).apply {
-                    description = channelDesc
-                    setSound(null, null)
-                    lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-                    enableVibration(true)
-                }
-                manager.createNotificationChannel(channel)
+            val manager = context.getSystemService(NotificationManager::class.java) ?: return
+            val channelName = context.getString(com.personal.cameraalarm.R.string.notification_channel_alarm)
+            val channelDesc = context.getString(com.personal.cameraalarm.R.string.notification_channel_alarm_desc)
+            val channel = NotificationChannel(CHANNEL, channelName, NotificationManager.IMPORTANCE_HIGH).apply {
+                description = channelDesc
+                setSound(null, null)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                enableVibration(true)
             }
+            manager.createNotificationChannel(channel)
         }
     }
 }

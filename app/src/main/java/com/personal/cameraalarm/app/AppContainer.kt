@@ -1,6 +1,7 @@
 package com.personal.cameraalarm.app
 
 import android.content.Context
+import androidx.annotation.StringRes
 import com.personal.cameraalarm.alarm.*
 import com.personal.cameraalarm.data.AppDatabase
 import com.personal.cameraalarm.data.history.HistoryRepository
@@ -25,6 +26,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 
 class AppContainer(context: Context) {
+    private val appContext = context.applicationContext
+
+    fun getString(@StringRes resourceId: Int, vararg formatArgs: Any): String =
+        appContext.getString(resourceId, *formatArgs)
+
     val listenerConnection = ListenerConnectionState()
     val runtimeDiagnostics = RuntimeDiagnostics()
     val exactAlarmAccess = ExactAlarmAccess(context)

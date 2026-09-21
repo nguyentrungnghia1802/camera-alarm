@@ -13,6 +13,7 @@ import com.personal.cameraalarm.schedule.ActiveScheduleGate
 import com.personal.cameraalarm.schedule.ScheduleConfiguration
 import com.personal.cameraalarm.schedule.ScheduleDecision
 import com.personal.cameraalarm.schedule.ScheduleMode
+import com.personal.cameraalarm.R
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -41,7 +42,7 @@ data class MainUiState(
     val activeScheduleRangesCount: Int = 0,
     val singleScheduleRangeSummary: String? = null,
     val nextActiveTime: String? = null,
-    val alarmSoundName: String = "Default Alarm"
+    val alarmSoundName: String = AlarmSoundCatalog.DEFAULT_KEY
 )
 
 class MainViewModel(private val container: AppContainer) : ViewModel() {
@@ -77,17 +78,17 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
         val scheduleDecision = ActiveScheduleGate.evaluate(scheduleConfig, now)
         val isScheduleActive = scheduleDecision == ScheduleDecision.ACTIVE
         val nextActive = ActiveScheduleGate.nextActiveTime(scheduleConfig, now)
-        val soundName = AlarmSoundCatalog.resolve(settings.alarmSoundKey).displayName
+        val soundName = AlarmSoundCatalog.resolve(settings.alarmSoundKey).key
         val enabledRanges = settings.scheduleRanges.filter { it.enabled }
         val singleRangeText = if (enabledRanges.size == 1) {
             "${enabledRanges[0].formatStart()} - ${enabledRanges[0].formatEnd()}"
         } else null
         val scheduleDesc = if (settings.scheduleMode == ScheduleMode.ALWAYS_ACTIVE) {
-            "Always active"
+            container.getString(R.string.schedule_always_active)
         } else {
-            if (enabledRanges.isEmpty()) "None"
+            if (enabledRanges.isEmpty()) container.getString(R.string.diag_none)
             else if (enabledRanges.size == 1) singleRangeText
-            else "${enabledRanges.size} ranges"
+            else container.getString(R.string.schedule_summary_count, enabledRanges.size)
         }
 
         val effectiveStatus = when {
@@ -146,7 +147,7 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
             if (enabled) {
                 val currentReadiness = container.readiness.snapshot()
                 if (!currentReadiness.blockingReady) {
-                    userMessage.value = "Cannot enable: Complete required setup items first."
+                    userMessage.value = container.getString(R.string.message_monitoring_setup_required)
                     return@launch
                 }
             }
@@ -156,7 +157,8 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
 
     fun startTestAlarm(context: Context) {
         container.testAlarmController.start(context).onFailure { error ->
-            userMessage.value = "Unable to start Test Alarm: ${error.message ?: error.javaClass.simpleName}"
+            container.runtimeDiagnostics.record("test alarm: ${error.message ?: error.javaClass.simpleName}")
+            userMessage.value = container.getString(R.string.message_test_alarm_failed)
         }
     }
 

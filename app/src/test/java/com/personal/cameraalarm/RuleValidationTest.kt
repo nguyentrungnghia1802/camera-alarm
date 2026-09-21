@@ -3,6 +3,7 @@ package com.personal.cameraalarm
 import com.personal.cameraalarm.trigger.MatchMode
 import com.personal.cameraalarm.ui.rule.RuleEditorState
 import com.personal.cameraalarm.ui.rule.RuleViewModel
+import com.personal.cameraalarm.ui.rule.RuleEditorError
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -15,8 +16,7 @@ class RuleValidationTest {
             keywordsRaw = "human"
         )
         val error = RuleViewModel.validateRule(state)
-        assertNotNull(error)
-        assertTrue(error!!.contains("name", ignoreCase = true))
+        assertEquals(RuleEditorError.NameBlank, error)
     }
 
     @Test
@@ -27,8 +27,7 @@ class RuleValidationTest {
             keywordsRaw = "human"
         )
         val error = RuleViewModel.validateRule(state)
-        assertNotNull(error)
-        assertTrue(error!!.contains("source", ignoreCase = true))
+        assertEquals(RuleEditorError.SourceBlank, error)
     }
 
     @Test
@@ -39,8 +38,7 @@ class RuleValidationTest {
             keywordsRaw = "   \n   \n"
         )
         val error = RuleViewModel.validateRule(state)
-        assertNotNull(error)
-        assertTrue(error!!.contains("keyword", ignoreCase = true))
+        assertEquals(RuleEditorError.KeywordsRequired, error)
     }
 
     @Test
@@ -52,8 +50,7 @@ class RuleValidationTest {
             keywordsRaw = keywords
         )
         val error = RuleViewModel.validateRule(state)
-        assertNotNull(error)
-        assertTrue(error!!.contains("30", ignoreCase = true))
+        assertEquals(RuleEditorError.TooManyKeywords, error)
     }
 
     @Test
@@ -65,8 +62,7 @@ class RuleValidationTest {
             keywordsRaw = longKeyword
         )
         val error = RuleViewModel.validateRule(state)
-        assertNotNull(error)
-        assertTrue(error!!.contains("100", ignoreCase = true))
+        assertEquals(RuleEditorError.KeywordTooLong, error)
     }
 
     @Test
@@ -108,8 +104,7 @@ class RuleValidationTest {
             keywordsRaw = "a\nmotion"
         )
         val error = RuleViewModel.validateRule(state)
-        assertNotNull(error)
-        assertTrue(error!!.contains("too short", ignoreCase = true))
+        assertEquals(RuleEditorError.KeywordTooShort("a"), error)
     }
 
     @Test
@@ -122,8 +117,7 @@ class RuleValidationTest {
 
         val error = RuleViewModel.validateRule(state)
 
-        assertNotNull(error)
-        assertTrue(error!!.contains("duplicate", ignoreCase = true))
+        assertEquals(RuleEditorError.KeywordDuplicate, error)
     }
 
     @Test

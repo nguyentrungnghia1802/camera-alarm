@@ -9,12 +9,7 @@ import kotlinx.coroutines.launch
 
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
-        val action = intent?.action ?: return
-        if (action != Intent.ACTION_BOOT_COMPLETED &&
-            action != Intent.ACTION_MY_PACKAGE_REPLACED &&
-            action != "android.intent.action.QUICKBOOT_POWERON" &&
-            action != "com.htc.intent.action.QUICKBOOT_POWERON"
-        ) return
+        if (!BootActionPolicy.isSupported(intent?.action)) return
 
         val app = context.applicationContext as? CameraAlarmApp ?: return
         val pendingResult = goAsync()
