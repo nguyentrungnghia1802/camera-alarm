@@ -512,7 +512,7 @@ Thực hiện device certification **sau Rule V2 + Settings V2**, không dùng P
 
 ## P6.1 — API matrix
 
-Status: **PASS on API 31 / 33 / 34 / 36** for the Phase 6 candidate. API 36 exposed a real foreground-service/full-screen launch defect; commit `0d76d41` fixed foreground promotion and STOP dispatch, and the full instrumentation suite passed afterward. Later Phase 7 production changes require affected final-commit instrumentation when an emulator is available.
+Status: **PASS on API 31 / 33 / 34 / 36** for both the Phase 6 candidate and the final production candidate `c165456`. API 36 exposed a real foreground-service/full-screen launch defect; commit `0d76d41` fixed foreground promotion and STOP dispatch. After the later Phase 7 production changes, the complete 19-test instrumentation suite passed again on every listed API with no failure/error/skip. Physical device certification remains separate.
 
 Chạy API 31 / 33 / 34 / 36 theo khả năng môi trường.
 
@@ -591,7 +591,7 @@ Status: **COMPLETE**. Lifecycle mapping now preserves the matched Rule V2 `ruleI
 - Không lưu nội dung unrelated app.
 
 ## P7.2 Backup / restore
-Status: **COMPLETE**. Backup is an explicit settings-only allowlist for both Android 11-and-earlier Auto Backup and Android 12+ cloud/device transfer. Room data and `alarm_runtime_state` are excluded, so notification previews, Pending/Ringing state, token, owner nonce, and runtime snapshot cannot be restored.
+Status: **COMPLETE (policy/build), restore transport NOT VERIFIED**. Backup is an explicit settings-only allowlist for both Android 11-and-earlier Auto Backup and Android 12+ cloud/device transfer. Room data and `alarm_runtime_state` are excluded, so notification previews, Pending/Ringing state, token, owner nonce, and runtime snapshot cannot be restored. API 36 Backup Manager was exercised, but its local transport rejected the release package during preflight and produced no restorable application dataset; no restore PASS is claimed.
 
 - Exclude history preview nhạy cảm.
 - Exclude runtime Pending/Ringing/token/nonce.
@@ -605,14 +605,14 @@ Status: **COMPLETE (implementation)**. Battery guidance opens the policy-safe op
 - Giữ Samsung/Xiaomi guidance defensive.
 
 ## P7.4 Localization/UI
-Status: **COMPLETE for code/resources; final emulator smoke pending environment availability**. Rule V2, Settings V2, Main, Diagnostics, battery, and OEM user-facing messages use EN/VI resources. A locale instrumentation contract covers core Rule/Settings and Samsung/Xiaomi guidance. Existing Phase 5 large-font/small-screen evidence remains valid for the unchanged screen structure; final-commit smoke is rerun if an emulator is available.
+Status: **PASS for code/resources and final emulator interaction smoke**. Rule V2, Settings V2, Main, Diagnostics, battery, and OEM user-facing messages use EN/VI resources. A locale instrumentation contract covers core Rule/Settings and Samsung/Xiaomi guidance. On the signed API 36 build, Vietnamese loaded by default, switching to English through Settings persisted across process restart and the signed 1.0-to-1.1 upgrade; font scale 1.5 and dark/light modes remained navigable through the UI hierarchy. The headless emulator returned black screencap frames, so no final pixel-level screenshot PASS is claimed; the earlier Phase 5 360 dp/font-1.5 layout exercise remains the visual layout evidence.
 
 - Không hard-code user-facing EN/VI.
 - Review Rule V2 + Settings V2 ở cả hai locale.
 - Font scale lớn, small screen, dark mode.
 
 ## P7.5 BootReceiver / full-screen cleanup
-Status: **COMPLETE (affected instrumentation pending final emulator run)**. `BootReceiver` is non-exported and validates a fixed action allowlist. AlarmReceiver no longer launches UI directly; CameraAlarmService remains the single full-screen launch owner and keeps the API 36-proven notification/fallback behavior. Deprecated screen wake-lock and notification-priority calls were removed; API 36 uses the current BAL mode.
+Status: **PASS**. `BootReceiver` is non-exported and validates a fixed action allowlist. AlarmReceiver no longer launches UI directly; CameraAlarmService remains the single full-screen launch owner and keeps the API 36-proven notification/fallback behavior. Deprecated screen wake-lock and notification-priority calls were removed; API 36 uses the current BAL mode. The affected complete instrumentation suite passed 19/19 on API 31, 33, 34, and 36 on final production candidate `c165456`; signed API 36 Test Alarm also reached foreground/full-screen and STOP cleared the activity, service, and notification.
 
 - Giới hạn receiver exposure.
 - Chỉ đơn giản hóa full-screen launch path sau khi có device evidence.
@@ -637,6 +637,17 @@ Status: **PASS with triaged non-blocking warnings**. Lint has no behavior, permi
 - Dependency upgrade theo batch riêng nếu thực sự cần.
 
 ## P8.2 Signed release
+Status: **PASS for signing/fresh-install/upgrade/Test Alarm; real camera trigger NOT VERIFIED**.
+
+- Release identity: versionCode `2`, versionName `1.1.0`.
+- Signing key and DPAPI-protected password are outside the repository under the current Windows user profile.
+- `camera-alarm-1.1.0-signed.apk` verifies with APK Signature Scheme v2/v3, one RSA-4096 signer.
+- SHA-256: `5487B9A063748B6BDE96858D7865DAAB69C4A0F0190A54FD2096C71B9D98E6C9`.
+- API 36 fresh install and cold launch: PASS.
+- Real upgrade path: versionCode 1 / versionName 1.0 APK built from `0d76d41`, signed with the same release key, installed, configured to English, and upgraded with `adb install -r` to versionCode 2 / versionName 1.1.0. `firstInstallTime` and the saved language were preserved: PASS.
+- Signed Test Alarm + foreground service + full-screen AlarmActivity + STOP cleanup: PASS on API 36.
+- A notification from a real camera application on the signed build was not available in this environment: **NOT VERIFIED**. Test Alarm is not promoted as equivalent evidence.
+
 - versionCode/versionName;
 - signing secret ngoài repo;
 - signed APK;
@@ -648,6 +659,8 @@ Status: **PASS with triaged non-blocking warnings**. Lint has no behavior, permi
 - real alarm + STOP trên signed build.
 
 ## P8.3 Final report
+
+Status: **COMPLETE**. See `docs/review/final-release-report.md`. The report keeps Samsung A50, Xiaomi, Backup Manager restore, and signed real-camera notification as explicit `NOT VERIFIED` release limits.
 
 Cập nhật/tạo:
 

@@ -224,3 +224,56 @@ Date: 2026-09-21. Candidate: `0d76d41`.
 - Behavior/policy/accessibility were prioritized: direct battery-exemption request, silent settings failures, deprecated alarm wake/full-screen APIs, dynamic-language split, and ViewModel context leak were resolved. No warning remains in those categories.
 - AndroidX/Room/coroutines upgrades are intentionally deferred to a separate batch because they cross migration, Compose, and platform boundaries; no upgrade is required to close this release gate.
 - Release identity advanced to versionCode `2`, versionName `1.1.0`.
+
+## Final production-candidate device matrix
+
+Date: 2026-09-21. Production candidate: `c16545666ebc713bb8f5f2416f531af807da423b`.
+
+All four AVDs used the final debug APK produced from the candidate. Each fresh target was granted exact-alarm access before the run; no test was skipped.
+
+| Target | Android | Instrumentation result |
+|---|---:|---|
+| `CameraAlarm_API_31` | 12 / API 31 | PASS, 19/19 |
+| `CameraAlarm_API_33` | 13 / API 33 | PASS, 19/19 |
+| `CameraAlarm_API_34` | 14 / API 34 | PASS, 19/19 |
+| `Medium_Phone_API_36.1` | 16 / API 36 | PASS, 19/19 |
+
+This rerun covers the affected history, manifest/receiver, localization, alarm scheduling, full-screen/STOP, Room, Rule V2, Settings V2, and integration contracts after all Phase 7 production changes. It does not replace physical OEM evidence.
+
+- Samsung A50 (`SM-A505F`): **NOT VERIFIED**; no longer connected to ADB.
+- Xiaomi implementation: **COMPLETE**; Xiaomi physical validation: **NOT VERIFIED** because no device is available.
+
+## Final clean verification
+
+Date: 2026-09-21. Candidate: `c16545666ebc713bb8f5f2416f531af807da423b`.
+
+| Command | Result |
+|---|---|
+| `.\gradlew.bat clean` | PASS after stopping the Gradle daemon; the first attempt was blocked by an open `fake-camera` lint-cache JAR and is retained as an environmental retry, not hidden |
+| `.\gradlew.bat test --rerun-tasks` | PASS; 123 tests per debug/release variant, 0 failure/error/skip; 98 Gradle tasks executed |
+| `.\gradlew.bat lint` | PASS; 0 errors, 92 triaged non-blocking warnings |
+| `.\gradlew.bat assembleDebug` | PASS |
+| `.\gradlew.bat :app:assembleRelease` | PASS |
+| `.\gradlew.bat :app:assembleAndroidTest` | PASS |
+
+Lint warning inventory remained: 34 `UnusedResources`, 26 `PluralsCandidate`, 15 `GradleDependency`, 9 `TypographyEllipsis`, 6 `TypographyDashes`, 1 `IconLocation`, and 1 `ObsoleteSdkInt`. AndroidTest compilation also reports the already-known Room `MigrationTestHelper` deprecation warning; no build or runtime gate failed.
+
+## P8.2 — Signed release verification
+
+- Artifact: `app/build/outputs/apk/release/camera-alarm-1.1.0-signed.apk` (generated build output, intentionally not committed).
+- Size: 13,655,679 bytes.
+- APK signatures: v2 PASS, v3 PASS; one RSA-4096 signer.
+- Signer certificate SHA-256: `E6F06F695B13D98150DBA8A718B923F54D93DDD47901F47C64F27B9586F93900`.
+- Artifact SHA-256: `5487B9A063748B6BDE96858D7865DAAB69C4A0F0190A54FD2096C71B9D98E6C9`.
+- Signing material and DPAPI-protected secret are outside the repository in the current Windows user profile.
+- API 36 fresh install, versionCode `2`, versionName `1.1.0`, cold launch, and process start: PASS.
+- Signed runtime smoke: Test Alarm opened `AlarmActivity`; `CameraAlarmService` was foreground with an alarm-category notification and two actions. STOP returned to `MainActivity`, removed the service, and removed the alarm notification: PASS.
+- Upgrade: an APK from `0d76d41` (versionCode `1`, versionName `1.0`) was signed with the same release key and installed first. English was selected and persisted. `adb install -r` to the final signed APK succeeded, retained `firstInstallTime`, reported versionCode `2` / versionName `1.1.0`, and retained English: PASS.
+- Real camera-application notification against the signed build: **NOT VERIFIED**. Test Alarm is explicitly not treated as equivalent to a camera-source trigger.
+
+## Final localization and backup probes
+
+- Signed API 36 fresh state loaded Vietnamese. English selected through Settings persisted across process recreation and the signed upgrade path.
+- Font scale `1.5` and dark/light-mode interaction remained reachable in the UI hierarchy. The headless AVD produced black `screencap` frames, so final pixel-level screenshot review is **NOT VERIFIED**; Phase 5 retains the earlier 360 dp/font-1.5 manual layout evidence.
+- Backup rules remain a strict settings-only allowlist; Room/history and `alarm_runtime_state` are outside both cloud and device-transfer sets.
+- Android Backup Manager was enabled temporarily with local transport. The transport rejected the release package during preflight (`ERROR_PREFLIGHT`) and created no restorable application dataset. No data was cleared and no restore was attempted. End-to-end restore is therefore **NOT VERIFIED**, while the manifest/rule/build policy gate remains PASS. The emulator backup transport and enabled state were restored to their originals afterward.
