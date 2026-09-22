@@ -1,0 +1,14 @@
+{
+  "structured_audio_starts_per_token": {
+    "test-first": 1,
+    "test-language": 1,
+    "test-1790064295146": 1,
+    "00fd4dc6-19f1-424d-9835-647bdd3b845f": 1
+  },
+  "synthetic_token": "00fd4dc6-19f1-424d-9835-647bdd3b845f",
+  "open_camera_top": "com.personal.fakecamera/.MainActivity",
+  "stop_receiver_observed": true,
+  "final_alarm_service_absent": true,
+  "active_alarm_player_absent": true,
+  "upgrade_selected_source_preserved": true
+}

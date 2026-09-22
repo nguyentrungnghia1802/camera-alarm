@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.personal.cameraalarm.ActiveScheduleGateTest" tests="20" skipped="0" failures="0" errors="0" timestamp="2026-09-22T07:50:42" hostname="ACERNITRO5-NTNG" time="0.042">
+  <properties/>
+  <testcase name="multiIntervalMatchesMiddle" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.018"/>
+  <testcase name="scheduleEvaluatesAgainstCurrentTimezone" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.0"/>
+  <testcase name="emptyCustomScheduleIsAlwaysInactive" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.0"/>
+  <testcase name="sameDayAtEndIsInactive" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.0"/>
+  <testcase name="overnightAtMorningBoundaryIsActive" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.0"/>
+  <testcase name="sameDayAtStartIsActive" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.0"/>
+  <testcase name="serializerRoundTripPreservesLocalTimeRanges" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.017"/>
+  <testcase name="overnightAtMidnightIsActive" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.0"/>
+  <testcase name="overnightAtLateEveningIsActive" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.0"/>
+  <testcase name="multiIntervalMatchesFirst" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.001"/>
+  <testcase name="overnightMiddayIsInactive" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.0"/>
+  <testcase name="sameDayAtLastMinuteIsActive" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.0"/>
+  <testcase name="multiIntervalMatchesNone" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.0"/>
+  <testcase name="disabledIntervalDoesNotActivate" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.001"/>
+  <testcase name="equalBoundariesIsFullDayActive" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.0"/>
+  <testcase name="alwaysActiveIgnoresCustomRangesAndActivatesAnyTime" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.0"/>
+  <testcase name="sameDayBeforeStartIsInactive" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.0"/>
+  <testcase name="overnightAtEndIsInactive" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.0"/>
+  <testcase name="overnightAtStartIsActive" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.0"/>
+  <testcase name="multiIntervalMatchesOvernight" classname="com.personal.cameraalarm.ActiveScheduleGateTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

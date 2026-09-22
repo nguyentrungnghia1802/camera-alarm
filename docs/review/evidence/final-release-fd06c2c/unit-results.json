@@ -1,0 +1,470 @@
+[
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "tests": 20,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.AlarmHistoryEventFactoryTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "tests": 14,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.AlarmRuntimeConfigCacheTest",
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.AlarmRuntimeControllerTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.AlarmRuntimeOwnershipTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.AlarmSoundTest",
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.AlarmVolumeStatusTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.BootActionPolicyTest",
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.BootReconcilerTest",
+    "tests": 6,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.CoreTest",
+    "tests": 6,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.HistoryRepositoryTest",
+    "tests": 6,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.MainViewModelTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.NotificationFieldsTest",
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.NotificationTracePrivacyTest",
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.PendingDeliveryBoundaryTest",
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.PersistenceTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "tests": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.ReadinessStateTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.RuleValidationTest",
+    "tests": 12,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.SourcePickerTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.TriggerPipelineTest",
+    "tests": 10,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.cameraalarm.XiaomiReliabilityAdvisorTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "tests": 20,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.AlarmHistoryEventFactoryTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "tests": 14,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.AlarmRuntimeConfigCacheTest",
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.AlarmRuntimeControllerTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.AlarmRuntimeOwnershipTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.AlarmSoundTest",
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.AlarmVolumeStatusTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.BootActionPolicyTest",
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.BootReconcilerTest",
+    "tests": 6,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.CoreTest",
+    "tests": 6,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.HistoryRepositoryTest",
+    "tests": 6,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.MainViewModelTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.NotificationFieldsTest",
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.NotificationTracePrivacyTest",
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.PendingDeliveryBoundaryTest",
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.PersistenceTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "tests": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.ReadinessStateTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.RuleValidationTest",
+    "tests": 12,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.SourcePickerTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.TriggerPipelineTest",
+    "tests": 10,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.cameraalarm.XiaomiReliabilityAdvisorTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "fake-camera",
+    "variant": "testDebugUnitTest",
+    "suite": "com.personal.fakecamera.FakeNotificationPayloadTest",
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "module": "fake-camera",
+    "variant": "testReleaseUnitTest",
+    "suite": "com.personal.fakecamera.FakeNotificationPayloadTest",
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+]

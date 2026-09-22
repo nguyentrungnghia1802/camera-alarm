@@ -1,0 +1,16 @@
+[
+  {
+    "token": "0d2f357a-9da5-4b1a-b52a-e43d18d6c839",
+    "ringing": 1,
+    "audio_started": 1,
+    "stale": 0,
+    "retired": 0
+  },
+  {
+    "token": "851e38a0-255f-40b6-b787-1007343c3625",
+    "ringing": 1,
+    "audio_started": 1,
+    "stale": 0,
+    "retired": 0
+  }
+]

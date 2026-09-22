@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.personal.cameraalarm.CoreTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-09-22T07:50:42" hostname="ACERNITRO5-NTNG" time="0.021">
+  <properties/>
+  <testcase name="dedupeTtlBoundaryAndBoundedCache" classname="com.personal.cameraalarm.CoreTest" time="0.002"/>
+  <testcase name="concurrentTriggersOnlyScheduleOnce" classname="com.personal.cameraalarm.CoreTest" time="0.009"/>
+  <testcase name="lateAlarmStillRingsButDuplicateFireAfterStopIsStale" classname="com.personal.cameraalarm.CoreTest" time="0.001"/>
+  <testcase name="reducerTransitionsAndStaleEvents" classname="com.personal.cameraalarm.CoreTest" time="0.001"/>
+  <testcase name="normalizerMergesFieldsAndPreservesAccents" classname="com.personal.cameraalarm.CoreTest" time="0.004"/>
+  <testcase name="matcherChecksPackageModeAndPriority" classname="com.personal.cameraalarm.CoreTest" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,14 @@
+[
+  {
+    "module": "app",
+    "Error": 0,
+    "Warning": 93,
+    "Fatal": 0
+  },
+  {
+    "module": "fake-camera",
+    "Error": 0,
+    "Warning": 14,
+    "Fatal": 0
+  }
+]

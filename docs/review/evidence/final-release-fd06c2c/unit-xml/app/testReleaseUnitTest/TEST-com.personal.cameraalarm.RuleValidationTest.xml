@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.personal.cameraalarm.RuleValidationTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-09-22T07:50:42" hostname="ACERNITRO5-NTNG" time="0.014">
+  <properties/>
+  <testcase name="duplicateKeywordsAfterCaseAndWhitespaceNormalizationAreRejected" classname="com.personal.cameraalarm.RuleValidationTest" time="0.003"/>
+  <testcase name="keywordOver100CharsRejected" classname="com.personal.cameraalarm.RuleValidationTest" time="0.001"/>
+  <testcase name="validationTriggerDefaultIsZeroAndIncrementsOnCopy" classname="com.personal.cameraalarm.RuleValidationTest" time="0.0"/>
+  <testcase name="blankSourcePackageIsRejected" classname="com.personal.cameraalarm.RuleValidationTest" time="0.0"/>
+  <testcase name="shortKeywordIsRejected" classname="com.personal.cameraalarm.RuleValidationTest" time="0.0"/>
+  <testcase name="emptyKeywordsAreRejected" classname="com.personal.cameraalarm.RuleValidationTest" time="0.001"/>
+  <testcase name="moreThan30KeywordsRejected" classname="com.personal.cameraalarm.RuleValidationTest" time="0.002"/>
+  <testcase name="blankNameIsRejected" classname="com.personal.cameraalarm.RuleValidationTest" time="0.0"/>
+  <testcase name="suggestedTemplateMatchesTheVietnameseProductContract" classname="com.personal.cameraalarm.RuleValidationTest" time="0.0"/>
+  <testcase name="commasRemainPartOfOneKeywordBecauseCsvIsNoLongerTheEditorContract" classname="com.personal.cameraalarm.RuleValidationTest" time="0.001"/>
+  <testcase name="validRulePassesValidation" classname="com.personal.cameraalarm.RuleValidationTest" time="0.0"/>
+  <testcase name="fieldErrorsFollowPrioritizedValidationHierarchy" classname="com.personal.cameraalarm.RuleValidationTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

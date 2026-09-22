@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.personal.cameraalarm.DeviceReliabilityRegistryTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-09-22T07:50:42" hostname="ACERNITRO5-NTNG" time="0.005">
+  <properties/>
+  <testcase name="detectsOppoDevices" classname="com.personal.cameraalarm.DeviceReliabilityRegistryTest" time="0.004"/>
+  <testcase name="fallsBackToDefaultAdvisorForPixelAndOthers" classname="com.personal.cameraalarm.DeviceReliabilityRegistryTest" time="0.0"/>
+  <testcase name="retrievesAdvisorByKeyCorrectly" classname="com.personal.cameraalarm.DeviceReliabilityRegistryTest" time="0.001"/>
+  <testcase name="detectsXiaomiDevices" classname="com.personal.cameraalarm.DeviceReliabilityRegistryTest" time="0.0"/>
+  <testcase name="batteryGuidanceUsesThePolicySafeGeneralSettingsScreen" classname="com.personal.cameraalarm.DeviceReliabilityRegistryTest" time="0.0"/>
+  <testcase name="detectsHuaweiDevices" classname="com.personal.cameraalarm.DeviceReliabilityRegistryTest" time="0.0"/>
+  <testcase name="detectsSamsungDevices" classname="com.personal.cameraalarm.DeviceReliabilityRegistryTest" time="0.0"/>
+  <testcase name="detectsVivoDevices" classname="com.personal.cameraalarm.DeviceReliabilityRegistryTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,22 @@
+[
+  {
+    "path": "D:\\_CODE_BANK\\Project_\\04_Extensions\\camera-alarm\\app\\build\\outputs\\apk\\debug\\app-debug.apk",
+    "bytes": 19170353,
+    "sha256": "2f5a56edb5886fdc0ad60ebb32577d2e46852ea153f8c09403ef5393255be38f"
+  },
+  {
+    "path": "D:\\_CODE_BANK\\Project_\\04_Extensions\\camera-alarm\\app\\build\\outputs\\apk\\release\\app-release-unsigned.apk",
+    "bytes": 13646048,
+    "sha256": "56ddb0de8a44fdca309757ff2537fc335d40d08cf23598ef6de06d6991e29148"
+  },
+  {
+    "path": "D:\\_CODE_BANK\\Project_\\04_Extensions\\camera-alarm\\app\\build\\outputs\\apk\\release\\camera-alarm-fd06c2c-signed.apk",
+    "bytes": 13672063,
+    "sha256": "a578eb00bfbfef3bbd172c870d31886f0c24b3e76e260eb3700443703e07f1f7"
+  },
+  {
+    "path": "D:\\_CODE_BANK\\Project_\\04_Extensions\\camera-alarm\\app\\build\\outputs\\apk\\androidTest\\debug\\app-debug-androidTest.apk",
+    "bytes": 1150097,
+    "sha256": "b44b750c79eb5ddc295eebe1ff64afce084ad95ce7840f7179f48f7a8a62faf2"
+  }
+]

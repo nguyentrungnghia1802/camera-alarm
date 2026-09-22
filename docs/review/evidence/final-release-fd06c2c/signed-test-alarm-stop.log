@@ -1,0 +1,28 @@
+--------- beginning of main
+09-22 15:03:53.085  4502  4502 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=test-first
+09-22 15:03:53.095  4502  4502 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=test-first epoch_ms=1790064233095 elapsed_ms=184496 session=259fcc83-1f75-4dff-bfac-9e7e10efec94 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 15:03:53.144  4502  4502 I CameraAlarm: ALARM_TIMING foreground_ms=65 token=test-first
+09-22 15:03:53.541  4502  4502 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 15:03:53.541  4502  4502 I CameraAlarm: AUDIO_STARTED: token=test-first
+09-22 15:03:53.557  4502  4502 I CameraAlarm: AUDIO_STARTED token=test-first epoch_ms=1790064233557 elapsed_ms=184958 session=259fcc83-1f75-4dff-bfac-9e7e10efec94 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 15:03:53.558  4502  4502 I CameraAlarm: ALARM_TIMING runtime_started_ms=480 token=test-first
+09-22 15:03:53.738  4502  4502 I CameraAlarm: ALARMACTIVITY_CREATED: token=test-first
+09-22 15:03:55.647  4502  4502 I CameraAlarm: STOP_RECEIVER_FIRED: token=test-first
+09-22 15:03:58.489  4502  4502 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=test-language
+09-22 15:03:58.490  4502  4502 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=test-language epoch_ms=1790064238490 elapsed_ms=189890 session=259fcc83-1f75-4dff-bfac-9e7e10efec94 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 15:03:58.587  4502  4502 I CameraAlarm: ALARM_TIMING foreground_ms=101 token=test-language
+09-22 15:03:58.756  4502  4502 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 15:03:58.756  4502  4502 I CameraAlarm: AUDIO_STARTED: token=test-language
+09-22 15:03:58.766  4502  4502 I CameraAlarm: AUDIO_STARTED token=test-language epoch_ms=1790064238766 elapsed_ms=190167 session=259fcc83-1f75-4dff-bfac-9e7e10efec94 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 15:03:58.766  4502  4502 I CameraAlarm: ALARM_TIMING runtime_started_ms=281 token=test-language
+09-22 15:03:59.745  4502  4502 I CameraAlarm: ALARMACTIVITY_CREATED: token=test-language
+09-22 15:04:01.086  4502  4502 I CameraAlarm: STOP_RECEIVER_FIRED: token=test-language
+09-22 15:04:55.164  4788  4788 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=test-1790064295146
+09-22 15:04:55.166  4788  4788 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=test-1790064295146 epoch_ms=1790064295166 elapsed_ms=246567 session=99e18a92-c109-4947-a0fe-0c89a3d879d7 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 15:04:55.184  4788  4788 I CameraAlarm: ALARM_TIMING foreground_ms=26 token=test-1790064295146
+09-22 15:04:55.324  4788  4788 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 15:04:55.324  4788  4788 I CameraAlarm: AUDIO_STARTED: token=test-1790064295146
+09-22 15:04:55.337  4788  4788 I CameraAlarm: AUDIO_STARTED token=test-1790064295146 epoch_ms=1790064295337 elapsed_ms=246737 session=99e18a92-c109-4947-a0fe-0c89a3d879d7 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 15:04:55.342  4788  4788 I CameraAlarm: ALARM_TIMING runtime_started_ms=184 token=test-1790064295146
+09-22 15:04:55.809  4788  4788 I CameraAlarm: ALARMACTIVITY_CREATED: token=test-1790064295146
+09-22 15:05:18.449  4788  4788 I CameraAlarm: STOP_RECEIVER_FIRED: token=test-1790064295146

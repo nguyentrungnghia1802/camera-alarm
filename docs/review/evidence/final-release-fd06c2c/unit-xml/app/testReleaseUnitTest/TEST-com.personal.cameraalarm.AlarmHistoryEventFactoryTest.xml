@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.personal.cameraalarm.AlarmHistoryEventFactoryTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-09-22T07:50:42" hostname="ACERNITRO5-NTNG" time="0.002">
+  <properties/>
+  <testcase name="lifecycleEventsKeepTheMatchedRuleAndAlarmToken" classname="com.personal.cameraalarm.AlarmHistoryEventFactoryTest" time="0.001"/>
+  <testcase name="nonLifecycleEffectsDoNotCreateDuplicateHistoryRows" classname="com.personal.cameraalarm.AlarmHistoryEventFactoryTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.personal.cameraalarm.BootReconcilerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-09-22T07:50:42" hostname="ACERNITRO5-NTNG" time="0.018">
+  <properties/>
+  <testcase name="timeoutOrDisconnectedNeverReportsSuccess" classname="com.personal.cameraalarm.BootReconcilerTest" time="0.004"/>
+  <testcase name="accessDeniedDoesNotRequestRebind" classname="com.personal.cameraalarm.BootReconcilerTest" time="0.004"/>
+  <testcase name="delayedConnectCompletesWithinBoundedRetry" classname="com.personal.cameraalarm.BootReconcilerTest" time="0.002"/>
+  <testcase name="failuresRemainBoundedAndEndDisconnected" classname="com.personal.cameraalarm.BootReconcilerTest" time="0.005"/>
+  <testcase name="productionReconcilerPreservesCurrentBootStateAndRecordsOutcome" classname="com.personal.cameraalarm.BootReconcilerTest" time="0.001"/>
+  <testcase name="alreadyConnectedDoesNotRequestRebind" classname="com.personal.cameraalarm.BootReconcilerTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

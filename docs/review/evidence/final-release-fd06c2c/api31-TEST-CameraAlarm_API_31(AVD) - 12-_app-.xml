@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="com.personal.cameraalarm.AlarmSchedulerInstrumentedTest" tests="28" failures="0" errors="0" skipped="1" time="39.05" timestamp="2026-09-22T07:56:03" hostname="localhost">
+  <properties>
+    <property name="device" value="CameraAlarm_API_31(AVD) - 12" />
+    <property name="flavor" value="" />
+    <property name="project" value=":app" />
+  </properties>
+  <testcase name="tokenPendingIntentCanBeFoundAndCancelledWithoutCancellingAnotherToken" classname="com.personal.cameraalarm.AlarmSchedulerInstrumentedTest" time="0.023" />
+  <testcase name="secondStartCannotReplaceStopActionForActiveAlarm" classname="com.personal.cameraalarm.AlarmStopInstrumentedTest" time="3.769" />
+  <testcase name="realDataStoreInvalidatesAllPreviousBootStatesAndKeepsCurrentBootPending" classname="com.personal.cameraalarm.BootStateStoreInstrumentedTest" time="1.161" />
+  <testcase name="currentSnapshotTransactionCannotEraseNewBootWrite" classname="com.personal.cameraalarm.BootStateStoreInstrumentedTest" time="1.308" />
+  <testcase name="triggerRuleDaoCrud" classname="com.personal.cameraalarm.DatabaseInstrumentedTest" time="0.079" />
+  <testcase name="alertEventDaoPrunesByMaximumCountAndKeepsPaginationStable" classname="com.personal.cameraalarm.DatabaseInstrumentedTest" time="0.669" />
+  <testcase name="alertEventDaoCapsSuppressedEventsWithoutRemovingTriggeredEvents" classname="com.personal.cameraalarm.DatabaseInstrumentedTest" time="0.133" />
+  <testcase name="alertEventDaoPrunesEventsOutsideRetentionWindow" classname="com.personal.cameraalarm.DatabaseInstrumentedTest" time="0.087" />
+  <testcase name="ruleSettingsAndOemGuidanceResolveInEnglishAndVietnamese" classname="com.personal.cameraalarm.LocalizationInstrumentedTest" time="0.056" />
+  <testcase name="bootReceiverIsNotExportedToThirdPartyApps" classname="com.personal.cameraalarm.ManifestSecurityInstrumentedTest" time="0.005" />
+  <testcase name="lostOsDeliveryRetriesAutonomouslyAndLateCallbackCannotClaimReplacement" classname="com.personal.cameraalarm.PendingDeliveryInstrumentedTest" time="16.925" />
+  <testcase name="prepare" classname="com.personal.cameraalarm.RebootScenarioPreparation" time="0.064">
+    <skipped />
+  </testcase>
+  <testcase name="migration1To2PreservesRulesAndNormalizesPriorityInOldEvaluationOrder" classname="com.personal.cameraalarm.RuleMigrationInstrumentedTest" time="0.218" />
+  <testcase name="maximumThreeRulesAndUniquePrioritiesAreEnforced" classname="com.personal.cameraalarm.RuleRepositoryInstrumentedTest" time="0.032" />
+  <testcase name="deleteDoesNotRenumberRemainingRules" classname="com.personal.cameraalarm.RuleRepositoryInstrumentedTest" time="0.032" />
+  <testcase name="editingToOccupiedPrioritySwapsAtomicallyAndPreservesCreatedAt" classname="com.personal.cameraalarm.RuleRepositoryInstrumentedTest" time="0.03" />
+  <testcase name="notificationActionsFollowLanguageEvenWhileAlarmIsActive" classname="com.personal.cameraalarm.SelectedLanguageInstrumentedTest" time="5.396" />
+  <testcase name="selectedLanguageReachesActivityDialogAndMessages" classname="com.personal.cameraalarm.SelectedLanguageInstrumentedTest" time="2.841" />
+  <testcase name="freshStoreUsesOfficialDefaultProfile" classname="com.personal.cameraalarm.SettingsDefaultsInstrumentedTest" time="0.055" />
+  <testcase name="existingV2StorePreservesFalseWhenUpgradedToV3" classname="com.personal.cameraalarm.SettingsDefaultsInstrumentedTest" time="0.058" />
+  <testcase name="existingStoreWithoutVersionPreservesOldEffectiveDefaults" classname="com.personal.cameraalarm.SettingsDefaultsInstrumentedTest" time="0.033" />
+  <testcase name="resetPersistsOfficialDefaultsAcrossRepositoryRecreation" classname="com.personal.cameraalarm.SettingsDefaultsInstrumentedTest" time="0.15" />
+  <testcase name="savingStaleSettingsDraftDoesNotDisableMonitoring" classname="com.personal.cameraalarm.SettingsDefaultsInstrumentedTest" time="0.103" />
+  <testcase name="transientReadErrorDoesNotEmitMonitoringOffDefaults" classname="com.personal.cameraalarm.SettingsReadRecoveryInstrumentedTest" time="0.951" />
+  <testcase name="persistedSettingsAndRulesDrivePipelineWhileMonitoringOffSuppresses" classname="com.personal.cameraalarm.V1IntegrationInstrumentedTest" time="0.213" />
+  <testcase name="settingsPersistAcrossRepositoryRecreation" classname="com.personal.cameraalarm.V1IntegrationInstrumentedTest" time="0.08" />
+  <testcase name="pendingStatePersistsButOrphanRingingStateIsCleared" classname="com.personal.cameraalarm.V1IntegrationInstrumentedTest" time="0.03" />
+  <testcase name="roomRulesAndHistoryPersistAcrossDatabaseReopen" classname="com.personal.cameraalarm.V1IntegrationInstrumentedTest" time="0.056" />
+</testsuite>

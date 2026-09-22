@@ -1,0 +1,3 @@
+Commit=fd06c2c855d3f3b1c02b2b84c2850fc4878aebde
+Started=2026-09-22T14:48:55.3631420+07:00
+Commands run sequentially; failures retained; no implementation changes.

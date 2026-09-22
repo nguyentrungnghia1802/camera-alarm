@@ -1,0 +1,34 @@
+[
+  {
+    "tests": 28,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "api": 31,
+    "pass": 27
+  },
+  {
+    "tests": 29,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "api": 33,
+    "pass": 28
+  },
+  {
+    "tests": 28,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "api": 34,
+    "pass": 27
+  },
+  {
+    "tests": 28,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "api": 36,
+    "pass": 27
+  }
+]
