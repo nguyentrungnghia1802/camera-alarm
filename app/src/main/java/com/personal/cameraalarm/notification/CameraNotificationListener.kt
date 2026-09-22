@@ -21,6 +21,7 @@ class CameraNotificationListener : NotificationListenerService() {
         app.container.listenerConnection.disconnected()
         if (com.personal.cameraalarm.BuildConfig.DEBUG) Log.d("CameraAlarm", "listener disconnected")
         super.onListenerDisconnected()
+        app.container.recoveryJobs.boot("LISTENER_DISCONNECTED")
         // Auto-heal / reconnect if system unexpectedly unbinds
         try {
             requestRebind(ComponentName(this, CameraNotificationListener::class.java))
@@ -34,6 +35,9 @@ class CameraNotificationListener : NotificationListenerService() {
         }
         Log.i("CameraAlarm", "NOTIFICATION_RECEIVED: pkg=${sbn.packageName} id=${sbn.id}")
         val incoming = NotificationExtractor.from(sbn)
+        com.personal.cameraalarm.alarm.AlarmTrace.record("NOTIFICATION_RECEIVED",
+            com.personal.cameraalarm.alarm.AlarmToken(incoming.traceToken),
+            details = "package=${incoming.packageName} key=${incoming.key}")
 
         val pm = getSystemService(PowerManager::class.java)
         val wakeLock = pm?.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "CameraAlarm:NotificationPostedWakeLock")

@@ -10,7 +10,8 @@ import com.personal.cameraalarm.schedule.ActiveTimeRange
 import com.personal.cameraalarm.schedule.ScheduleMode
 import com.personal.cameraalarm.schedule.ScheduleSerializer
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.retryWhen
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -25,8 +26,12 @@ class SettingsRepository(
 
     val settings: Flow<AppSettings> = dataStore.data
         .onStart { migrateDefaultProfileIfNeeded() }
-        .catch { exception ->
-            if (exception is IOException) emit(emptyPreferences()) else throw exception
+        .retryWhen { exception, attempt ->
+            // An unreadable file is not a user request to switch monitoring OFF.
+            if (exception is IOException) {
+                delay((1000L * (attempt + 1)).coerceAtMost(30_000))
+                true
+            } else false
         }
         .map { preferences ->
             AppSettings(

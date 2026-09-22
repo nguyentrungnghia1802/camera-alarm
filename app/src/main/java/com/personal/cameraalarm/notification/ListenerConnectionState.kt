@@ -8,6 +8,7 @@ class ListenerConnectionState {
     private val mutableStatus = MutableStateFlow(ListenerStatus.DISCONNECTED)
     val status = mutableStatus.asStateFlow()
     fun connected() { mutableStatus.value = ListenerStatus.CONNECTED }
-    fun reconnecting() { mutableStatus.value = ListenerStatus.RECONNECTING }
+    fun reconnecting() { mutableStatus.compareAndSet(ListenerStatus.DISCONNECTED, ListenerStatus.RECONNECTING) }
+    fun recoveryFailed() { mutableStatus.compareAndSet(ListenerStatus.RECONNECTING, ListenerStatus.DISCONNECTED) }
     fun disconnected() { mutableStatus.value = ListenerStatus.DISCONNECTED }
 }

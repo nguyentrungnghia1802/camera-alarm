@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.net.Uri
 import com.personal.cameraalarm.ui.MainActivity
 
 class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
@@ -15,7 +16,9 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
     override fun scheduleExact(token: AlarmToken, triggerAtEpochMs: Long): ScheduleResult {
         if (!canScheduleExactAlarms()) return ScheduleResult.ExactAlarmPermissionMissing
         return try {
-            val intent = intent().putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
+            // Migrate the old canonical PendingIntent. New registrations/cancellations are token-specific.
+            cancelIntent(intent())
+            val intent = tokenIntent(token).putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
             val pending = PendingIntent.getBroadcast(
                 context,
                 REQUEST_CODE,
@@ -24,6 +27,7 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
             )
 
             // Primary: Use setAlarmClock for critical alarm delivery that wakes CPU and bypasses Doze throttling
+            var mode = "alarm_clock"
             try {
                 val showIntent = PendingIntent.getActivity(
                     context,
@@ -35,12 +39,14 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
                 )
                 val clockInfo = AlarmManager.AlarmClockInfo(triggerAtEpochMs, showIntent)
                 manager.setAlarmClock(clockInfo, pending)
-            } catch (_: SecurityException) {
+            } catch (error: SecurityException) {
+                mode = "exact_while_idle"
+                AlarmTrace.record("SCHEDULER_FALLBACK", token, details = "reason=${error.message}")
                 // Fallback if setAlarmClock restricted by platform policy
                 manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtEpochMs, pending)
             }
 
-            android.util.Log.i("CameraAlarm", "EXACT_ALARM_SCHEDULED: token=${token.value} triggerAtEpochMs=$triggerAtEpochMs")
+            AlarmTrace.record("OS_ALARM_REGISTERED", token, details = "deadline_ms=$triggerAtEpochMs mode=$mode")
             ScheduleResult.Scheduled
         } catch (e: SecurityException) {
             ScheduleResult.ExactAlarmPermissionMissing
@@ -50,10 +56,14 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
     }
 
     override fun cancel(token: AlarmToken) {
+        cancelIntent(tokenIntent(token))
+    }
+
+    private fun cancelIntent(intent: Intent) {
         val pending = PendingIntent.getBroadcast(
             context,
             REQUEST_CODE,
-            intent(),
+            intent,
             PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
         )
         if (pending != null) {
@@ -63,6 +73,7 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
     }
 
     private fun intent() = Intent(context, AlarmReceiver::class.java).setAction(AlarmReceiver.ACTION_FIRE)
+    private fun tokenIntent(token: AlarmToken) = intent().setData(Uri.parse("cameraalarm://fire/${Uri.encode(token.value)}"))
 
     companion object {
         private const val REQUEST_CODE = 1

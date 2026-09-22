@@ -11,6 +11,16 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AlarmRuntimeOwnershipTest {
+    @Test
+    fun queuedOldStopCannotDestroyServiceBeforeNewOwnerStartsAudio() {
+        val next = AlarmToken("next-production")
+        val state = AlarmState.Ringing(TriggerSnapshot(next, "camera", "key", "rule", null, null, 0), 0)
+        assertFalse(AlarmRuntimeOwnership.canStopService(state, AlarmToken("retired")))
+        assertFalse(AlarmRuntimeOwnership.canStopService(state, null))
+        assertTrue(AlarmRuntimeOwnership.canStopService(state, next))
+        assertTrue(AlarmRuntimeOwnership.canStopService(AlarmState.Idle, AlarmToken("retired")))
+    }
+
     private val productionToken = AlarmToken("production")
     private val testToken = AlarmToken("test-active")
     private val trigger = TriggerSnapshot(

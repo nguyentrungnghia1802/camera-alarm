@@ -7,7 +7,6 @@ import com.personal.cameraalarm.schedule.ScheduleConfiguration
 import com.personal.cameraalarm.schedule.ScheduleDecision
 import com.personal.cameraalarm.util.Clock
 import java.security.MessageDigest
-import java.util.UUID
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -81,7 +80,8 @@ class TriggerPipeline(
         val rule = TriggerMatcher.match(notification.packageName, searchable, config.rules)
             ?: return PipelineResult(TriggerDecision.IGNORED_NO_RULE_MATCH)
         try {
-            android.util.Log.i("CameraAlarm", "TRIGGER_MATCHED: rule=${rule.name} pkg=${notification.packageName}")
+            AlarmTrace.record("TRIGGER_MATCHED", AlarmToken(notification.traceToken),
+                details = "rule=${rule.id} package=${notification.packageName}")
         } catch (_: Throwable) {}
 
         val eventTime = notification.postTimeEpochMs.takeIf { it > 0 } ?: clock.nowEpochMs()
@@ -97,7 +97,7 @@ class TriggerPipeline(
         }
         duplicates.markSeen(key, now)
 
-        val token = AlarmToken(UUID.randomUUID().toString())
+        val token = AlarmToken(notification.traceToken)
         val trigger = TriggerSnapshot(token, notification.packageName, key, rule.id, notification.title?.take(300), searchable.take(300), now)
         val outcome = coordinator.onValidTrigger(trigger)
         return PipelineResult(TriggerDecision.valueOf(outcome.name), token, rule.id)

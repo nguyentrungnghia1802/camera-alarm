@@ -21,6 +21,7 @@ import com.personal.cameraalarm.trigger.TriggerRule
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeout
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -133,7 +134,7 @@ class V1IntegrationInstrumentedTest {
             container.settingsRepository.setScheduleMode(ScheduleMode.ALWAYS_ACTIVE)
             container.settingsRepository.setMonitoringEnabled(true)
             container.ruleRepository.saveRule(
-                TriggerRule(ruleId, "Person", true, "com.camera.instrumented", MatchMode.CONTAINS_ANY, listOf("person detected"), 1, 1_000)
+                TriggerRule(ruleId, "Person", true, "com.camera.instrumented", MatchMode.CONTAINS_ANY, listOf("person detected"), (container.ruleRepository.rules.first().maxOfOrNull { it.priority } ?: 0) + 1, 1_000)
             )
             awaitConfiguration {
                 it.monitoringEnabled &&

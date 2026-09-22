@@ -9,7 +9,9 @@ data class TriggerSnapshot(
     val ruleId: String,
     val title: String?,
     val textPreview: String?,
-    val receivedAtEpochMs: Long
+    val receivedAtEpochMs: Long,
+    val deadlineEpochMs: Long? = null,
+    val configuredDelayMs: Long? = null
 )
 
 data class AlarmPolicy(val delayMs: Long = 1_000, val cooldownMs: Long = 600_000, val vibrationEnabled: Boolean = true) {
@@ -18,7 +20,12 @@ data class AlarmPolicy(val delayMs: Long = 1_000, val cooldownMs: Long = 600_000
 
 sealed interface AlarmState {
     data object Idle : AlarmState
-    data class Pending(val trigger: TriggerSnapshot, val scheduledAtEpochMs: Long) : AlarmState
+    data class Pending(
+        val trigger: TriggerSnapshot,
+        val scheduledAtEpochMs: Long,
+        val deadlineElapsedMs: Long? = null,
+        val recoveryAttempt: Int = 0
+    ) : AlarmState
     data class Ringing(val trigger: TriggerSnapshot, val startedAtEpochMs: Long) : AlarmState
     data class Cooldown(val untilEpochMs: Long, val lastAlarmToken: AlarmToken) : AlarmState
 }

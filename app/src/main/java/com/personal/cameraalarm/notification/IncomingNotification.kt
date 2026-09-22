@@ -10,5 +10,6 @@ data class IncomingNotification(
     val text: String?,
     val bigText: String?,
     val textLines: List<String>,
-    val subText: String?
+    val subText: String?,
+    val traceToken: String = java.util.UUID.randomUUID().toString()
 )

@@ -16,7 +16,7 @@ class AlarmReceiver : BroadcastReceiver() {
         if (intent?.action != ACTION_FIRE) return
         val token = intent.getStringExtra(EXTRA_TOKEN)?.takeIf(String::isNotBlank) ?: return
         val receiverFiredElapsedMs = SystemClock.elapsedRealtime()
-        Log.i("CameraAlarm", "ALARM_RECEIVER_FIRED: token=$token elapsed_ms=$receiverFiredElapsedMs")
+        AlarmTrace.record("ALARM_RECEIVER_ENTRY", AlarmToken(token), details = "elapsed_ms=$receiverFiredElapsedMs")
         val pending = goAsync()
         val app = context.applicationContext as CameraAlarmApp
 
@@ -27,28 +27,19 @@ class AlarmReceiver : BroadcastReceiver() {
         app.scope.launch {
             try {
                 withTimeout(8_000) {
-                    if (!app.container.exactAlarmAccess.isGranted()) return@withTimeout
-                    val state = app.container.stateStore.read()
-                    if (state !is AlarmState.Pending || state.trigger.alarmToken.value != token) return@withTimeout
-                    val trigger = state.trigger
-                    app.container.coordinator.onExactAlarmFired(trigger)
-                    val current = app.container.stateStore.read()
-                    if (current !is AlarmState.Ringing || current.trigger.alarmToken.value != token) return@withTimeout
-                    val service = Intent(context, CameraAlarmService::class.java)
-                        .setAction(CameraAlarmService.ACTION_START)
-                        .putExtra(EXTRA_TOKEN, token)
-                        .putExtra(CameraAlarmService.EXTRA_SOURCE, trigger.sourcePackage)
-                        .putExtra(CameraAlarmService.EXTRA_TITLE, trigger.title)
-                        .putExtra(CameraAlarmService.EXTRA_PREVIEW, trigger.textPreview)
-                        .putExtra(CameraAlarmService.EXTRA_TIME, trigger.receivedAtEpochMs)
-                        .putExtra(CameraAlarmService.EXTRA_RULE, trigger.ruleId)
-                        .putExtra(CameraAlarmService.EXTRA_KEY, trigger.notificationKey)
-                    ContextCompat.startForegroundService(context, service)
-                    Log.i(
-                        "CameraAlarm",
-                        "ALARM_TIMING service_requested_ms=${SystemClock.elapsedRealtime() - receiverFiredElapsedMs} token=$token"
-                    )
-
+                    app.container.coordinator.claimAlarm(AlarmToken(token)) { trigger ->
+                        val service = Intent(context, CameraAlarmService::class.java)
+                            .setAction(CameraAlarmService.ACTION_START)
+                            .putExtra(EXTRA_TOKEN, token)
+                            .putExtra(CameraAlarmService.EXTRA_SOURCE, trigger.sourcePackage)
+                            .putExtra(CameraAlarmService.EXTRA_TITLE, trigger.title)
+                            .putExtra(CameraAlarmService.EXTRA_PREVIEW, trigger.textPreview)
+                            .putExtra(CameraAlarmService.EXTRA_TIME, trigger.receivedAtEpochMs)
+                            .putExtra(CameraAlarmService.EXTRA_RULE, trigger.ruleId)
+                            .putExtra(CameraAlarmService.EXTRA_KEY, trigger.notificationKey)
+                        ContextCompat.startForegroundService(context, service)
+                        AlarmTrace.record("SERVICE_REQUESTED", trigger = trigger)
+                    }
                 }
             } catch (e: Exception) {
                 Log.e("CameraAlarm", "Alarm receiver failed for token=$token", e)

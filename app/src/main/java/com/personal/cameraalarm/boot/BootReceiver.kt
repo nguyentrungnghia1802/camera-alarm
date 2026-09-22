@@ -12,6 +12,9 @@ class BootReceiver : BroadcastReceiver() {
         if (!BootActionPolicy.isSupported(intent?.action)) return
 
         val app = context.applicationContext as? CameraAlarmApp ?: return
+        val action = intent?.action ?: return
+        // Register a continuation before async work; process death must not require opening the UI.
+        app.container.recoveryJobs.boot(action)
         val pendingResult = goAsync()
         val pm = context.getSystemService(PowerManager::class.java)
         val wakeLock = pm?.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "CameraAlarm:BootReceiverWakeLock")
@@ -19,7 +22,7 @@ class BootReceiver : BroadcastReceiver() {
 
         app.scope.launch {
             try {
-                val reconciler = DefaultBootReconciler(context, app.container)
+                val reconciler = DefaultBootReconciler(context, app.container, action)
                 reconciler.reconcile()
             } finally {
                 if (wakeLock?.isHeld == true) {

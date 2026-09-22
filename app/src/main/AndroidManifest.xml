@@ -28,6 +28,7 @@
             <intent-filter><action android:name="android.service.notification.NotificationListenerService" /></intent-filter>
         </service>
         <receiver android:name=".alarm.AlarmReceiver" android:exported="false" />
+        <service android:name=".boot.RecoveryJobService" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true" />
         <receiver android:name=".alarm.StopAlarmReceiver" android:exported="false" />
         <receiver android:name=".boot.BootReceiver" android:exported="false">
             <intent-filter android:priority="999">
@@ -35,6 +36,7 @@
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
             </intent-filter>
         </receiver>
         <service android:name=".alarm.CameraAlarmService" android:exported="false" android:foregroundServiceType="systemExempted" />

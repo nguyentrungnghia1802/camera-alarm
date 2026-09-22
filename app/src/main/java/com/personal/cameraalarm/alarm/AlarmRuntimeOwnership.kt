@@ -7,6 +7,11 @@ enum class AlarmStartDecision {
 }
 
 object AlarmRuntimeOwnership {
+    fun canStopService(state: AlarmState, stoppedToken: AlarmToken?): Boolean {
+        val owner = (state as? AlarmState.Ringing)?.trigger?.alarmToken
+        return owner == null || owner == stoppedToken
+    }
+
     fun decideStart(
         activeToken: AlarmToken?,
         requestedToken: AlarmToken,

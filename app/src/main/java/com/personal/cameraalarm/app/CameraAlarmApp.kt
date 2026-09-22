@@ -14,6 +14,7 @@ class CameraAlarmApp : Application() {
         super.onCreate()
         // Eagerly initialize container so settings and rules are loaded into memory immediately
         container
+        container.startRecovery()
         // Ensure alarm notification channel exists
         CameraAlarmService.createNotificationChannel(this)
     }

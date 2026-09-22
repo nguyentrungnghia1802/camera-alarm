@@ -60,7 +60,8 @@ class NotificationListenerRecovery(
             }
         }
 
-        connectionState.disconnected()
+        connectionState.recoveryFailed()
+        if (connectionState.status.value == ListenerStatus.CONNECTED) return ListenerRecoveryResult.CONNECTED
         recordDiagnostic("listener recovery: disconnected after $maxAttempts attempts")
         return ListenerRecoveryResult.DISCONNECTED
     }

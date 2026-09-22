@@ -56,7 +56,8 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
         container.historyRepository.events,
         container.testAlarmToken,
         userMessage,
-        readinessTick
+        readinessTick,
+        container.coordinator.initialized
     ) { args ->
         val settings = args[0] as com.personal.cameraalarm.data.settings.AppSettings
         @Suppress("UNCHECKED_CAST")
@@ -67,6 +68,7 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
         val testToken = args[4] as? AlarmToken
         val testing = testToken != null
         val message = args[5] as String?
+        val initialized = args[7] as Boolean
 
         val readiness = container.readiness.snapshot()
         val volume = container.readiness.volumeStatus()
@@ -92,6 +94,7 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
         }
 
         val effectiveStatus = when {
+            !initialized -> AppStatus.NEEDS_SETUP
             isRinging -> AppStatus.ALARMING
             !readiness.blockingReady -> AppStatus.NEEDS_SETUP
             settings.monitoringEnabled && readiness.readyForMonitoring -> {
@@ -117,7 +120,7 @@ class MainViewModel(private val container: AppContainer) : ViewModel() {
             vibrationEnabled = settings.vibrationEnabled,
             isRinging = isRinging,
             isTestingAlarm = testing,
-            canStartTestAlarm = AlarmRuntimeOwnership.canStartTest(alarmState, testToken),
+            canStartTestAlarm = initialized && AlarmRuntimeOwnership.canStartTest(alarmState, testToken),
             lastDecision = lastEvent?.decision,
             lastDecisionTime = lastEvent?.createdAtEpochMs,
             userMessage = message,

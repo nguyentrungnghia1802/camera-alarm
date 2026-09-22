@@ -24,6 +24,7 @@ class CameraAlarmService : Service() {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val app get() = application as CameraAlarmApp
     private val runtime by lazy { AlarmRuntimeController(AndroidAlarmPlayer(this), AndroidVibrationController(this)) }
+    private var destroyed = false
     override fun onBind(intent: Intent?): IBinder? = null
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val serviceStartElapsedMs = SystemClock.elapsedRealtime()
@@ -34,6 +35,11 @@ class CameraAlarmService : Service() {
             if (token != null && StopAlarmReceiver.isTestAlarm(token)) {
                 app.container.testAlarmToken.compareAndSet(token, null)
             }
+            // A new owner may already have queued START while its coroutine waits for the lock.
+            // Release the old audio, but do not destroy the service needed by that owner.
+            if (!AlarmRuntimeOwnership.canStopService(app.container.coordinator.state.value, token)) {
+                return START_NOT_STICKY
+            }
             if (com.personal.cameraalarm.BuildConfig.DEBUG) Log.d("CameraAlarm", "runtime stopped token=${token?.value}")
             stopForeground(STOP_FOREGROUND_REMOVE)
             stopSelf()
@@ -41,6 +47,36 @@ class CameraAlarmService : Service() {
         }
         if (intent?.action != ACTION_START || token == null) { stopSelf(); return START_NOT_STICKY }
         val isTest = intent.getBooleanExtra(EXTRA_IS_TEST, false)
+        scope.launch {
+            try {
+                val accepted = if (isTest) app.container.coordinator.withTestOwnership {
+                    if (!destroyed) startAccepted(intent, token, true, serviceStartElapsedMs)
+                } else app.container.coordinator.withRingingOwnership(token) { trigger ->
+                    // Snapshot from the owner, never trust an old queued service Intent.
+                    if (!destroyed) startAccepted(intent, token, false, serviceStartElapsedMs, trigger)
+                }
+                if (destroyed && !isTest) app.container.coordinator.onStopRequested(token)
+                if (!accepted && runtime.activeToken == null) stopSelfResult(startId)
+            } catch (error: Exception) {
+                recordError(token, "runtime claim: ${error.message}")
+                app.container.coordinator.onStopRequested(token)
+                if (runtime.activeToken == null) stopSelfResult(startId)
+            }
+        }
+        return START_NOT_STICKY
+    }
+
+    private fun startAccepted(
+        intent: Intent, token: AlarmToken, isTest: Boolean, serviceStartElapsedMs: Long,
+        ownedTrigger: TriggerSnapshot? = null
+    ): Int {
+        // Coordinator already authorized this production token. A different active runtime is
+        // retired ownership (e.g. its queued STOP has not reached Main yet), and must be stopped first.
+        if (!isTest && ownedTrigger != null && runtime.activeToken != null && runtime.activeToken != token) {
+            val retired = runtime.activeToken
+            runtime.stop(retired).forEach { recordError(retired, it) }
+            if (retired != null) app.container.testAlarmToken.compareAndSet(retired, null)
+        }
         when (AlarmRuntimeOwnership.decideStart(runtime.activeToken, token, isTest)) {
             AlarmStartDecision.REJECT -> return START_NOT_STICKY
             AlarmStartDecision.REPLACE_ACTIVE_TEST -> {
@@ -72,7 +108,7 @@ class CameraAlarmService : Service() {
                 getString(com.personal.cameraalarm.R.string.test_alarm_preview),
                 System.currentTimeMillis()
             )
-        } else {
+        } else if (ownedTrigger != null) ownedTrigger else {
             val src = intent.getStringExtra(EXTRA_SOURCE)
             if (src != null) {
                 TriggerSnapshot(
@@ -87,6 +123,7 @@ class CameraAlarmService : Service() {
             } else null
         }
 
+        AlarmTrace.record("FOREGROUND_SERVICE_STARTED", token, initialTrigger)
         // 1. Promote to foreground service immediately
         try {
             promote(token, initialTrigger, runtimeConfig.fullScreenEnabled)
@@ -104,7 +141,9 @@ class CameraAlarmService : Service() {
         if (isTest) app.container.testAlarmToken.value = token
 
         // 2. Start audio & vibration immediately
-        runtime.start(token, runtimeConfig.vibrationEnabled, runtimeConfig.soundKey).forEach { recordError(token, it) }
+        val errors = runtime.start(token, runtimeConfig.vibrationEnabled, runtimeConfig.soundKey)
+        errors.forEach { recordError(token, it) }
+        if (errors.none { it.startsWith("audio:") }) AlarmTrace.record("AUDIO_STARTED", token, initialTrigger)
         Log.i(
             "CameraAlarm",
             "ALARM_TIMING runtime_started_ms=${SystemClock.elapsedRealtime() - serviceStartElapsedMs} token=${token.value}"
@@ -115,27 +154,6 @@ class CameraAlarmService : Service() {
             launchAcceptedTestActivity(token, initialTrigger)
         } else {
             launchAlarmActivity(token, initialTrigger, runtimeConfig.fullScreenEnabled)
-        }
-
-        // 4. Verify state asynchronously if initial trigger was not provided via intent
-        if (!isTest && initialTrigger == null) {
-            scope.launch {
-                val state = try { app.container.stateStore.read() } catch (e: Exception) {
-                    recordError(token, "state read: ${e.message ?: e.javaClass.simpleName}"); null
-                }
-                if (state !is AlarmState.Ringing || state.trigger.alarmToken != token) {
-                    runtime.stop(token).forEach { recordError(token, it) }
-                    stopForeground(STOP_FOREGROUND_REMOVE)
-                    stopSelf()
-                    return@launch
-                }
-                try {
-                    promote(token, state.trigger, runtimeConfig.fullScreenEnabled)
-                    launchAlarmActivity(token, state.trigger, runtimeConfig.fullScreenEnabled)
-                } catch (e: RuntimeException) {
-                    recordError(token, "foreground update: ${e.message ?: e.javaClass.simpleName}")
-                }
-            }
         }
 
         return START_NOT_STICKY
@@ -331,6 +349,7 @@ class CameraAlarmService : Service() {
         app.container.runtimeDiagnostics.record(error)
     }
     override fun onDestroy() {
+        destroyed = true
         val token = runtime.activeToken
         runtime.stop(null).forEach { recordError(token, it) }
         if (token != null && StopAlarmReceiver.isTestAlarm(token)) {

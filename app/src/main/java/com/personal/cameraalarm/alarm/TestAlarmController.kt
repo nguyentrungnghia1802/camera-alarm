@@ -6,7 +6,7 @@ import androidx.core.content.ContextCompat
 import com.personal.cameraalarm.app.AppContainer
 
 class TestAlarmController(private val container: AppContainer) {
-    fun canStart(): Boolean = AlarmRuntimeOwnership.canStartTest(
+    fun canStart(): Boolean = container.coordinator.initialized.value && AlarmRuntimeOwnership.canStartTest(
         container.coordinator.state.value,
         container.testAlarmToken.value
     )

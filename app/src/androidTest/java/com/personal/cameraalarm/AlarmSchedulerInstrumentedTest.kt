@@ -2,6 +2,7 @@ package com.personal.cameraalarm
 
 import android.app.PendingIntent
 import android.content.Intent
+import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.personal.cameraalarm.alarm.AlarmReceiver
@@ -14,7 +15,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class AlarmSchedulerInstrumentedTest {
-    @Test fun canonicalPendingIntentCanBeFoundAndCancelled() {
+    @Test fun tokenPendingIntentCanBeFoundAndCancelledWithoutCancellingAnotherToken() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val scheduler = AndroidAlarmScheduler(context)
         assertTrue("Exact-alarm access is required for this device test", scheduler.canScheduleExactAlarms())
@@ -22,10 +23,14 @@ class AlarmSchedulerInstrumentedTest {
         try {
             assertEquals(ScheduleResult.Scheduled, scheduler.scheduleExact(token, System.currentTimeMillis() + 60_000))
             val intent = Intent(context, AlarmReceiver::class.java).setAction(AlarmReceiver.ACTION_FIRE)
+                .setData(Uri.parse("cameraalarm://fire/${token.value}"))
             val existing = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE)
             assertNotNull(existing)
+            scheduler.cancel(AlarmToken("stale-other-token"))
+            assertNotNull(PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE))
         } finally { scheduler.cancel(token) }
         val intent = Intent(context, AlarmReceiver::class.java).setAction(AlarmReceiver.ACTION_FIRE)
+            .setData(Uri.parse("cameraalarm://fire/${token.value}"))
         assertNull(PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE))
     }
 }

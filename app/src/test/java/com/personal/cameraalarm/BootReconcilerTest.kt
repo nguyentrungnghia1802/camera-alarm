@@ -24,20 +24,26 @@ class BootReconcilerTest {
         var historyCalls = 0
         val diagnostics = mutableListOf<String>()
 
-        override suspend fun awaitConfigLoaded() { configAwaited = true }
-        override suspend fun readAlarmState(): AlarmState = state
-        override suspend fun writeAlarmState(state: AlarmState) { this.state = state }
-        override fun clearTestAlarmToken() { testToken = null }
+        var configReady = true
+        var recoveryResult = ListenerRecoveryResult.CONNECTED
+        var outcome: com.personal.cameraalarm.boot.BootRecoveryOutcome? = null
+        override suspend fun awaitConfigLoaded(): Boolean { configAwaited = true; return configReady }
+        override suspend fun reconcileAlarm() = com.personal.cameraalarm.alarm.AlarmReconciliation("current boot", state)
+        override fun monitoringEnabled() = true
+        override fun exactAlarmCapable() = true
         override suspend fun recoverNotificationListener(): ListenerRecoveryResult {
             recoveryCalls++
-            return ListenerRecoveryResult.CONNECTED
+            return recoveryResult
         }
-        override suspend fun recordBootEvent() { historyCalls++ }
+        override suspend fun recordBootEvent(outcome: com.personal.cameraalarm.boot.BootRecoveryOutcome) {
+            historyCalls++
+            this.outcome = outcome
+        }
         override fun recordDiagnostic(message: String) { diagnostics += message }
     }
 
     @Test
-    fun productionReconcilerResetsStaleStateAndRunsRecoveryInOrder() = runTest {
+    fun productionReconcilerPreservesCurrentBootStateAndRecordsOutcome() = runTest {
         val trigger = TriggerSnapshot(
             AlarmToken("old-token"), "camera.app", "key", "rule", "Title", "Text", 1_000L
         )
@@ -46,12 +52,25 @@ class BootReconcilerTest {
         DefaultBootReconciler(dependencies).reconcile()
 
         assertTrue(dependencies.configAwaited)
-        assertEquals(AlarmState.Idle, dependencies.state)
-        assertNull(dependencies.testToken)
+        assertTrue(dependencies.state is AlarmState.Ringing)
+        assertEquals(AlarmToken("test-boot"), dependencies.testToken)
+        assertTrue(dependencies.outcome!!.success)
         assertEquals(1, dependencies.recoveryCalls)
         assertEquals(1, dependencies.historyCalls)
     }
 
+    @Test fun timeoutOrDisconnectedNeverReportsSuccess() = runTest {
+        val dependencies = FakeDependencies(AlarmState.Idle)
+        dependencies.configReady = false
+        DefaultBootReconciler(dependencies).reconcile()
+        assertTrue(!dependencies.outcome!!.success)
+        assertTrue(dependencies.outcome!!.retry)
+        dependencies.configReady = true
+        dependencies.recoveryResult = ListenerRecoveryResult.DISCONNECTED
+        DefaultBootReconciler(dependencies).reconcile()
+        assertTrue(!dependencies.outcome!!.success)
+        assertTrue(dependencies.outcome!!.retry)
+    }
     @Test
     fun accessDeniedDoesNotRequestRebind() = runTest {
         val state = ListenerConnectionState()

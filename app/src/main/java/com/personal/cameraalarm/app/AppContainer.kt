@@ -24,6 +24,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.flow.retryWhen
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.CancellationException
 
 class AppContainer(context: Context) {
     private val appContext = context.applicationContext
@@ -52,15 +55,11 @@ class AppContainer(context: Context) {
 
     val initialConfigLoaded = CompletableDeferred<Unit>()
 
-    suspend fun awaitConfigLoaded(timeoutMs: Long = 3000L) {
-        if (!initialConfigLoaded.isCompleted) {
-            withTimeoutOrNull(timeoutMs) {
-                initialConfigLoaded.await()
-            }
-        }
-    }
+    suspend fun awaitConfigLoaded(timeoutMs: Long = 3000L): Boolean =
+        withTimeoutOrNull(timeoutMs) { initialConfigLoaded.await(); true } ?: false
 
     val scheduler = AndroidAlarmScheduler(context)
+    val recoveryJobs = com.personal.cameraalarm.boot.RecoveryJobs(appContext)
     val readiness = ReadinessRepository(context, exactAlarmAccess, listenerConnection) { triggerConfiguration }
     val advisorRegistry = com.personal.cameraalarm.reliability.DeviceReliabilityAdvisorRegistry(readiness)
     val deviceAdvisor: com.personal.cameraalarm.reliability.DeviceReliabilityAdvisor =
@@ -99,6 +98,11 @@ class AppContainer(context: Context) {
                 if (!initialConfigLoaded.isCompleted) {
                     initialConfigLoaded.complete(Unit)
                 }
+            }.retryWhen { error, attempt ->
+                if (error is CancellationException) return@retryWhen false
+                runtimeDiagnostics.record("config retry: ${error.message}")
+                delay((1000L * (attempt + 1)).coerceAtMost(30_000))
+                true
             }.collect()
         }
     }
@@ -139,7 +143,10 @@ class AppContainer(context: Context) {
                     }
                 }
             }
-        }
+        },
+        recoveryScheduler = recoveryJobs,
+        elapsedMs = { android.os.SystemClock.elapsedRealtime() },
+        trace = { stage, trigger, details -> AlarmTrace.record(stage, trigger = trigger, details = details) }
     )
 
     val testAlarmController = TestAlarmController(this)
@@ -162,7 +169,9 @@ class AppContainer(context: Context) {
     val pipeline = TriggerPipeline(
         AndroidClock,
         TriggerConfigurationSource {
-            awaitConfigLoaded()
+            // Do not interpret startup defaults as the user's monitoring OFF setting.
+            initialConfigLoaded.await()
+            coordinator.reconcile()
             triggerConfiguration
         },
         TtlDuplicateGuard(),
@@ -172,7 +181,7 @@ class AppContainer(context: Context) {
                 android.util.Log.d("CameraAlarm", "decision=$decision source=${notification.packageName}")
             }
             val details = if (decision == TriggerDecision.SUPPRESSED_COOLDOWN) {
-                val state = try { stateStore.read() } catch (_: Exception) { null }
+                val state = try { coordinator.snapshot() } catch (_: Exception) { null }
                 if (state is AlarmState.Cooldown) {
                     val remainingMs = (state.untilEpochMs - System.currentTimeMillis()).coerceAtLeast(0)
                     val min = (remainingMs / 1000) / 60
@@ -200,4 +209,15 @@ class AppContainer(context: Context) {
             android.util.Log.e("CameraAlarm", reason, error)
         }
     )
+
+    fun startRecovery() {
+        coordinator.watchPending(appScope)
+        appScope.launch {
+            try { coordinator.reconcile() }
+            catch (error: Exception) {
+                runtimeDiagnostics.record("startup hydration: ${error.message}")
+                recoveryJobs.boot("PROCESS_START")
+            }
+        }
+    }
 }
