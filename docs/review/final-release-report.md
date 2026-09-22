@@ -56,7 +56,7 @@ Actual Google cloud, device-to-device and OEM transports: **NOT VERIFIED**. Loca
 Artifact: `app/build/outputs/apk/release/camera-alarm-1.1.0-signed.apk`, version 1.1.0 (2), `debuggable=false`.
 
 - Existing release certificate SHA256: `E6F06F695B13D98150DBA8A718B923F54D93DDD47901F47C64F27B9586F93900`; APK v2/v3 signature verification PASS.
-- APK SHA256: `A6FEB6CCBD0163A34ACA3086C6DBBA8A8F7B4410662F27D7A1879C9C8DC8DE2F`.
+- Source-milestone tested APK SHA256: `A6FEB6CCBD0163A34ACA3086C6DBBA8A8F7B4410662F27D7A1879C9C8DC8DE2F`.
 - Fresh API36 install PASS: target package absence recorded before installation. Release-signed instrumentation ran against the actual non-debuggable release target: Test Alarm/STOP plus EN/VI dialogs/sheet/snackbar/active actions, 3/3 PASS. The test APK is verification-only and is not the distributed artifact.
 - Upgrade PASS: historical `0d76d41` versionCode 1 APK built in an isolated temporary archive and signed with the same key; saved English through Settings, then `adb install -r` to versionCode 2. Both dumps report firstInstallTime `2026-09-22 08:59:42`; English persisted in the new UI. Main repository was not checked out/reset.
 - Signed listener E2E PASS for **synthetic Fake Camera source**: a real Android notification from `com.personal.fakecamera` matched rule `reboot-e2e`/ANY/Human and reached Pending → Ringing → FGS/audio. Example token `7735fee2-9b9b-4ea0-b77a-64f0088cdd40`: received 09:04:52.272, registered 09:04:52.606, receiver 09:04:57.607, audio 09:04:57.731. No recovery retry. Fixture used 3s delay, always-active and cooldown 0; this is not a physical 600s cooldown/overnight certification.
@@ -74,3 +74,6 @@ All code changes are committed on main. Final documentation commit and working-t
 Release remains blocked by unavailable Samsung A50 physical certification and real-camera signed trigger verification. Cloud/OEM backup transport and full physical EN/VI/layout/audio matrix are explicit remaining limits. Historical records are linked separately and do not override this current assessment.
 
 Historical audited snapshot and original reproductions are preserved in [the 2bd97df verification report](final-release-report-2bd97df.md).
+
+
+Final-commit packaging: Android Gradle embeds the Git revision in APK version-control metadata, so a documentation-only commit changes the signed APK digest. The source-milestone digest above identifies the extensively tested artifact. The final HEAD build, signature/hash, ZIP-entry comparison against the installed tested artifact, and final release smoke results are delivered beside the APK in `release-manifest.json` and `final-*.txt`/`final-*.log`. These generated attestations stay outside Git to avoid a self-referential commit/hash cycle. Any changed executable/resource entry requires renewed affected verification.
