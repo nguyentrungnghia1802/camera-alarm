@@ -10,7 +10,7 @@
 - [x] Final API31/33/34/36 instrumentation: 27 PASS + 1 intentional fixture skip per API, zero failures/errors.
 - [x] Actual local backup/clear/restore E2E; settings-only restore, no history/runtime/token/phantom alarm. Real cloud/OEM transport NOT VERIFIED.
 - [x] Signed APK v2/v3 signature, SHA256, debuggable=false, API36 fresh install/3 smoke tests, versionCode 1→2 upgrade preserving English, synthetic listener trigger/STOP/Open Camera PASS. Real-camera signed trigger remains NOT VERIFIED.
-- [ ] Samsung A50 physical certification and real camera trigger — no device connected; NOT VERIFIED.
+- [ ] Samsung A50 physical certification and real camera trigger — brief late connection then offline/disconnected before certification; NOT VERIFIED.
 - [ ] Physical EN/VI, font/layout, speaker/vibration and OEM matrix; NOT VERIFIED.
 
 No matcher ANY/ALL or core alarm architecture replacement. Valid existing work/evidence and untracked phone_now.png retained. Historical records follow.

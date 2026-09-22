@@ -41,7 +41,7 @@ AVDs are run serially, cold boot without snapshots, 1536MB/2 cores, headless/no-
 
 ## Samsung A50 / real camera
 
-**NOT VERIFIED**: no physical device in ADB. Background, screen locked/off, real camera notification, reboot + PIN/no Camera Alarm launch, Pending recovery, physical full-screen/audio/vibration, STOP/Open Camera, 600-second cooldown, listener reconnect and the original incorrect Pending symptom all remain unverified on A50. Historical handset results do not certify final code. Xiaomi physical validation: NOT VERIFIED.
+**NOT VERIFIED**: A50 briefly appeared during final checks (SM-A505F/API30, existing version1.1.0, listener enabled), then became offline/disconnected before APK/UI inspection. No install, data clear or reboot was performed on the handset. See [late connection evidence](evidence/release-fixes-20260922/a50-late-connection.txt). Background, screen locked/off, real camera notification, reboot + PIN/no Camera Alarm launch, Pending recovery, physical full-screen/audio/vibration, STOP/Open Camera, 600-second cooldown, listener reconnect and the original incorrect Pending symptom all remain unverified on A50. Historical handset results do not certify final code. Xiaomi physical validation: NOT VERIFIED.
 
 ## Backup/restore
 

@@ -1,0 +1,6 @@
+2026-09-22 approximately 09:16-09:18 local Asia/Bangkok
+A50 briefly online: serial R58M5285MBV model SM-A505F product a50dd; API30. Launcher focused, keyguard false. Existing Camera Alarm versionCode2 versionName1.1.0 first/lastInstallTime 2026-09-22 05:21:55. CameraNotificationListener enabled.
+Next attempt to pull installed APK and inspect UI failed: adb device offline. APK pull unusable; signature not verified. No install/uninstall/data clear/reboot performed on A50.
+09:18:04 adb devices: R58M5285MBV offline transport_id38; emulator-5554 device.
+After adb reconnect offline: only emulator-5554 listed.
+Physical certification NOT VERIFIED; connection unavailable before tests. User action requested for stable connection, manual PIN entry (no PIN disclosure), and actual camera trigger.

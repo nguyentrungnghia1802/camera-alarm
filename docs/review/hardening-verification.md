@@ -10,7 +10,7 @@ Backup/restore: actual API31 LocalTransport E2E PASS, including Ringing fixture 
 
 Signed release v2/v3 signature PASS, debuggable=false; SHA256 `A6FEB6CCBD0163A34ACA3086C6DBBA8A8F7B4410662F27D7A1879C9C8DC8DE2F`. API36 fresh install and release-target 3/3 smoke PASS; real versionCode 1→2 upgrade retained firstInstallTime/English. Synthetic Fake Camera listener trigger, production STOP and Open Camera PASS with settled service/audio cleanup. Real camera/vendor/cloud signed trigger NOT VERIFIED.
 
-Samsung A50 absent in live ADB; every requested physical certification item and real camera/cloud trigger NOT VERIFIED. Xiaomi physical validation: NOT VERIFIED. Pre-existing phone_now.png preserved; no push.
+Samsung A50 briefly connected as SM-A505F/API30 during final checks, then became offline/disconnected before testing; every requested physical certification item and real camera/cloud trigger NOT VERIFIED. Xiaomi physical validation: NOT VERIFIED. Pre-existing phone_now.png preserved; no push.
 
 See [current final release report](final-release-report.md) and [durable evidence](evidence/release-fixes-20260922/README.md) for measured root causes, XML counts, protocol, artifact hashes and boundaries. Older records below are historical.
 
