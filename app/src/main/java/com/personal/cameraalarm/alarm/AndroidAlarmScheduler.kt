@@ -72,7 +72,12 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
         }
     }
 
-    private fun intent() = Intent(context, AlarmReceiver::class.java).setAction(AlarmReceiver.ACTION_FIRE)
+    private fun intent() = Intent(context, AlarmReceiver::class.java)
+        .setAction(AlarmReceiver.ACTION_FIRE)
+        // AlarmManager wakeup does not promote its PendingIntent's broadcast queue.
+        // A background queue backlog can otherwise outlive the bounded recovery
+        // grace while our watchdog remains runnable and retires an undelivered owner.
+        .addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
     private fun tokenIntent(token: AlarmToken) = intent().setData(Uri.parse("cameraalarm://fire/${Uri.encode(token.value)}"))
 
     companion object {
