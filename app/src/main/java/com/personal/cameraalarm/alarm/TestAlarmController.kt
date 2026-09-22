@@ -27,10 +27,7 @@ class TestAlarmController(private val container: AppContainer) {
             container.coordinator.state.value,
             container.testAlarmToken.value
         ) ?: return
-        val intent = Intent(context, StopAlarmReceiver::class.java).apply {
-            action = StopAlarmReceiver.ACTION_STOP
-            putExtra(AlarmReceiver.EXTRA_TOKEN, token.value)
-        }
+        val intent = StopAlarmReceiver.intent(context, token.value)
         context.sendBroadcast(intent)
     }
 }

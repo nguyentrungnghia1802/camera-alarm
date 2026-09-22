@@ -167,7 +167,7 @@ class AlarmCoordinator(
         scheduler.cancel(pending.trigger.alarmToken)
         recoveryScheduler.cancel(pending.trigger.alarmToken)
         trace("PENDING_RETIRED", pending.trigger, reason)
-        observer.onEffect(AlarmEffect.RecordFailure(reason))
+        observer.onEffect(AlarmEffect.RecordFailure(reason, pending.trigger))
     }
 
     suspend fun onExactAlarmFired(trigger: TriggerSnapshot) { claimAlarm(trigger.alarmToken) { } }
@@ -194,7 +194,7 @@ class AlarmCoordinator(
             requestRuntime(current.trigger)
         } catch (error: Exception) {
             publish(AlarmState.Idle)
-            observer.onEffect(AlarmEffect.RecordFailure("Runtime dispatch failed: ${error.message}"))
+            observer.onEffect(AlarmEffect.RecordFailure("Runtime dispatch failed: ${error.message}", current.trigger))
             throw error
         }
         true

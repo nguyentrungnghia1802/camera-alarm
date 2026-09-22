@@ -36,7 +36,7 @@ enum class AppScreen {
     DIAGNOSTICS
 }
 
-class MainActivity : ComponentActivity() {
+class MainActivity : LocalizedActivity() {
     private val app get() = application as CameraAlarmApp
 
     private val mainViewModel: MainViewModel by viewModels {
@@ -61,22 +61,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val settings by app.container.settingsRepository.settings.collectAsState(initial = com.personal.cameraalarm.data.settings.AppSettings())
-            val currentLang = settings.language
-            val locale = remember(currentLang) { java.util.Locale.forLanguageTag(currentLang) }
-            val configuration = remember(locale) {
-                val conf = android.content.res.Configuration(resources.configuration)
-                conf.setLocale(locale)
-                conf
-            }
-            val localizedContext = remember(locale) {
-                createConfigurationContext(configuration)
-            }
-
-            CompositionLocalProvider(
-                androidx.compose.ui.platform.LocalConfiguration provides configuration,
-                androidx.compose.ui.platform.LocalContext provides localizedContext
-            ) {
+            LocalizedContent {
                 CameraAlarmTheme {
                     var currentScreen by rememberSaveable { mutableStateOf(AppScreen.DASHBOARD) }
 

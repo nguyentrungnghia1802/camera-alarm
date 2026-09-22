@@ -13,3 +13,6 @@ data class IncomingNotification(
     val subText: String?,
     val traceToken: String = java.util.UUID.randomUUID().toString()
 )
+
+/** Only allowlisted metadata; notification keys embed app-controlled private tags. */
+fun IncomingNotification.safeTraceDetails(): String = "package=$packageName id=$notificationId"

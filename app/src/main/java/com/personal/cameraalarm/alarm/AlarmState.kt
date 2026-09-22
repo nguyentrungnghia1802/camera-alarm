@@ -44,6 +44,6 @@ sealed interface AlarmEffect {
     data class StopRuntime(val trigger: TriggerSnapshot) : AlarmEffect
     data class CancelExact(val trigger: TriggerSnapshot) : AlarmEffect
     data class RecordSuppression(val reason: SuppressionReason) : AlarmEffect
-    data class RecordFailure(val reason: String) : AlarmEffect
+    data class RecordFailure(val reason: String, val trigger: TriggerSnapshot) : AlarmEffect
 }
 data class AlarmTransition(val nextState: AlarmState, val effects: List<AlarmEffect> = emptyList())

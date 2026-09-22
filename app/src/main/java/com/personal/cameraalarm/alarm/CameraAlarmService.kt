@@ -25,6 +25,20 @@ class CameraAlarmService : Service() {
     private val app get() = application as CameraAlarmApp
     private val runtime by lazy { AlarmRuntimeController(AndroidAlarmPlayer(this), AndroidVibrationController(this)) }
     private var destroyed = false
+    private data class NotificationState(val token: AlarmToken, val trigger: TriggerSnapshot?, val fullScreen: Boolean, val language: String)
+    private var notificationState: NotificationState? = null
+
+    override fun onCreate() {
+        super.onCreate()
+        scope.launch {
+            app.container.language.collect { language ->
+                val previous = notificationState
+                if (previous != null && previous.language != language && runtime.activeToken == previous.token) {
+                    promote(previous.token, previous.trigger, previous.fullScreen)
+                }
+            }
+        }
+    }
     override fun onBind(intent: Intent?): IBinder? = null
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val serviceStartElapsedMs = SystemClock.elapsedRealtime()
@@ -104,8 +118,8 @@ class CameraAlarmService : Service() {
                 configuredSource ?: "com.personal.fakecamera",
                 "test_key",
                 "test_rule",
-                getString(com.personal.cameraalarm.R.string.test_alarm_title),
-                getString(com.personal.cameraalarm.R.string.test_alarm_preview),
+                app.container.getString(com.personal.cameraalarm.R.string.test_alarm_title),
+                app.container.getString(com.personal.cameraalarm.R.string.test_alarm_preview),
                 System.currentTimeMillis()
             )
         } else if (ownedTrigger != null) ownedTrigger else {
@@ -160,14 +174,13 @@ class CameraAlarmService : Service() {
     }
 
     private fun promote(token: AlarmToken, trigger: TriggerSnapshot?, fullScreenEnabled: Boolean) {
-        createNotificationChannel(this)
+        notificationState = NotificationState(token, trigger, fullScreenEnabled, app.container.language.value)
+        createNotificationChannel(app.container.localizedContext)
 
         val stop = PendingIntent.getBroadcast(
             this,
             1,
-            Intent(this, StopAlarmReceiver::class.java)
-                .setAction(StopAlarmReceiver.ACTION_STOP)
-                .putExtra(AlarmReceiver.EXTRA_TOKEN, token.value),
+            StopAlarmReceiver.intent(this, token.value),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
@@ -188,13 +201,13 @@ class CameraAlarmService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val notifTitle = getString(com.personal.cameraalarm.R.string.notification_alarm_title)
+        val notifTitle = app.container.getString(com.personal.cameraalarm.R.string.notification_alarm_title)
         val notifText = trigger?.title?.takeIf { it.isNotBlank() }
             ?: trigger?.textPreview?.takeIf { it.isNotBlank() }
-            ?: getString(com.personal.cameraalarm.R.string.notification_alarm_fallback_text)
+            ?: app.container.getString(com.personal.cameraalarm.R.string.notification_alarm_fallback_text)
 
-        val stopActionTitle = getString(com.personal.cameraalarm.R.string.btn_stop_alarm)
-        val openCameraTitle = getString(com.personal.cameraalarm.R.string.btn_open_camera)
+        val stopActionTitle = app.container.getString(com.personal.cameraalarm.R.string.btn_stop_alarm)
+        val openCameraTitle = app.container.getString(com.personal.cameraalarm.R.string.btn_open_camera)
 
         val builder = Notification.Builder(this, CHANNEL)
             .setSmallIcon(com.personal.cameraalarm.R.mipmap.ic_launcher)
@@ -203,6 +216,7 @@ class CameraAlarmService : Service() {
             .setWhen(trigger?.receivedAtEpochMs ?: System.currentTimeMillis())
             .setCategory(Notification.CATEGORY_ALARM)
             .setOngoing(true)
+            .setOnlyAlertOnce(true)
             .setAutoCancel(false)
             .setVisibility(Notification.VISIBILITY_PUBLIC)
             .addAction(

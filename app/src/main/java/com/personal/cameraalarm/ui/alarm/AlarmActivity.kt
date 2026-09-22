@@ -36,7 +36,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class AlarmActivity : ComponentActivity() {
+class AlarmActivity : com.personal.cameraalarm.ui.LocalizedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -86,18 +86,20 @@ class AlarmActivity : ComponentActivity() {
         }
 
         setContent {
-            MaterialTheme {
-                AlarmScreen(
-                    cameraLabel = cameraLabel,
-                    title = title,
-                    preview = preview,
-                    timestamp = time,
-                    onOpenCamera = { launchCameraApp(token, targetPackage) },
-                    onStop = {
-                        sendStopBroadcast(token)
-                        finish()
-                    }
-                )
+            LocalizedContent {
+                MaterialTheme {
+                    AlarmScreen(
+                        cameraLabel = cameraLabel,
+                        title = title,
+                        preview = preview,
+                        timestamp = time,
+                        onOpenCamera = { launchCameraApp(token, targetPackage) },
+                        onStop = {
+                            sendStopBroadcast(token)
+                            finish()
+                        }
+                    )
+                }
             }
         }
     }
@@ -186,10 +188,7 @@ class AlarmActivity : ComponentActivity() {
     }
 
     private fun sendStopBroadcast(token: String?) {
-        val stopIntent = Intent(this, StopAlarmReceiver::class.java).apply {
-            action = StopAlarmReceiver.ACTION_STOP
-            if (token != null) putExtra(AlarmReceiver.EXTRA_TOKEN, token)
-        }
+        val stopIntent = StopAlarmReceiver.intent(this, token)
         sendBroadcast(stopIntent)
     }
 

@@ -37,7 +37,7 @@ class CameraNotificationListener : NotificationListenerService() {
         val incoming = NotificationExtractor.from(sbn)
         com.personal.cameraalarm.alarm.AlarmTrace.record("NOTIFICATION_RECEIVED",
             com.personal.cameraalarm.alarm.AlarmToken(incoming.traceToken),
-            details = "package=${incoming.packageName} key=${incoming.key}")
+            details = incoming.safeTraceDetails())
 
         val pm = getSystemService(PowerManager::class.java)
         val wakeLock = pm?.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "CameraAlarm:NotificationPostedWakeLock")

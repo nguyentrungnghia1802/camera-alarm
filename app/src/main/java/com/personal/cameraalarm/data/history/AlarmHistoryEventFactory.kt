@@ -6,8 +6,7 @@ import com.personal.cameraalarm.alarm.TriggerSnapshot
 object AlarmHistoryEventFactory {
     fun fromEffect(
         effect: AlarmEffect,
-        createdAtEpochMs: Long,
-        fallbackSourcePackage: String?
+        createdAtEpochMs: Long
     ): AlertEventEntity? = when (effect) {
         is AlarmEffect.StartRinging -> lifecycleEvent(
             effect.trigger,
@@ -24,18 +23,9 @@ object AlarmHistoryEventFactory {
             createdAtEpochMs,
             decision = "ALARM_CANCELLED"
         )
-        is AlarmEffect.RecordFailure -> AlertEventEntity(
-            createdAtEpochMs = createdAtEpochMs,
-            sourcePackage = fallbackSourcePackage,
-            notificationKey = null,
-            title = null,
-            textPreview = null,
-            normalizedHash = null,
-            decision = "SCHEDULE_FAILED",
-            ruleId = null,
-            alarmToken = null,
-            details = effect.reason
-        )
+        is AlarmEffect.RecordFailure -> lifecycleEvent(
+            effect.trigger, createdAtEpochMs, "SCHEDULE_FAILED"
+        ).copy(details = effect.reason)
         else -> null
     }
 

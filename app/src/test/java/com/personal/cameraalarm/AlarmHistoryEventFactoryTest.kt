@@ -24,11 +24,12 @@ class AlarmHistoryEventFactoryTest {
         val effects = listOf(
             AlarmEffect.StartRinging(trigger) to "ALARM_FIRED",
             AlarmEffect.StopRuntime(trigger) to "ALARM_STOPPED",
-            AlarmEffect.CancelExact(trigger) to "ALARM_CANCELLED"
+            AlarmEffect.CancelExact(trigger) to "ALARM_CANCELLED",
+            AlarmEffect.RecordFailure("permission denied", trigger) to "SCHEDULE_FAILED"
         )
 
         effects.forEach { (effect, decision) ->
-            val event = AlarmHistoryEventFactory.fromEffect(effect, 500L, "fallback")
+            val event = AlarmHistoryEventFactory.fromEffect(effect, 500L)
             requireNotNull(event)
             assertEquals(decision, event.decision)
             assertEquals("rule-v2", event.ruleId)
@@ -45,15 +46,13 @@ class AlarmHistoryEventFactoryTest {
         assertNull(
             AlarmHistoryEventFactory.fromEffect(
                 AlarmEffect.ScheduleExact(trigger, 1_000L),
-                500L,
-                "fallback"
+                500L
             )
         )
         assertNull(
             AlarmHistoryEventFactory.fromEffect(
                 AlarmEffect.RecordSuppression(com.personal.cameraalarm.alarm.SuppressionReason.PENDING),
-                500L,
-                "fallback"
+                500L
             )
         )
     }

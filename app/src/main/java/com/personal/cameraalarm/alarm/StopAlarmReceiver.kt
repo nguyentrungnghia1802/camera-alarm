@@ -41,6 +41,12 @@ class StopAlarmReceiver : BroadcastReceiver() {
     }
 
     companion object {
+        /** User-initiated STOP must not queue behind background boot broadcasts. */
+        fun intent(context: Context, token: String?): Intent = Intent(context, StopAlarmReceiver::class.java)
+            .setAction(ACTION_STOP)
+            .addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
+            .putExtra(AlarmReceiver.EXTRA_TOKEN, token)
+
         const val ACTION_STOP = "com.personal.cameraalarm.action.STOP_REQUESTED"
         internal fun isTestAlarm(token: AlarmToken): Boolean = token.value.startsWith("test-")
     }

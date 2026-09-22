@@ -22,7 +22,7 @@ object AlarmReducer {
             else -> AlarmTransition(state)
         }
         is AlarmEvent.ScheduleFailed -> if (state is AlarmState.Pending && state.trigger.alarmToken == event.alarmToken)
-            AlarmTransition(AlarmState.Idle, listOf(AlarmEffect.RecordFailure("Exact alarm schedule failed")))
+            AlarmTransition(AlarmState.Idle, listOf(AlarmEffect.RecordFailure("Exact alarm schedule failed", state.trigger)))
             else AlarmTransition(state)
     }
     private fun schedule(trigger: TriggerSnapshot, now: Long, policy: AlarmPolicy): AlarmTransition {

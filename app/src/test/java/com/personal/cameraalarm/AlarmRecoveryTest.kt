@@ -29,6 +29,34 @@ class AlarmRecoveryTest {
         override fun cancel(token: AlarmToken) = Unit
     }
 
+    @Test fun everyFailureRetainsItsOwnerAfterRetirement() = runTest {
+        for (mode in listOf("permission", "schedule", "watchdog", "dispatch", "exhausted")) {
+            val scheduler = Scheduler()
+            val watchdog = Watchdog()
+            val failures = mutableListOf<AlarmEffect.RecordFailure>()
+            val c = AlarmCoordinator(Clock { testScheduler.currentTime }, scheduler,
+                InMemoryAlarmStateStore(), { AlarmPolicy() },
+                AlarmEffectObserver { if (it is AlarmEffect.RecordFailure) failures += it },
+                recoveryScheduler = watchdog, newToken = { AlarmToken("retry") })
+            if (mode == "permission") scheduler.granted = false
+            if (mode == "schedule") scheduler.result = ScheduleResult.Failed("test failure")
+            if (mode == "watchdog") watchdog.enabled = false
+            c.onValidTrigger(trigger())
+            if (mode == "dispatch") runCatching { c.claimAlarm(AlarmToken("a")) { error("dispatch") } }
+            if (mode == "exhausted") {
+                advanceTimeBy(20_000); c.recoverPending(AlarmToken("a"))
+                advanceTimeBy(20_000); c.recoverPending(AlarmToken("retry"))
+            }
+            assertTrue("Missing failure for $mode", failures.isNotEmpty())
+            failures.forEach {
+                assertEquals("camera", it.trigger.sourcePackage)
+                assertEquals("rule", it.trigger.ruleId)
+            }
+            assertEquals(AlarmToken("a"), failures.first().trigger.alarmToken)
+            if (mode == "exhausted") assertEquals(AlarmToken("retry"), failures.last().trigger.alarmToken)
+        }
+    }
+
     @Test fun burstKeepsDeadlineAndSingleDelivery() = runTest {
         val store = InMemoryAlarmStateStore()
         val scheduler = Scheduler()

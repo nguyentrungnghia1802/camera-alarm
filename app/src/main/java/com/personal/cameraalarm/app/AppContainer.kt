@@ -32,7 +32,14 @@ class AppContainer(context: Context) {
     private val appContext = context.applicationContext
 
     fun getString(@StringRes resourceId: Int, vararg formatArgs: Any): String =
-        appContext.getString(resourceId, *formatArgs)
+        localizedContext.getString(resourceId, *formatArgs)
+
+    val language = MutableStateFlow("vi")
+    val localizedContext: Context get() = appContext.createConfigurationContext(
+        android.content.res.Configuration(appContext.resources.configuration).apply {
+            setLocale(java.util.Locale.forLanguageTag(language.value))
+        }
+    )
 
     val listenerConnection = ListenerConnectionState()
     val runtimeDiagnostics = RuntimeDiagnostics()
@@ -74,6 +81,7 @@ class AppContainer(context: Context) {
         }
         appScope.launch {
             combine(settingsRepository.settings, ruleRepository.rules) { settings, rules ->
+                language.value = settings.language
                 triggerConfiguration = TriggerConfiguration(
                     monitoringEnabled = settings.monitoringEnabled,
                     sourcePackage = settings.sourcePackage,
@@ -118,8 +126,7 @@ class AppContainer(context: Context) {
             }
             val event = AlarmHistoryEventFactory.fromEffect(
                 effect = effect,
-                createdAtEpochMs = System.currentTimeMillis(),
-                fallbackSourcePackage = triggerConfiguration.sourcePackage
+                createdAtEpochMs = System.currentTimeMillis()
             )
             if (event != null) {
                 appScope.launch {

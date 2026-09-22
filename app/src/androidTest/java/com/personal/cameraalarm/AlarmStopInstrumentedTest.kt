@@ -41,6 +41,9 @@ class AlarmStopInstrumentedTest {
             ).bufferedReader().use { it.readText() }
             assertEquals("Notification grant command failed", "", notificationOutput.trim())
         }
+        val stopIntent = com.personal.cameraalarm.alarm.StopAlarmReceiver.intent(context, "test-first")
+        assertTrue(stopIntent.flags and Intent.FLAG_RECEIVER_FOREGROUND != 0)
+        assertEquals("test-first", stopIntent.getStringExtra(AlarmReceiver.EXTRA_TOKEN))
         val manager = context.getSystemService(NotificationManager::class.java)
         fun start(token: String) {
             val intent = Intent(context, CameraAlarmService::class.java).apply {
@@ -58,6 +61,7 @@ class AlarmStopInstrumentedTest {
         }
 
         try {
+            android.util.Log.i("StopProbe", "START_FIRST elapsed=${android.os.SystemClock.elapsedRealtime()}")
             start("test-first")
             withTimeout(5_000) { while (manager.activeNotifications.none { it.id == 1 }) delay(25) }
             withTimeout(10_000) {
@@ -72,19 +76,21 @@ class AlarmStopInstrumentedTest {
                     delay(25)
                 }
             }
+            android.util.Log.i("StopProbe", "ACTIVITY_RESUMED elapsed=${android.os.SystemClock.elapsedRealtime()}")
             start("test-second")
             instrumentation.waitForIdleSync()
-            val stopLabel = context.getString(R.string.btn_stop_alarm)
+            android.util.Log.i("StopProbe", "MAIN_IDLE elapsed=${android.os.SystemClock.elapsedRealtime()}")
+            val stopLabel = (context.applicationContext as com.personal.cameraalarm.app.CameraAlarmApp).container.getString(R.string.btn_stop_alarm)
             val stopAction = manager.activeNotifications
                 .single { it.id == 1 }
                 .notification
                 .actions
                 .single { it.title.toString() == stopLabel }
+            android.util.Log.i("StopProbe", "SEND_STOP elapsed=${android.os.SystemClock.elapsedRealtime()}")
             stopAction.actionIntent.send()
-            // A cold emulator can spend several seconds rendering the alarm
-            // activity while the STOP broadcast is queued on the app main
-            // thread. The product contract is eventual token-correct STOP, so
-            // allow enough time for that cold-start path to drain.
+            android.util.Log.i("StopProbe", "SENT_STOP elapsed=${android.os.SystemClock.elapsedRealtime()}")
+            // Keep the original deadline: foreground STOP must bypass the cold-boot
+            // background broadcast backlog, not hide it behind a longer wait.
             withTimeout(10_000) { while (manager.activeNotifications.any { it.id == 1 }) delay(25) }
             assertTrue(manager.activeNotifications.none { it.id == 1 })
         } finally {
