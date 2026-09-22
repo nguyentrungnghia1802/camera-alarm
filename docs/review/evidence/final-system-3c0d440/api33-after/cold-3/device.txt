@@ -1,0 +1,3 @@
+google/sdk_gphone64_x86_64/emu64x:13/TE1A.240213.009/12342917:userdebug/dev-keys
+16
+92.76 14.95

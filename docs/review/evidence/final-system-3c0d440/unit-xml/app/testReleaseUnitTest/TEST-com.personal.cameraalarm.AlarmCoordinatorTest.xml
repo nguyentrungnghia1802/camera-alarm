@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.personal.cameraalarm.AlarmCoordinatorTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-09-22T02:22:55" hostname="ACERNITRO5-NTNG" time="0.138">
+  <properties/>
+  <testcase name="resetCooldownClearsActiveCooldownImmediately" classname="com.personal.cameraalarm.AlarmCoordinatorTest" time="0.116"/>
+  <testcase name="cooldownSuppressesTriggersWithoutResettingAndAllowsAfterExpiry" classname="com.personal.cameraalarm.AlarmCoordinatorTest" time="0.003"/>
+  <testcase name="revokedPermissionDoesNotLeaveOldPendingSuppressingNewTrigger" classname="com.personal.cameraalarm.AlarmCoordinatorTest" time="0.005"/>
+  <testcase name="pendingPersistsBeforeScheduleAndStaleFireIgnored" classname="com.personal.cameraalarm.AlarmCoordinatorTest" time="0.003"/>
+  <testcase name="stopPendingCancelsOnlyItsTokenAndIsIdempotent" classname="com.personal.cameraalarm.AlarmCoordinatorTest" time="0.002"/>
+  <testcase name="customCooldownWindowWorksCorrectly" classname="com.personal.cameraalarm.AlarmCoordinatorTest" time="0.002"/>
+  <testcase name="permissionMissingAndFailureLeaveIdle" classname="com.personal.cameraalarm.AlarmCoordinatorTest" time="0.004"/>
+  <testcase name="bootChangeClearsPending" classname="com.personal.cameraalarm.AlarmCoordinatorTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

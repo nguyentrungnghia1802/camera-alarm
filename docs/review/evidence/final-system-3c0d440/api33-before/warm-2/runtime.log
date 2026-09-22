@@ -1,0 +1,40 @@
+--------- beginning of system
+09-22 11:08:00.413   499   975 I ActivityManager: Force stopping com.personal.cameraalarm appid=10174 user=0: start instr
+09-22 11:08:00.428   499   535 I ActivityManager: Start proc 4243:com.personal.cameraalarm/u0a174 for added application com.personal.cameraalarm
+--------- beginning of main
+09-22 11:08:01.753  4243  4271 I TestRunner: run started: 1 tests
+09-22 11:08:01.754  4243  4271 I TestRunner: started: lostOsDeliveryRetriesAutonomouslyAndLateCallbackCannotClaimReplacement(com.personal.cameraalarm.PendingDeliveryInstrumentedTest)
+09-22 11:08:01.804  4243  4271 I CameraAlarm: ALARM_PENDING_CREATED token=lost-delivery-87388133927 epoch_ms=1790050081804 elapsed_ms=87405 session=4ddb9bb2-a709-4c98-a02c-c5734e734a3b deadline_ms=1790050082792 delay_ms=1000 overdue_ms=0 attempt=0
+09-22 11:08:01.811  4243  4271 I CameraAlarm: OS_ALARM_REGISTERED token=lost-delivery-87388133927 epoch_ms=1790050081811 elapsed_ms=87412 session=4ddb9bb2-a709-4c98-a02c-c5734e734a3b deadline_ms=null delay_ms=null overdue_ms=null deadline_ms=1790050082792 mode=alarm_clock
+09-22 11:08:01.811  4243  4271 I CameraAlarm: EXACT_ALARM_SCHEDULED token=lost-delivery-87388133927 epoch_ms=1790050081811 elapsed_ms=87412 session=4ddb9bb2-a709-4c98-a02c-c5734e734a3b deadline_ms=1790050082792 delay_ms=1000 overdue_ms=0 attempt=0
+09-22 11:08:12.803  4243  4278 I CameraAlarm: PENDING_RETIRED token=lost-delivery-87388133927 epoch_ms=1790050092803 elapsed_ms=98404 session=4ddb9bb2-a709-4c98-a02c-c5734e734a3b deadline_ms=1790050082792 delay_ms=1000 overdue_ms=10011 Pending overdue; attempt=0
+09-22 11:08:12.806  4243  4278 I CameraAlarm: PENDING_RECOVERY token=b1b6c05e-a608-466e-98ab-4a56227c99d1 epoch_ms=1790050092806 elapsed_ms=98407 session=4ddb9bb2-a709-4c98-a02c-c5734e734a3b deadline_ms=1790050092805 delay_ms=1000 overdue_ms=1 replaces=lost-delivery-87388133927
+09-22 11:08:12.819  4243  4278 I CameraAlarm: ALARM_PENDING_CREATED token=b1b6c05e-a608-466e-98ab-4a56227c99d1 epoch_ms=1790050092819 elapsed_ms=98420 session=4ddb9bb2-a709-4c98-a02c-c5734e734a3b deadline_ms=1790050092805 delay_ms=1000 overdue_ms=14 attempt=1
+09-22 11:08:12.821  4243  4278 I CameraAlarm: OS_ALARM_REGISTERED token=b1b6c05e-a608-466e-98ab-4a56227c99d1 epoch_ms=1790050092821 elapsed_ms=98422 session=4ddb9bb2-a709-4c98-a02c-c5734e734a3b deadline_ms=null delay_ms=null overdue_ms=null deadline_ms=1790050092805 mode=alarm_clock
+09-22 11:08:12.821  4243  4278 I CameraAlarm: EXACT_ALARM_SCHEDULED token=b1b6c05e-a608-466e-98ab-4a56227c99d1 epoch_ms=1790050092821 elapsed_ms=98422 session=4ddb9bb2-a709-4c98-a02c-c5734e734a3b deadline_ms=1790050092805 delay_ms=1000 overdue_ms=16 attempt=1
+09-22 11:08:17.829  4243  4243 I CameraAlarm: ALARM_RECEIVER_ENTRY token=b1b6c05e-a608-466e-98ab-4a56227c99d1 epoch_ms=1790050097829 elapsed_ms=103430 session=4ddb9bb2-a709-4c98-a02c-c5734e734a3b deadline_ms=null delay_ms=null overdue_ms=null elapsed_ms=103430
+09-22 11:08:17.835  4243  4278 I CameraAlarm: ALARM_RECEIVER_FIRED token=b1b6c05e-a608-466e-98ab-4a56227c99d1 epoch_ms=1790050097835 elapsed_ms=103436 session=4ddb9bb2-a709-4c98-a02c-c5734e734a3b deadline_ms=1790050092805 delay_ms=1000 overdue_ms=5030 attempt=1
+09-22 11:08:17.844  4243  4278 I CameraAlarm: RINGING token=b1b6c05e-a608-466e-98ab-4a56227c99d1 epoch_ms=1790050097844 elapsed_ms=103445 session=4ddb9bb2-a709-4c98-a02c-c5734e734a3b deadline_ms=1790050092805 delay_ms=1000 overdue_ms=5039 attempt=1
+09-22 11:08:17.848   499  2024 I ActivityManager: Background started FGS: Allowed [callingPackage: com.personal.cameraalarm; callingUid: 10174; uidState: FGS ; intent: Intent { act=com.personal.cameraalarm.action.START_ALARM cmp=com.personal.cameraalarm/.alarm.CameraAlarmService (has extras) }; code:ACTIVITY_STARTER; tempAllowListReason:<broadcast:u0a174:com.personal.cameraalarm.action.FIRE_ALARM,reason:,reasonCode:ALARM_MANAGER_ALARM_CLOCK,duration:10000,callingUid:10174>; targetSdkVersion:36; callerTargetSdkVersion:36; startForegroundCount:0; bindFromPackage:null]
+09-22 11:08:17.853  4243  4278 I CameraAlarm: SERVICE_REQUESTED token=b1b6c05e-a608-466e-98ab-4a56227c99d1 epoch_ms=1790050097853 elapsed_ms=103454 session=4ddb9bb2-a709-4c98-a02c-c5734e734a3b deadline_ms=1790050092805 delay_ms=1000 overdue_ms=5048 
+09-22 11:08:17.856  4243  4243 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=b1b6c05e-a608-466e-98ab-4a56227c99d1
+09-22 11:08:17.857  4243  4243 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=b1b6c05e-a608-466e-98ab-4a56227c99d1 epoch_ms=1790050097856 elapsed_ms=103457 session=4ddb9bb2-a709-4c98-a02c-c5734e734a3b deadline_ms=1790050092805 delay_ms=1000 overdue_ms=5051 
+09-22 11:08:17.913  4243  4243 I CameraAlarm: ALARM_TIMING foreground_ms=61 token=b1b6c05e-a608-466e-98ab-4a56227c99d1
+09-22 11:08:17.953  4243  4243 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 11:08:17.955  4243  4243 D CameraAlarm: Alarm sound:
+09-22 11:08:17.955  4243  4243 D CameraAlarm: selected key: alarm_warning_aloud
+09-22 11:08:17.955  4243  4243 D CameraAlarm: resolved resource: 2131296260
+09-22 11:08:17.955  4243  4243 D CameraAlarm: prepare result: success
+09-22 11:08:17.955  4243  4243 D CameraAlarm: play result: success
+09-22 11:08:17.956  4243  4243 I CameraAlarm: AUDIO_STARTED: token=b1b6c05e-a608-466e-98ab-4a56227c99d1
+09-22 11:08:17.963  4243  4243 I CameraAlarm: AUDIO_STARTED token=b1b6c05e-a608-466e-98ab-4a56227c99d1 epoch_ms=1790050097963 elapsed_ms=103564 session=4ddb9bb2-a709-4c98-a02c-c5734e734a3b deadline_ms=1790050092805 delay_ms=1000 overdue_ms=5158 
+09-22 11:08:17.963  4243  4243 I CameraAlarm: ALARM_TIMING runtime_started_ms=111 token=b1b6c05e-a608-466e-98ab-4a56227c99d1
+09-22 11:08:17.963  4243  4243 I CameraAlarm: FULLSCREEN_INTENT_SENT: token=b1b6c05e-a608-466e-98ab-4a56227c99d1
+09-22 11:08:18.037  4243  4243 I CameraAlarm: Direct startActivity called for token=b1b6c05e-a608-466e-98ab-4a56227c99d1
+09-22 11:08:18.039  4243  4271 I CameraAlarm: STALE_ALARM token=null epoch_ms=1790050098039 elapsed_ms=103640 session=4ddb9bb2-a709-4c98-a02c-c5734e734a3b deadline_ms=null delay_ms=null overdue_ms=null token=lost-delivery-87388133927
+09-22 11:08:18.145  4243  4243 I CameraAlarm: ALARMACTIVITY_CREATED: token=b1b6c05e-a608-466e-98ab-4a56227c99d1
+09-22 11:08:18.259  4243  4271 I TestRunner: finished: lostOsDeliveryRetriesAutonomouslyAndLateCallbackCannotClaimReplacement(com.personal.cameraalarm.PendingDeliveryInstrumentedTest)
+09-22 11:08:18.262  4243  4271 I TestRunner: run finished: 1 tests, 0 failed, 0 ignored
+09-22 11:08:18.268   499  2293 I ActivityManager: Force stopping com.personal.cameraalarm appid=10174 user=0: finished inst
+09-22 11:08:18.270   499  2293 I ActivityManager: Killing 4243:com.personal.cameraalarm/u0a174 (adj 0): stop com.personal.cameraalarm due to finished inst
+09-22 11:08:18.432   499   807 V ActivityManager: Got obituary of 4243:com.personal.cameraalarm

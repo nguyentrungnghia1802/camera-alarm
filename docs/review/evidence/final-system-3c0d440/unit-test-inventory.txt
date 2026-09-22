@@ -1,0 +1,212 @@
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:14:    private fun epochAt(hour: Int, minute: Int, second: Int = 0, zone: ZoneId = zoneUtc): Long {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:24:    fun sameDayAtStartIsActive() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:31:    fun sameDayAtLastMinuteIsActive() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:38:    fun sameDayAtEndIsInactive() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:45:    fun sameDayBeforeStartIsInactive() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:56:    fun overnightAtStartIsActive() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:63:    fun overnightAtLateEveningIsActive() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:70:    fun overnightAtMidnightIsActive() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:77:    fun overnightAtMorningBoundaryIsActive() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:84:    fun overnightAtEndIsInactive() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:91:    fun overnightMiddayIsInactive() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:108:    fun multiIntervalMatchesFirst() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:114:    fun multiIntervalMatchesMiddle() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:120:    fun multiIntervalMatchesOvernight() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:126:    fun multiIntervalMatchesNone() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:133:    fun disabledIntervalDoesNotActivate() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:144:    fun emptyCustomScheduleIsAlwaysInactive() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:152:    fun alwaysActiveIgnoresCustomRangesAndActivatesAnyTime() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:161:    fun equalBoundariesIsFullDayActive() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:171:    fun scheduleEvaluatesAgainstCurrentTimezone() {
+app/src/test\java\com\personal\cameraalarm\ActiveScheduleGateTest.kt:187:    fun serializerRoundTripPreservesLocalTimeRanges() {
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:10:    private fun snapshot() = TriggerSnapshot(AlarmToken("x"), "camera", "n", "r", null, null, 0)
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:11:    @Test fun permissionMissingAndFailureLeaveIdle() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:15:                override fun canScheduleExactAlarms() = false
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:16:                override fun scheduleExact(token: AlarmToken, triggerAtEpochMs: Long) = result
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:17:                override fun cancel(token: AlarmToken) = Unit
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:24:    @Test fun pendingPersistsBeforeScheduleAndStaleFireIgnored() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:28:            override fun canScheduleExactAlarms() = true
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:29:            override fun scheduleExact(token: AlarmToken, triggerAtEpochMs: Long): ScheduleResult {
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:34:            override fun cancel(token: AlarmToken) = Unit
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:44:    @Test fun bootChangeClearsPending() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:48:            override suspend fun read() = saved
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:49:            override suspend fun write(marker: Int) { saved = marker }
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:56:    @Test fun revokedPermissionDoesNotLeaveOldPendingSuppressingNewTrigger() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:60:            override fun canScheduleExactAlarms() = false
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:61:            override fun scheduleExact(token: AlarmToken, triggerAtEpochMs: Long) = ScheduleResult.ExactAlarmPermissionMissing
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:62:            override fun cancel(token: AlarmToken) = Unit
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:67:    @Test fun stopPendingCancelsOnlyItsTokenAndIsIdempotent() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:71:            override fun canScheduleExactAlarms() = true
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:72:            override fun scheduleExact(token: AlarmToken, triggerAtEpochMs: Long) = ScheduleResult.Scheduled
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:73:            override fun cancel(token: AlarmToken) { cancelled += token }
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:84:    @Test fun cooldownSuppressesTriggersWithoutResettingAndAllowsAfterExpiry() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:88:            override fun canScheduleExactAlarms() = true
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:89:            override fun scheduleExact(token: AlarmToken, triggerAtEpochMs: Long) = ScheduleResult.Scheduled
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:90:            override fun cancel(token: AlarmToken) = Unit
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:122:    @Test fun customCooldownWindowWorksCorrectly() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:126:            override fun canScheduleExactAlarms() = true
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:127:            override fun scheduleExact(token: AlarmToken, triggerAtEpochMs: Long) = ScheduleResult.Scheduled
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:128:            override fun cancel(token: AlarmToken) = Unit
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:149:    @Test fun resetCooldownClearsActiveCooldownImmediately() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:153:            override fun canScheduleExactAlarms() = true
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:154:            override fun scheduleExact(token: AlarmToken, triggerAtEpochMs: Long) = ScheduleResult.Scheduled
+app/src/test\java\com\personal\cameraalarm\AlarmCoordinatorTest.kt:155:            override fun cancel(token: AlarmToken) = Unit
+app/src/test\java\com\personal\cameraalarm\AlarmHistoryEventFactoryTest.kt:23:    fun lifecycleEventsKeepTheMatchedRuleAndAlarmToken() {
+app/src/test\java\com\personal\cameraalarm\AlarmHistoryEventFactoryTest.kt:45:    fun nonLifecycleEffectsDoNotCreateDuplicateHistoryRows() {
+app/src/test\java\com\personal\cameraalarm\AlarmVolumeStatusTest.kt:8:    @Test fun zeroIsWarnedWhenDeviceAllowsIt() {
+app/src/test\java\com\personal\cameraalarm\AlarmVolumeStatusTest.kt:14:    @Test fun emulatorMinimumOneIsReportedWithoutFakingZero() {
+app/src/test\java\com\personal\cameraalarm\CoreTest.kt:14:    private fun incoming(key: String = "k") = IncomingNotification(key, "camera.app", 1, null, 1000, "  HUMAN\n", "Detected  ", null, listOf("ở Cửa"), null)
+app/src/test\java\com\personal\cameraalarm\CoreTest.kt:15:    private fun rule(mode: MatchMode = MatchMode.CONTAINS_ANY, words: List<String> = listOf("human detected"), id: String = "one", priority: Int = 0, created: Long = 0) = TriggerRule(id, id, true, "camera.app", mode, words, priority, created)
+app/src/test\java\com\personal\cameraalarm\CoreTest.kt:16:    private fun snapshot(token: String = "t") = TriggerSnapshot(AlarmToken(token), "camera.app", "k", "one", "Human", "Detected", 1000)
+app/src/test\java\com\personal\cameraalarm\CoreTest.kt:18:    @Test fun normalizerMergesFieldsAndPreservesAccents() {
+app/src/test\java\com\personal\cameraalarm\CoreTest.kt:23:    @Test fun matcherChecksPackageModeAndPriority() {
+app/src/test\java\com\personal\cameraalarm\CoreTest.kt:33:    @Test fun dedupeTtlBoundaryAndBoundedCache() {
+app/src/test\java\com\personal\cameraalarm\CoreTest.kt:41:    @Test fun reducerTransitionsAndStaleEvents() {
+app/src/test\java\com\personal\cameraalarm\CoreTest.kt:63:    @Test fun concurrentTriggersOnlyScheduleOnce() = runTest {
+app/src/test\java\com\personal\cameraalarm\CoreTest.kt:70:    @Test fun lateAlarmStillRingsButDuplicateFireAfterStopIsStale() {
+app/src/test\java\com\personal\cameraalarm\CoreTest.kt:82:        override fun canScheduleExactAlarms() = true
+app/src/test\java\com\personal\cameraalarm\CoreTest.kt:83:        override fun scheduleExact(token: AlarmToken, triggerAtEpochMs: Long): ScheduleResult { scheduled += token; return ScheduleResult.Scheduled }
+app/src/test\java\com\personal\cameraalarm\CoreTest.kt:84:        override fun cancel(token: AlarmToken) = Unit
+app/src/test\java\com\personal\cameraalarm\BootActionPolicyTest.kt:11:    fun acceptsOnlyDocumentedBootAndPackageReplacementActions() {
+app/src/test\java\com\personal\cameraalarm\AlarmRuntimeOwnershipTest.kt:15:    fun queuedOldStopCannotDestroyServiceBeforeNewOwnerStartsAudio() {
+app/src/test\java\com\personal\cameraalarm\AlarmRuntimeOwnershipTest.kt:31:    fun pendingAndRingingProductionBlockTestAlarm() {
+app/src/test\java\com\personal\cameraalarm\AlarmRuntimeOwnershipTest.kt:38:    fun productionReplacesTestButTestNeverReplacesProduction() {
+app/src/test\java\com\personal\cameraalarm\AlarmRuntimeOwnershipTest.kt:58:    fun stopAlwaysPrefersRingingProductionToken() {
+app/src/test\java\com\personal\cameraalarm\AlarmRuntimeControllerTest.kt:11:        override fun start(soundKey: String?): Result<Unit> { starts++; return if (fail) Result.failure(IllegalStateException("audio unavailable")) else Result.success(Unit) }
+app/src/test\java\com\personal\cameraalarm\AlarmRuntimeControllerTest.kt:12:        override fun stop() { stops++ }
+app/src/test\java\com\personal\cameraalarm\AlarmRuntimeControllerTest.kt:16:        override fun startRepeating() { starts++; if (fail) error("no vibrator") }
+app/src/test\java\com\personal\cameraalarm\AlarmRuntimeControllerTest.kt:17:        override fun stop() { stops++ }
+app/src/test\java\com\personal\cameraalarm\AlarmRuntimeControllerTest.kt:19:    @Test fun repeatedAndDifferentStartNeverDoubleStarts() {
+app/src/test\java\com\personal\cameraalarm\AlarmRuntimeControllerTest.kt:27:    @Test fun repeatedStopCleansOnlyOnceAndStaleStopIgnored() {
+app/src/test\java\com\personal\cameraalarm\AlarmRuntimeControllerTest.kt:34:    @Test fun independentAudioAndVibrationFailures() {
+app/src/test\java\com\personal\cameraalarm\AlarmRuntimeControllerTest.kt:44:    @Test fun testAlarmStopIsRoutedWithoutCoordinatorState() {
+app/src/test\java\com\personal\cameraalarm\AlarmSoundTest.kt:14:    fun catalogContainsAllBundledSounds() {
+app/src/test\java\com\personal\cameraalarm\AlarmSoundTest.kt:27:    fun defaultSoundResolvesCorrectly() {
+app/src/test\java\com\personal\cameraalarm\AlarmSoundTest.kt:34:    fun validKeyResolvesExpectedSound() {
+app/src/test\java\com\personal\cameraalarm\AlarmSoundTest.kt:45:    fun unknownKeyFallsBackToDefaultSound() {
+app/src/test\java\com\personal\cameraalarm\AlarmSoundTest.kt:52:    fun nullOrBlankKeyFallsBackToDefaultSound() {
+app/src/test\java\com\personal\cameraalarm\AlarmSoundTest.kt:59:    fun isValidKeyIdentifiesCorrectKeys() {
+app/src/test\java\com\personal\cameraalarm\AlarmSoundTest.kt:71:        override fun start(soundKey: String?): Result<Unit> {
+app/src/test\java\com\personal\cameraalarm\AlarmSoundTest.kt:76:        override fun stop() {
+app/src/test\java\com\personal\cameraalarm\AlarmSoundTest.kt:82:        override fun startRepeating() {}
+app/src/test\java\com\personal\cameraalarm\AlarmSoundTest.kt:83:        override fun stop() {}
+app/src/test\java\com\personal\cameraalarm\AlarmSoundTest.kt:87:    fun productionAlarmUsesSelectedLogicalKey() {
+app/src/test\java\com\personal\cameraalarm\AlarmSoundTest.kt:99:    fun productionAlarmWithNullSoundKeyPassesNullToPlayer() {
+app/src/test\java\com\personal\cameraalarm\MainViewModelTest.kt:13:    fun readinessStateDerivedStatuses() {
+app/src/test\java\com\personal\cameraalarm\MainViewModelTest.kt:40:    fun effectiveStatusComputations() {
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:19:    private fun emit() {
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:23:    override fun observeAll(): Flow<List<AlertEventEntity>> = flow
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:25:    override fun observePaged(filter: String, limit: Int, offset: Int): Flow<List<AlertEventEntity>> {
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:32:    override fun observeCount(filter: String): Flow<Int> {
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:36:    private fun applyFilter(all: List<AlertEventEntity>, filter: String): List<AlertEventEntity> {
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:46:    override suspend fun insert(event: AlertEventEntity): Long {
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:54:    override suspend fun count(): Int = items.size
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:56:    override suspend fun deleteOlderThan(cutoffEpochMs: Long): Int {
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:63:    override suspend fun deleteExcess(maxRetained: Int): Int {
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:73:    override suspend fun deleteExcessSuppressed(maxSuppressed: Int): Int {
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:83:    override suspend fun clearAll() {
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:88:    override suspend fun deleteByDecisions(decisions: List<String>): Int {
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:99:    fun legacyUnrelatedNotificationRowsAreRemovedWithoutDeletingSelectedHistory() = runBlocking {
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:126:    fun recordEventInsertsAndReturnsId() = runBlocking {
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:151:    fun retentionAutomaticallyPrunesOlderThan3Days() = runBlocking {
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:192:    fun retentionEnforcesMaximum100Entries() = runBlocking {
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:222:    fun paginationCorrectlyOffsetsPages() = runBlocking {
+app/src/test\java\com\personal\cameraalarm\HistoryRepositoryTest.kt:265:    fun suppressedEventsAreLimitedTo10Newest() = runBlocking {
+app/src/test\java\com\personal\cameraalarm\BootReconcilerTest.kt:30:        override suspend fun awaitConfigLoaded(): Boolean { configAwaited = true; return configReady }
+app/src/test\java\com\personal\cameraalarm\BootReconcilerTest.kt:31:        override suspend fun reconcileAlarm() = com.personal.cameraalarm.alarm.AlarmReconciliation("current boot", state)
+app/src/test\java\com\personal\cameraalarm\BootReconcilerTest.kt:32:        override fun monitoringEnabled() = true
+app/src/test\java\com\personal\cameraalarm\BootReconcilerTest.kt:33:        override fun exactAlarmCapable() = true
+app/src/test\java\com\personal\cameraalarm\BootReconcilerTest.kt:34:        override suspend fun recoverNotificationListener(): ListenerRecoveryResult {
+app/src/test\java\com\personal\cameraalarm\BootReconcilerTest.kt:38:        override suspend fun recordBootEvent(outcome: com.personal.cameraalarm.boot.BootRecoveryOutcome) {
+app/src/test\java\com\personal\cameraalarm\BootReconcilerTest.kt:42:        override fun recordDiagnostic(message: String) { diagnostics += message }
+app/src/test\java\com\personal\cameraalarm\BootReconcilerTest.kt:46:    fun productionReconcilerPreservesCurrentBootStateAndRecordsOutcome() = runTest {
+app/src/test\java\com\personal\cameraalarm\BootReconcilerTest.kt:62:    @Test fun timeoutOrDisconnectedNeverReportsSuccess() = runTest {
+app/src/test\java\com\personal\cameraalarm\BootReconcilerTest.kt:75:    fun accessDeniedDoesNotRequestRebind() = runTest {
+app/src/test\java\com\personal\cameraalarm\BootReconcilerTest.kt:89:    fun alreadyConnectedDoesNotRequestRebind() = runTest {
+app/src/test\java\com\personal\cameraalarm\BootReconcilerTest.kt:102:    fun delayedConnectCompletesWithinBoundedRetry() = runTest {
+app/src/test\java\com\personal\cameraalarm\BootReconcilerTest.kt:118:    fun failuresRemainBoundedAndEndDisconnected() = runTest {
+app/src/test\java\com\personal\cameraalarm\XiaomiReliabilityAdvisorTest.kt:10:    fun detectsXiaomiFamilyCorrectly() {
+app/src/test\java\com\personal\cameraalarm\XiaomiReliabilityAdvisorTest.kt:20:    fun nonXiaomiDevicesAreNotApplicable() {
+app/src/test\java\com\personal\cameraalarm\XiaomiReliabilityAdvisorTest.kt:28:    fun nonXiaomiReportsGenericAdvisorName() {
+app/src/test\java\com\personal\cameraalarm\XiaomiReliabilityAdvisorTest.kt:38:    fun xiaomiReportsXiaomiAdvisorName() {
+app/src/test\java\com\personal\cameraalarm\DeviceReliabilityRegistryTest.kt:11:    fun batteryGuidanceUsesThePolicySafeGeneralSettingsScreen() {
+app/src/test\java\com\personal\cameraalarm\DeviceReliabilityRegistryTest.kt:23:    fun detectsSamsungDevices() {
+app/src/test\java\com\personal\cameraalarm\DeviceReliabilityRegistryTest.kt:31:    fun detectsXiaomiDevices() {
+app/src/test\java\com\personal\cameraalarm\DeviceReliabilityRegistryTest.kt:39:    fun detectsOppoDevices() {
+app/src/test\java\com\personal\cameraalarm\DeviceReliabilityRegistryTest.kt:49:    fun detectsVivoDevices() {
+app/src/test\java\com\personal\cameraalarm\DeviceReliabilityRegistryTest.kt:59:    fun detectsHuaweiDevices() {
+app/src/test\java\com\personal\cameraalarm\DeviceReliabilityRegistryTest.kt:66:    fun fallsBackToDefaultAdvisorForPixelAndOthers() {
+app/src/test\java\com\personal\cameraalarm\DeviceReliabilityRegistryTest.kt:73:    fun retrievesAdvisorByKeyCorrectly() {
+app/src/test\java\com\personal\cameraalarm\RuleValidationTest.kt:12:    fun blankNameIsRejected() {
+app/src/test\java\com\personal\cameraalarm\RuleValidationTest.kt:23:    fun blankSourcePackageIsRejected() {
+app/src/test\java\com\personal\cameraalarm\RuleValidationTest.kt:34:    fun emptyKeywordsAreRejected() {
+app/src/test\java\com\personal\cameraalarm\RuleValidationTest.kt:45:    fun moreThan30KeywordsRejected() {
+app/src/test\java\com\personal\cameraalarm\RuleValidationTest.kt:57:    fun keywordOver100CharsRejected() {
+app/src/test\java\com\personal\cameraalarm\RuleValidationTest.kt:69:    fun validRulePassesValidation() {
+app/src/test\java\com\personal\cameraalarm\RuleValidationTest.kt:86:    fun commasRemainPartOfOneKeywordBecauseCsvIsNoLongerTheEditorContract() {
+app/src/test\java\com\personal\cameraalarm\RuleValidationTest.kt:100:    fun shortKeywordIsRejected() {
+app/src/test\java\com\personal\cameraalarm\RuleValidationTest.kt:111:    fun duplicateKeywordsAfterCaseAndWhitespaceNormalizationAreRejected() {
+app/src/test\java\com\personal\cameraalarm\RuleValidationTest.kt:124:    fun suggestedTemplateMatchesTheVietnameseProductContract() {
+app/src/test\java\com\personal\cameraalarm\RuleValidationTest.kt:132:    fun validationTriggerDefaultIsZeroAndIncrementsOnCopy() {
+app/src/test\java\com\personal\cameraalarm\RuleValidationTest.kt:140:    fun fieldErrorsFollowPrioritizedValidationHierarchy() {
+app/src/test\java\com\personal\cameraalarm\NotificationTracePrivacyTest.kt:9:    @Test fun traceExcludesAllAppControlledPayloadAndKeyFields() {
+app/src/test\java\com\personal\cameraalarm\Phase3IntegrationTest.kt:24:    private fun epochAt(hour: Int, minute: Int, second: Int = 0): Long {
+app/src/test\java\com\personal\cameraalarm\Phase3IntegrationTest.kt:31:        override suspend fun onValidTrigger(trigger: TriggerSnapshot): AlarmOutcome {
+app/src/test\java\com\personal\cameraalarm\Phase3IntegrationTest.kt:39:        override suspend fun record(
+app/src/test\java\com\personal\cameraalarm\Phase3IntegrationTest.kt:51:    fun scenarioA_alwaysActiveWithSelectedSound() = runTest {
+app/src/test\java\com\personal\cameraalarm\Phase3IntegrationTest.kt:76:    fun scenarioB_insideOvernightActiveRange() = runTest {
+app/src/test\java\com\personal\cameraalarm\Phase3IntegrationTest.kt:96:    fun scenarioC_outsideOvernightRangeSuppressed() = runTest {
+app/src/test\java\com\personal\cameraalarm\Phase3IntegrationTest.kt:117:    fun scenarioD_boundaryWithDelayFires() = runTest {
+app/src/test\java\com\personal\cameraalarm\Phase3IntegrationTest.kt:139:    fun scenarioE_outsideEventFollowedByActiveEvent() = runTest {
+app/src/test\java\com\personal\cameraalarm\Phase3IntegrationTest.kt:168:    fun scenarioF_previewFollowedByRealAlarmStopsPreview() {
+app/src/test\java\com\personal\cameraalarm\Phase3IntegrationTest.kt:171:            fun stop() { previewStopped = true }
+app/src/test\java\com\personal\cameraalarm\Phase3IntegrationTest.kt:181:    fun scenarioH_bootReconciliationClearsOrphanState() {
+app/src/test\java\com\personal\cameraalarm\Phase3IntegrationTest.kt:195:    fun scenarioI_nonXiaomiAdvisorFallback() {
+app/src/test\java\com\personal\cameraalarm\Phase3IntegrationTest.kt:206:    fun scenarioJ_runtimeControllerStartsGracefully() {
+app/src/test\java\com\personal\cameraalarm\Phase3IntegrationTest.kt:211:            override fun start(soundKey: String?): Result<Unit> { audioStarted = true; return Result.success(Unit) }
+app/src/test\java\com\personal\cameraalarm\Phase3IntegrationTest.kt:212:            override fun stop() { audioStarted = false }
+app/src/test\java\com\personal\cameraalarm\Phase3IntegrationTest.kt:215:            override fun startRepeating() { vibStarted = true }
+app/src/test\java\com\personal\cameraalarm\Phase3IntegrationTest.kt:216:            override fun stop() { vibStarted = false }
+app/src/test\java\com\personal\cameraalarm\NotificationFieldsTest.kt:8:    @Test fun convertsCharSequencesAndIgnoresWrongTypes() {
+app/src/test\java\com\personal\cameraalarm\ReadinessStateTest.kt:9:    @Test fun blockingPermissionsAndConfigurationAreRequired() {
+app/src/test\java\com\personal\cameraalarm\ReadinessStateTest.kt:17:    @Test fun transientAndDegradedStatesStayDistinct() {
+app/src/test\java\com\personal\cameraalarm\AlarmRuntimeConfigCacheTest.kt:15:    fun coldStartReadReturnsSafeDefaultsWithoutWaitingForSettingsIo() = runTest {
+app/src/test\java\com\personal\cameraalarm\SourcePickerTest.kt:9:    fun packageValidationRejectsBlank() {
+app/src/test\java\com\personal\cameraalarm\SourcePickerTest.kt:20:    fun searchFilteringMatchesLabelOrPackage() {
+app/src/test\java\com\personal\cameraalarm\TriggerPipelineTest.kt:13:    private fun incoming(key: String, pkg: String = "camera.app") = IncomingNotification(key, pkg, 1, null, 1000, "Human detected", null, null, emptyList(), null)
+app/src/test\java\com\personal\cameraalarm\TriggerPipelineTest.kt:14:    @Test fun rejectsWrongPackageDuplicateAndSubmitsMatchingRuleOnce() = runTest {
+app/src/test\java\com\personal\cameraalarm\TriggerPipelineTest.kt:28:    @Test fun wrongPackageContentIsNeverPassedToPersistentHistory() = runTest {
+app/src/test\java\com\personal\cameraalarm\TriggerPipelineTest.kt:49:    @Test fun selectedPackageStillPersistsHistory() = runTest {
+app/src/test\java\com\personal\cameraalarm\TriggerPipelineTest.kt:68:    @Test fun enabledRulesDefineMultipleAllowedPackagesInsteadOfGlobalSource() = runTest {
+app/src/test\java\com\personal\cameraalarm\TriggerPipelineTest.kt:88:    @Test fun disabledRulePackageIsPrivateAndSamePackageRulesUsePriority() = runTest {
+app/src/test\java\com\personal\cameraalarm\TriggerPipelineTest.kt:109:    @Test fun monitoringOffAndNoMatchNeverSubmit() = runTest {
+app/src/test\java\com\personal\cameraalarm\TriggerPipelineTest.kt:120:    @Test fun historyFailureDoesNotBreakScheduledAlarmPath() = runTest {
+app/src/test\java\com\personal\cameraalarm\TriggerPipelineTest.kt:137:    @Test fun outsideHoursEventIsSuppressedAndDoesNotMarkDuplicate() = runTest {
+app/src/test\java\com\personal\cameraalarm\TriggerPipelineTest.kt:193:    @Test fun boundaryAcceptedAt065959SchedulesEvenIfDelayedPast0700() = runTest {
+app/src/test\java\com\personal\cameraalarm\TriggerPipelineTest.kt:223:    @Test fun cooldownSuppressionIsMappedToSuppressedCooldownDecision() = runTest {
+app/src/test\java\com\personal\cameraalarm\PersistenceTest.kt:14:    fun defaultAppSettingsMatchesSpecification() {
+app/src/test\java\com\personal\cameraalarm\PersistenceTest.kt:30:    fun triggerRuleEntityMappingRoundtrip() {
+app/src/test\java\com\personal\cameraalarm\PersistenceTest.kt:64:    fun triggerRuleEntityHandlesInvalidJsonGracefully() {
+app/src/test\java\com\personal\cameraalarm\PersistenceTest.kt:82:    fun alertEventEntityCreationAndSanitization() {
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:12:    private fun trigger(token: String = "a") = TriggerSnapshot(AlarmToken(token), "camera", "n-$token", "rule", null, null, 0)
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:18:        override fun canScheduleExactAlarms() = granted
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:19:        override fun scheduleExact(token: AlarmToken, triggerAtEpochMs: Long): ScheduleResult {
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:23:        override fun cancel(token: AlarmToken) { cancelled += token }
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:28:        override fun arm(pending: AlarmState.Pending): Boolean { armed += pending; return enabled }
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:29:        override fun cancel(token: AlarmToken) = Unit
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:32:    @Test fun everyFailureRetainsItsOwnerAfterRetirement() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:60:    @Test fun burstKeepsDeadlineAndSingleDelivery() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:76:    @Test fun autonomousWatchdogRetriesOnceThenReleasesWithoutAnotherNotification() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:99:    @Test fun zeroDelayStillAllowsPlatformMinimumFuturityBeforeRecovery() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:108:    @Test fun lateDeliveryWithinGraceWinsOnce() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:117:    @Test fun duplicateRecoveryAndOldStopCannotRetireReplacement() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:129:    @Test fun receiverDispatchFailureReleasesOwnership() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:140:    @Test fun crashAfterPersistBeforeScheduleRearmsOnHydrateAndRepeatedBootDoesNotResetIt() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:154:    @Test fun recoveryBudgetSurvivesProcessRestart() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:164:    @Test fun revokeRegrantCannotResurrectRetiredToken() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:178:    @Test fun missingWatchdogAndScheduleFailureNeverLeavePending() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:192:    @Test fun bootAndReceiverWaitForTriggerTransactionAndDoNotEraseNewState() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:197:            override suspend fun read() = delegate.read()
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:198:            override suspend fun write(state: AlarmState) {
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:221:    @Test fun stopBetweenReceiverAndServicePreventsAudioAndPreservesNewToken() = runTest {
+app/src/test\java\com\personal\cameraalarm\AlarmRecoveryTest.kt:234:    @Test fun monotonicDeadlineDoesNotExtendWhenWallClockMovesBack() = runTest {

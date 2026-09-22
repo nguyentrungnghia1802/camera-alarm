@@ -1,0 +1,14 @@
+{
+  "cooldown_ms": 0,
+  "alarm_sound_key": "alarm_warning_aloud",
+  "schedule_mode": "ALWAYS_ACTIVE",
+  "schedule_ranges": "official-default-overnight|1350|360|true",
+  "full_screen_enabled": true,
+  "settings_profile_version": 3,
+  "monitoring_enabled": true,
+  "alarm_delay_ms": 3000,
+  "source_package": "com.android.shell",
+  "source_label": "ADB notification fixture",
+  "vibration_enabled": true,
+  "language": "vi"
+}

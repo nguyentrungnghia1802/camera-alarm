@@ -1,0 +1,35 @@
+[
+  {
+    "class": "PendingDeliveryBoundaryTest",
+    "name": "com.personal.cameraalarm.PendingDeliveryBoundaryTest",
+    "tests": "5",
+    "skipped": "0",
+    "failures": "0",
+    "errors": "0",
+    "timestamp": "2026-09-22T05:32:24",
+    "hostname": "ACERNITRO5-NTNG",
+    "time": "0.024"
+  },
+  {
+    "class": "AlarmRecoveryTest",
+    "name": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "tests": "14",
+    "skipped": "0",
+    "failures": "0",
+    "errors": "0",
+    "timestamp": "2026-09-22T05:32:24",
+    "hostname": "ACERNITRO5-NTNG",
+    "time": "0.466"
+  },
+  {
+    "class": "AlarmRuntimeOwnershipTest",
+    "name": "com.personal.cameraalarm.AlarmRuntimeOwnershipTest",
+    "tests": "4",
+    "skipped": "0",
+    "failures": "0",
+    "errors": "0",
+    "timestamp": "2026-09-22T05:32:24",
+    "hostname": "ACERNITRO5-NTNG",
+    "time": "0.004"
+  }
+]

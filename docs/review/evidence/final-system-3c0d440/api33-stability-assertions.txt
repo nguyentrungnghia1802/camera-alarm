@@ -1,0 +1,2 @@
+PASS: 6 consecutive unchanged lost-delivery test runs (3 cold + 3 warm). Every retry reached Ringing once; no retry was retired or marked stale; at most one structured AUDIO_STARTED per retry. Primary stale callbacks are intentional negative assertions. Cold-1 cleanup preceded audio; this run proves Ringing/ownership, not audible playback.
+Callback registration-to-entry ms: [5708, 5018, 5041, 5010, 5005, 5104]

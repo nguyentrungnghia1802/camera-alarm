@@ -1,0 +1,1 @@
+PASS: one scheduled/fired owner, Pending burst suppression then Ringing suppression, source/rule/token lifecycle preserved, STOP removed service and active alarm player.

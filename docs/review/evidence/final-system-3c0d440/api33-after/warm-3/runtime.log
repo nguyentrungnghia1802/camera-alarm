@@ -1,0 +1,79 @@
+--------- beginning of system
+09-22 12:40:29.290   498   532 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+09-22 12:40:29.290   498   532 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:40:30.793   498  1032 I ActivityManager: Force stopping com.personal.cameraalarm appid=10174 user=0: start instr
+09-22 12:40:30.815   498   533 W ActivityManager: Slow operation: 61ms so far, now at startProcess: done updating battery stats
+09-22 12:40:30.816   498   533 W ActivityManager: Slow operation: 61ms so far, now at startProcess: building log message
+09-22 12:40:30.816   498   533 I ActivityManager: Start proc 3921:com.google.android.settings.intelligence/u0a107 for broadcast {com.google.android.settings.intelligence/com.google.android.settings.intelligence.modules.battery.impl.usage.BootBroadcastReceiver}
+09-22 12:40:30.816   498   533 W ActivityManager: Slow operation: 62ms so far, now at startProcess: starting to update pids map
+09-22 12:40:30.817   498   533 W ActivityManager: Slow operation: 63ms so far, now at startProcess: done updating pids map
+09-22 12:40:30.867   498   533 W ActivityManager: Slow operation: 57ms so far, now at startProcess: building log message
+09-22 12:40:30.867   498   533 I ActivityManager: Start proc 3933:com.personal.cameraalarm/u0a174 for added application com.personal.cameraalarm
+09-22 12:40:30.868   498   533 W ActivityManager: Slow operation: 61ms so far, now at startProcess: starting to update pids map
+09-22 12:40:30.884   498   533 W ActivityManager: Slow operation: 78ms so far, now at startProcess: done updating pids map
+09-22 12:40:31.785   498   533 W ActivityManager: Slow operation: 60ms so far, now at startProcess: returned from zygote!
+09-22 12:40:31.785   498   533 W ActivityManager: Slow operation: 61ms so far, now at startProcess: done updating battery stats
+09-22 12:40:31.786   498   533 W ActivityManager: Slow operation: 61ms so far, now at startProcess: building log message
+09-22 12:40:31.786   498   533 I ActivityManager: Start proc 3973:com.google.android.setupwizard/u0a116 for broadcast {com.google.android.setupwizard/com.google.android.setupwizard.pairing.PairingBootReceiver}
+09-22 12:40:31.787   498   533 W ActivityManager: Slow operation: 62ms so far, now at startProcess: starting to update pids map
+09-22 12:40:31.787   498   533 W ActivityManager: Slow operation: 63ms so far, now at startProcess: done updating pids map
+09-22 12:40:32.729   498   533 I ActivityManager: Start proc 4001:com.google.android.tts/u0a133 for broadcast {com.google.android.tts/androidx.work.impl.background.systemalarm.RescheduleReceiver}
+09-22 12:40:35.165   498  1032 I ActivityManager: Finished processing BOOT_COMPLETED for u0
+09-22 12:40:35.167   498  1032 I BroadcastQueue: BOOT_COMPLETED_BROADCAST_COMPLETION_LATENCY_REPORTED action:android.intent.action.BOOT_COMPLETED dispatchLatency:30220 completeLatency:75892 dispatchRealLatency:30220 completeRealLatency:75892 receiversSize:126 userId:0 userType:android.os.usertype.full.SYSTEM
+09-22 12:40:37.204   498   533 I ActivityManager: Start proc 4088:com.android.emergency/u0a156 for content provider {com.android.emergency/com.android.emergency.EmergencySearchIndexablesProvider}
+09-22 12:40:37.361   498   533 I ActivityManager: Start proc 4106:com.google.android.gms.ui/u0a119 for content provider {com.google.android.gms/com.google.android.gms.app.search.GmsSearchIndexablesProvider}
+09-22 12:40:37.704   498   532 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+09-22 12:40:37.705   498   532 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:40:38.902   498   533 W ActivityManager: Slow operation: 92ms so far, now at startProcess: returned from zygote!
+09-22 12:40:39.173   498   533 W ActivityManager: Slow operation: 363ms so far, now at startProcess: done updating battery stats
+09-22 12:40:39.173   498   533 W ActivityManager: Slow operation: 364ms so far, now at startProcess: building log message
+09-22 12:40:39.175   498   533 I ActivityManager: Start proc 4139:com.google.android.marvin.talkback/u0a145 for content provider {com.google.android.marvin.talkback/com.google.android.accessibility.talkback.preference.search.TalkBackSearchIndexablesProvider}
+09-22 12:40:39.178   498   533 W ActivityManager: Slow operation: 369ms so far, now at startProcess: starting to update pids map
+09-22 12:40:39.179   498   533 W ActivityManager: Slow operation: 370ms so far, now at startProcess: done updating pids map
+--------- beginning of main
+09-22 12:40:41.214  3933  4159 I TestRunner: run started: 1 tests
+09-22 12:40:41.229  3933  4159 I TestRunner: started: lostOsDeliveryRetriesAutonomouslyAndLateCallbackCannotClaimReplacement(com.personal.cameraalarm.PendingDeliveryInstrumentedTest)
+09-22 12:40:42.202  1124  3920 I AlarmManager: set [name: SystemMemoryCache type: 2 triggerAtMillis: 315360150935 windowMillis: -1 intervalMillis: 0]
+09-22 12:40:42.416  3933  4159 I CameraAlarm: ALARM_PENDING_CREATED token=lost-delivery-150529624200 epoch_ms=1790055642416 elapsed_ms=151149 session=0a108026-8b8a-4fee-bfa4-0a121d26fd43 deadline_ms=1790055642817 delay_ms=1000 overdue_ms=0 attempt=0
+09-22 12:40:42.427  3933  4159 I CameraAlarm: OS_ALARM_REGISTERED token=lost-delivery-150529624200 epoch_ms=1790055642426 elapsed_ms=151159 session=0a108026-8b8a-4fee-bfa4-0a121d26fd43 deadline_ms=null delay_ms=null overdue_ms=null deadline_ms=1790055642817 mode=alarm_clock
+09-22 12:40:42.428  3933  4159 I CameraAlarm: EXACT_ALARM_SCHEDULED token=lost-delivery-150529624200 epoch_ms=1790055642428 elapsed_ms=151162 session=0a108026-8b8a-4fee-bfa4-0a121d26fd43 deadline_ms=1790055642817 delay_ms=1000 overdue_ms=0 attempt=0
+09-22 12:40:52.628   498   532 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+09-22 12:40:52.630   498   532 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:40:52.836  3933  4216 I CameraAlarm: PENDING_RETIRED token=lost-delivery-150529624200 epoch_ms=1790055652836 elapsed_ms=161570 session=0a108026-8b8a-4fee-bfa4-0a121d26fd43 deadline_ms=1790055642817 delay_ms=1000 overdue_ms=10019 Pending overdue; attempt=0
+09-22 12:40:52.846  3933  4216 I CameraAlarm: PENDING_RECOVERY token=eff636db-74e9-4150-8d83-43ba4bf2261d epoch_ms=1790055652846 elapsed_ms=161580 session=0a108026-8b8a-4fee-bfa4-0a121d26fd43 deadline_ms=1790055652838 delay_ms=1000 overdue_ms=8 replaces=lost-delivery-150529624200
+09-22 12:40:52.859  3933  4196 I CameraAlarm: ALARM_PENDING_CREATED token=eff636db-74e9-4150-8d83-43ba4bf2261d epoch_ms=1790055652859 elapsed_ms=161593 session=0a108026-8b8a-4fee-bfa4-0a121d26fd43 deadline_ms=1790055652838 delay_ms=1000 overdue_ms=21 attempt=1
+09-22 12:40:52.884  3933  4196 I CameraAlarm: OS_ALARM_REGISTERED token=eff636db-74e9-4150-8d83-43ba4bf2261d epoch_ms=1790055652884 elapsed_ms=161618 session=0a108026-8b8a-4fee-bfa4-0a121d26fd43 deadline_ms=null delay_ms=null overdue_ms=null deadline_ms=1790055652838 mode=alarm_clock
+09-22 12:40:52.885  3933  4196 I CameraAlarm: EXACT_ALARM_SCHEDULED token=eff636db-74e9-4150-8d83-43ba4bf2261d epoch_ms=1790055652885 elapsed_ms=161618 session=0a108026-8b8a-4fee-bfa4-0a121d26fd43 deadline_ms=1790055652838 delay_ms=1000 overdue_ms=47 attempt=1
+09-22 12:40:53.216  1486  4285 I AlarmManager: set [name: ApiService type: 2 triggerAtMillis: 120000 windowMillis: -1 intervalMillis: 0]
+09-22 12:40:53.848  1124  4219 I AlarmManager: setExactAndAllowWhileIdle [name: GCM_CONN_ALARM type: 2 triggerAtMillis: 167515]
+09-22 12:40:56.810  1486  4286 I AlarmManager: setExactAndAllowWhileIdle [name: RemindersNSREFRESH_TIME_REMINDERS_ALARM type: 0 triggerAtMillis: 1790096400000]
+09-22 12:40:57.988  3933  3933 I CameraAlarm: ALARM_RECEIVER_ENTRY token=eff636db-74e9-4150-8d83-43ba4bf2261d epoch_ms=1790055657988 elapsed_ms=166722 session=0a108026-8b8a-4fee-bfa4-0a121d26fd43 deadline_ms=null delay_ms=null overdue_ms=null elapsed_ms=166722
+09-22 12:40:58.049  3933  4202 I CameraAlarm: ALARM_RECEIVER_FIRED token=eff636db-74e9-4150-8d83-43ba4bf2261d epoch_ms=1790055658049 elapsed_ms=166783 session=0a108026-8b8a-4fee-bfa4-0a121d26fd43 deadline_ms=1790055652838 delay_ms=1000 overdue_ms=5211 attempt=1
+09-22 12:40:58.108  3933  4196 I CameraAlarm: RINGING token=eff636db-74e9-4150-8d83-43ba4bf2261d epoch_ms=1790055658108 elapsed_ms=166842 session=0a108026-8b8a-4fee-bfa4-0a121d26fd43 deadline_ms=1790055652838 delay_ms=1000 overdue_ms=5270 attempt=1
+09-22 12:40:58.143   498  1817 I ActivityManager: Background started FGS: Allowed [callingPackage: com.personal.cameraalarm; callingUid: 10174; uidState: FGS ; intent: Intent { act=com.personal.cameraalarm.action.START_ALARM cmp=com.personal.cameraalarm/.alarm.CameraAlarmService (has extras) }; code:ACTIVITY_STARTER; tempAllowListReason:<broadcast:u0a174:com.personal.cameraalarm.action.FIRE_ALARM,reason:,reasonCode:ALARM_MANAGER_ALARM_CLOCK,duration:10000,callingUid:10174>; targetSdkVersion:36; callerTargetSdkVersion:36; startForegroundCount:0; bindFromPackage:null]
+09-22 12:40:58.159  3933  4196 I CameraAlarm: SERVICE_REQUESTED token=eff636db-74e9-4150-8d83-43ba4bf2261d epoch_ms=1790055658159 elapsed_ms=166892 session=0a108026-8b8a-4fee-bfa4-0a121d26fd43 deadline_ms=1790055652838 delay_ms=1000 overdue_ms=5321 
+09-22 12:40:58.187  3933  4159 I CameraAlarm: STALE_ALARM token=null epoch_ms=1790055658187 elapsed_ms=166921 session=0a108026-8b8a-4fee-bfa4-0a121d26fd43 deadline_ms=null delay_ms=null overdue_ms=null token=lost-delivery-150529624200
+09-22 12:40:58.229  3933  3933 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=eff636db-74e9-4150-8d83-43ba4bf2261d
+09-22 12:40:58.239  3933  3933 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=eff636db-74e9-4150-8d83-43ba4bf2261d epoch_ms=1790055658235 elapsed_ms=166969 session=0a108026-8b8a-4fee-bfa4-0a121d26fd43 deadline_ms=1790055652838 delay_ms=1000 overdue_ms=5397 
+09-22 12:40:58.250   498   588 W ActivityManager: Unable to start service Intent { act=com.google.android.gms.drive.ApiService.RESET_AFTER_BOOT flg=0x4 cmp=com.google.android.gms/.drive.api.ApiService (has extras) } U=0: not found
+09-22 12:40:58.664  3933  3933 I CameraAlarm: ALARM_TIMING foreground_ms=503 token=eff636db-74e9-4150-8d83-43ba4bf2261d
+09-22 12:40:59.564  3933  3933 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 12:40:59.566  3933  3933 D CameraAlarm: Alarm sound:
+09-22 12:40:59.566  3933  3933 D CameraAlarm: selected key: alarm_warning_aloud
+09-22 12:40:59.566  3933  3933 D CameraAlarm: resolved resource: 2131296260
+09-22 12:40:59.566  3933  3933 D CameraAlarm: prepare result: success
+09-22 12:40:59.566  3933  3933 D CameraAlarm: play result: success
+09-22 12:40:59.757  3933  3933 I CameraAlarm: AUDIO_STARTED: token=eff636db-74e9-4150-8d83-43ba4bf2261d
+09-22 12:41:00.000  3933  3933 I CameraAlarm: AUDIO_STARTED token=eff636db-74e9-4150-8d83-43ba4bf2261d epoch_ms=1790055660000 elapsed_ms=168734 session=0a108026-8b8a-4fee-bfa4-0a121d26fd43 deadline_ms=1790055652838 delay_ms=1000 overdue_ms=7162 
+09-22 12:41:00.010  3933  3933 I CameraAlarm: ALARM_TIMING runtime_started_ms=1849 token=eff636db-74e9-4150-8d83-43ba4bf2261d
+09-22 12:41:00.025  3933  3933 I CameraAlarm: FULLSCREEN_INTENT_SENT: token=eff636db-74e9-4150-8d83-43ba4bf2261d
+09-22 12:41:00.382  3933  3933 I CameraAlarm: Direct startActivity called for token=eff636db-74e9-4150-8d83-43ba4bf2261d
+09-22 12:41:00.816  3933  3933 I CameraAlarm: ALARMACTIVITY_CREATED: token=eff636db-74e9-4150-8d83-43ba4bf2261d
+09-22 12:41:01.771  3933  4159 I TestRunner: finished: lostOsDeliveryRetriesAutonomouslyAndLateCallbackCannotClaimReplacement(com.personal.cameraalarm.PendingDeliveryInstrumentedTest)
+09-22 12:41:02.060  3933  3933 D CameraAlarm: runtime stopped token=eff636db-74e9-4150-8d83-43ba4bf2261d
+09-22 12:41:03.071   498  1489 I ActivityManager: updateOomAdj start time is before than pendingPid added, don't delete it
+09-22 12:41:03.963  3933  4159 I TestRunner: run finished: 1 tests, 0 failed, 0 ignored
+09-22 12:41:06.211   498  1790 I ActivityManager: Force stopping com.personal.cameraalarm appid=10174 user=0: finished inst
+09-22 12:41:06.224   498  1790 I ActivityManager: Killing 3933:com.personal.cameraalarm/u0a174 (adj 0): stop com.personal.cameraalarm due to finished inst
+09-22 12:41:06.423   498  1815 V ActivityManager: Got obituary of 3933:com.personal.cameraalarm
+09-22 12:41:06.427   498   522 W ActivityManager: setHasOverlayUi called on unknown pid: 3933

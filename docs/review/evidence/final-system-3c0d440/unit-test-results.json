@@ -1,0 +1,2274 @@
+[
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "multiIntervalMatchesMiddle",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.018",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "scheduleEvaluatesAgainstCurrentTimezone",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "emptyCustomScheduleIsAlwaysInactive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "sameDayAtEndIsInactive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "overnightAtMorningBoundaryIsActive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "sameDayAtStartIsActive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "serializerRoundTripPreservesLocalTimeRanges",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.015",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "overnightAtMidnightIsActive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "overnightAtLateEveningIsActive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "multiIntervalMatchesFirst",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "overnightMiddayIsInactive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "sameDayAtLastMinuteIsActive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "multiIntervalMatchesNone",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "disabledIntervalDoesNotActivate",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "equalBoundariesIsFullDayActive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "alwaysActiveIgnoresCustomRangesAndActivatesAnyTime",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "sameDayBeforeStartIsInactive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "overnightAtEndIsInactive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "overnightAtStartIsActive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "multiIntervalMatchesOvernight",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "resetCooldownClearsActiveCooldownImmediately",
+    "classname": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "time": "0.127",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "cooldownSuppressesTriggersWithoutResettingAndAllowsAfterExpiry",
+    "classname": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "revokedPermissionDoesNotLeaveOldPendingSuppressingNewTrigger",
+    "classname": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "pendingPersistsBeforeScheduleAndStaleFireIgnored",
+    "classname": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "stopPendingCancelsOnlyItsTokenAndIsIdempotent",
+    "classname": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "customCooldownWindowWorksCorrectly",
+    "classname": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "time": "0.005",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "permissionMissingAndFailureLeaveIdle",
+    "classname": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "bootChangeClearsPending",
+    "classname": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "lifecycleEventsKeepTheMatchedRuleAndAlarmToken",
+    "classname": "com.personal.cameraalarm.AlarmHistoryEventFactoryTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "nonLifecycleEffectsDoNotCreateDuplicateHistoryRows",
+    "classname": "com.personal.cameraalarm.AlarmHistoryEventFactoryTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "bootAndReceiverWaitForTriggerTransactionAndDoNotEraseNewState",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.013",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "crashAfterPersistBeforeScheduleRearmsOnHydrateAndRepeatedBootDoesNotResetIt",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "lateDeliveryWithinGraceWinsOnce",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "autonomousWatchdogRetriesOnceThenReleasesWithoutAnotherNotification",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.02",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "receiverDispatchFailureReleasesOwnership",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.005",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "everyFailureRetainsItsOwnerAfterRetirement",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.005",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "zeroDelayStillAllowsPlatformMinimumFuturityBeforeRecovery",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.005",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "monotonicDeadlineDoesNotExtendWhenWallClockMovesBack",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "missingWatchdogAndScheduleFailureNeverLeavePending",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "stopBetweenReceiverAndServicePreventsAudioAndPreservesNewToken",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "recoveryBudgetSurvivesProcessRestart",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "duplicateRecoveryAndOldStopCannotRetireReplacement",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "burstKeepsDeadlineAndSingleDelivery",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.009",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "revokeRegrantCannotResurrectRetiredToken",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "coldStartReadReturnsSafeDefaultsWithoutWaitingForSettingsIo",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeConfigCacheTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "testAlarmStopIsRoutedWithoutCoordinatorState",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeControllerTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "independentAudioAndVibrationFailures",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeControllerTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "repeatedAndDifferentStartNeverDoubleStarts",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeControllerTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "repeatedStopCleansOnlyOnceAndStaleStopIgnored",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeControllerTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "queuedOldStopCannotDestroyServiceBeforeNewOwnerStartsAudio",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeOwnershipTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "pendingAndRingingProductionBlockTestAlarm",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeOwnershipTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "stopAlwaysPrefersRingingProductionToken",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeOwnershipTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "productionReplacesTestButTestNeverReplacesProduction",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeOwnershipTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "catalogContainsAllBundledSounds",
+    "classname": "com.personal.cameraalarm.AlarmSoundTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "isValidKeyIdentifiesCorrectKeys",
+    "classname": "com.personal.cameraalarm.AlarmSoundTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "validKeyResolvesExpectedSound",
+    "classname": "com.personal.cameraalarm.AlarmSoundTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "nullOrBlankKeyFallsBackToDefaultSound",
+    "classname": "com.personal.cameraalarm.AlarmSoundTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "defaultSoundResolvesCorrectly",
+    "classname": "com.personal.cameraalarm.AlarmSoundTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "productionAlarmWithNullSoundKeyPassesNullToPlayer",
+    "classname": "com.personal.cameraalarm.AlarmSoundTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "productionAlarmUsesSelectedLogicalKey",
+    "classname": "com.personal.cameraalarm.AlarmSoundTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "unknownKeyFallsBackToDefaultSound",
+    "classname": "com.personal.cameraalarm.AlarmSoundTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "emulatorMinimumOneIsReportedWithoutFakingZero",
+    "classname": "com.personal.cameraalarm.AlarmVolumeStatusTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "zeroIsWarnedWhenDeviceAllowsIt",
+    "classname": "com.personal.cameraalarm.AlarmVolumeStatusTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "acceptsOnlyDocumentedBootAndPackageReplacementActions",
+    "classname": "com.personal.cameraalarm.BootActionPolicyTest",
+    "time": "0.005",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "timeoutOrDisconnectedNeverReportsSuccess",
+    "classname": "com.personal.cameraalarm.BootReconcilerTest",
+    "time": "0.005",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "accessDeniedDoesNotRequestRebind",
+    "classname": "com.personal.cameraalarm.BootReconcilerTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "delayedConnectCompletesWithinBoundedRetry",
+    "classname": "com.personal.cameraalarm.BootReconcilerTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "failuresRemainBoundedAndEndDisconnected",
+    "classname": "com.personal.cameraalarm.BootReconcilerTest",
+    "time": "0.005",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "productionReconcilerPreservesCurrentBootStateAndRecordsOutcome",
+    "classname": "com.personal.cameraalarm.BootReconcilerTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "alreadyConnectedDoesNotRequestRebind",
+    "classname": "com.personal.cameraalarm.BootReconcilerTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "dedupeTtlBoundaryAndBoundedCache",
+    "classname": "com.personal.cameraalarm.CoreTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "concurrentTriggersOnlyScheduleOnce",
+    "classname": "com.personal.cameraalarm.CoreTest",
+    "time": "0.009",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "lateAlarmStillRingsButDuplicateFireAfterStopIsStale",
+    "classname": "com.personal.cameraalarm.CoreTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "reducerTransitionsAndStaleEvents",
+    "classname": "com.personal.cameraalarm.CoreTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "normalizerMergesFieldsAndPreservesAccents",
+    "classname": "com.personal.cameraalarm.CoreTest",
+    "time": "0.005",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "matcherChecksPackageModeAndPriority",
+    "classname": "com.personal.cameraalarm.CoreTest",
+    "time": "0.005",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "detectsOppoDevices",
+    "classname": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "fallsBackToDefaultAdvisorForPixelAndOthers",
+    "classname": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "retrievesAdvisorByKeyCorrectly",
+    "classname": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "detectsXiaomiDevices",
+    "classname": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "batteryGuidanceUsesThePolicySafeGeneralSettingsScreen",
+    "classname": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "detectsHuaweiDevices",
+    "classname": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "detectsSamsungDevices",
+    "classname": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "detectsVivoDevices",
+    "classname": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "legacyUnrelatedNotificationRowsAreRemovedWithoutDeletingSelectedHistory",
+    "classname": "com.personal.cameraalarm.HistoryRepositoryTest",
+    "time": "0.008",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "retentionEnforcesMaximum100Entries",
+    "classname": "com.personal.cameraalarm.HistoryRepositoryTest",
+    "time": "0.012",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "suppressedEventsAreLimitedTo10Newest",
+    "classname": "com.personal.cameraalarm.HistoryRepositoryTest",
+    "time": "0.005",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "recordEventInsertsAndReturnsId",
+    "classname": "com.personal.cameraalarm.HistoryRepositoryTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "retentionAutomaticallyPrunesOlderThan3Days",
+    "classname": "com.personal.cameraalarm.HistoryRepositoryTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "paginationCorrectlyOffsetsPages",
+    "classname": "com.personal.cameraalarm.HistoryRepositoryTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "effectiveStatusComputations",
+    "classname": "com.personal.cameraalarm.MainViewModelTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "readinessStateDerivedStatuses",
+    "classname": "com.personal.cameraalarm.MainViewModelTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "convertsCharSequencesAndIgnoresWrongTypes",
+    "classname": "com.personal.cameraalarm.NotificationFieldsTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "traceExcludesAllAppControlledPayloadAndKeyFields",
+    "classname": "com.personal.cameraalarm.NotificationTracePrivacyTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "triggerRuleEntityHandlesInvalidJsonGracefully",
+    "classname": "com.personal.cameraalarm.PersistenceTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "defaultAppSettingsMatchesSpecification",
+    "classname": "com.personal.cameraalarm.PersistenceTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "alertEventEntityCreationAndSanitization",
+    "classname": "com.personal.cameraalarm.PersistenceTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "triggerRuleEntityMappingRoundtrip",
+    "classname": "com.personal.cameraalarm.PersistenceTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "scenarioH_bootReconciliationClearsOrphanState",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "scenarioC_outsideOvernightRangeSuppressed",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.021",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "scenarioD_boundaryWithDelayFires",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "scenarioF_previewFollowedByRealAlarmStopsPreview",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "scenarioJ_runtimeControllerStartsGracefully",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "scenarioA_alwaysActiveWithSelectedSound",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "scenarioB_insideOvernightActiveRange",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "scenarioE_outsideEventFollowedByActiveEvent",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "scenarioI_nonXiaomiAdvisorFallback",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "transientAndDegradedStatesStayDistinct",
+    "classname": "com.personal.cameraalarm.ReadinessStateTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "blockingPermissionsAndConfigurationAreRequired",
+    "classname": "com.personal.cameraalarm.ReadinessStateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "duplicateKeywordsAfterCaseAndWhitespaceNormalizationAreRejected",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.007",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "keywordOver100CharsRejected",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "validationTriggerDefaultIsZeroAndIncrementsOnCopy",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "blankSourcePackageIsRejected",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "shortKeywordIsRejected",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "emptyKeywordsAreRejected",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "moreThan30KeywordsRejected",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "blankNameIsRejected",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "suggestedTemplateMatchesTheVietnameseProductContract",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "commasRemainPartOfOneKeywordBecauseCsvIsNoLongerTheEditorContract",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "validRulePassesValidation",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "fieldErrorsFollowPrioritizedValidationHierarchy",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "packageValidationRejectsBlank",
+    "classname": "com.personal.cameraalarm.SourcePickerTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "searchFilteringMatchesLabelOrPackage",
+    "classname": "com.personal.cameraalarm.SourcePickerTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "rejectsWrongPackageDuplicateAndSubmitsMatchingRuleOnce",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "enabledRulesDefineMultipleAllowedPackagesInsteadOfGlobalSource",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "boundaryAcceptedAt065959SchedulesEvenIfDelayedPast0700",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "cooldownSuppressionIsMappedToSuppressedCooldownDecision",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "historyFailureDoesNotBreakScheduledAlarmPath",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "wrongPackageContentIsNeverPassedToPersistentHistory",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "monitoringOffAndNoMatchNeverSubmit",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "disabledRulePackageIsPrivateAndSamePackageRulesUsePriority",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "selectedPackageStillPersistsHistory",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "outsideHoursEventIsSuppressedAndDoesNotMarkDuplicate",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "detectsXiaomiFamilyCorrectly",
+    "classname": "com.personal.cameraalarm.XiaomiReliabilityAdvisorTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "xiaomiReportsXiaomiAdvisorName",
+    "classname": "com.personal.cameraalarm.XiaomiReliabilityAdvisorTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "nonXiaomiDevicesAreNotApplicable",
+    "classname": "com.personal.cameraalarm.XiaomiReliabilityAdvisorTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testDebugUnitTest",
+    "name": "nonXiaomiReportsGenericAdvisorName",
+    "classname": "com.personal.cameraalarm.XiaomiReliabilityAdvisorTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "multiIntervalMatchesMiddle",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.017",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "scheduleEvaluatesAgainstCurrentTimezone",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "emptyCustomScheduleIsAlwaysInactive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "sameDayAtEndIsInactive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "overnightAtMorningBoundaryIsActive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "sameDayAtStartIsActive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "serializerRoundTripPreservesLocalTimeRanges",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.018",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "overnightAtMidnightIsActive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "overnightAtLateEveningIsActive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "multiIntervalMatchesFirst",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "overnightMiddayIsInactive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "sameDayAtLastMinuteIsActive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "multiIntervalMatchesNone",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "disabledIntervalDoesNotActivate",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "equalBoundariesIsFullDayActive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "alwaysActiveIgnoresCustomRangesAndActivatesAnyTime",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "sameDayBeforeStartIsInactive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "overnightAtEndIsInactive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "overnightAtStartIsActive",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "multiIntervalMatchesOvernight",
+    "classname": "com.personal.cameraalarm.ActiveScheduleGateTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "resetCooldownClearsActiveCooldownImmediately",
+    "classname": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "time": "0.116",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "cooldownSuppressesTriggersWithoutResettingAndAllowsAfterExpiry",
+    "classname": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "revokedPermissionDoesNotLeaveOldPendingSuppressingNewTrigger",
+    "classname": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "time": "0.005",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "pendingPersistsBeforeScheduleAndStaleFireIgnored",
+    "classname": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "stopPendingCancelsOnlyItsTokenAndIsIdempotent",
+    "classname": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "customCooldownWindowWorksCorrectly",
+    "classname": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "permissionMissingAndFailureLeaveIdle",
+    "classname": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "bootChangeClearsPending",
+    "classname": "com.personal.cameraalarm.AlarmCoordinatorTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "lifecycleEventsKeepTheMatchedRuleAndAlarmToken",
+    "classname": "com.personal.cameraalarm.AlarmHistoryEventFactoryTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "nonLifecycleEffectsDoNotCreateDuplicateHistoryRows",
+    "classname": "com.personal.cameraalarm.AlarmHistoryEventFactoryTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "bootAndReceiverWaitForTriggerTransactionAndDoNotEraseNewState",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.014",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "crashAfterPersistBeforeScheduleRearmsOnHydrateAndRepeatedBootDoesNotResetIt",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "lateDeliveryWithinGraceWinsOnce",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "autonomousWatchdogRetriesOnceThenReleasesWithoutAnotherNotification",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.016",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "receiverDispatchFailureReleasesOwnership",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.006",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "everyFailureRetainsItsOwnerAfterRetirement",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.005",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "zeroDelayStillAllowsPlatformMinimumFuturityBeforeRecovery",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "monotonicDeadlineDoesNotExtendWhenWallClockMovesBack",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "missingWatchdogAndScheduleFailureNeverLeavePending",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "stopBetweenReceiverAndServicePreventsAudioAndPreservesNewToken",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "recoveryBudgetSurvivesProcessRestart",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "duplicateRecoveryAndOldStopCannotRetireReplacement",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.006",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "burstKeepsDeadlineAndSingleDelivery",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.007",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "revokeRegrantCannotResurrectRetiredToken",
+    "classname": "com.personal.cameraalarm.AlarmRecoveryTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "coldStartReadReturnsSafeDefaultsWithoutWaitingForSettingsIo",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeConfigCacheTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "testAlarmStopIsRoutedWithoutCoordinatorState",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeControllerTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "independentAudioAndVibrationFailures",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeControllerTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "repeatedAndDifferentStartNeverDoubleStarts",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeControllerTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "repeatedStopCleansOnlyOnceAndStaleStopIgnored",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeControllerTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "queuedOldStopCannotDestroyServiceBeforeNewOwnerStartsAudio",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeOwnershipTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "pendingAndRingingProductionBlockTestAlarm",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeOwnershipTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "stopAlwaysPrefersRingingProductionToken",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeOwnershipTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "productionReplacesTestButTestNeverReplacesProduction",
+    "classname": "com.personal.cameraalarm.AlarmRuntimeOwnershipTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "catalogContainsAllBundledSounds",
+    "classname": "com.personal.cameraalarm.AlarmSoundTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "isValidKeyIdentifiesCorrectKeys",
+    "classname": "com.personal.cameraalarm.AlarmSoundTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "validKeyResolvesExpectedSound",
+    "classname": "com.personal.cameraalarm.AlarmSoundTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "nullOrBlankKeyFallsBackToDefaultSound",
+    "classname": "com.personal.cameraalarm.AlarmSoundTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "defaultSoundResolvesCorrectly",
+    "classname": "com.personal.cameraalarm.AlarmSoundTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "productionAlarmWithNullSoundKeyPassesNullToPlayer",
+    "classname": "com.personal.cameraalarm.AlarmSoundTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "productionAlarmUsesSelectedLogicalKey",
+    "classname": "com.personal.cameraalarm.AlarmSoundTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "unknownKeyFallsBackToDefaultSound",
+    "classname": "com.personal.cameraalarm.AlarmSoundTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "emulatorMinimumOneIsReportedWithoutFakingZero",
+    "classname": "com.personal.cameraalarm.AlarmVolumeStatusTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "zeroIsWarnedWhenDeviceAllowsIt",
+    "classname": "com.personal.cameraalarm.AlarmVolumeStatusTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "acceptsOnlyDocumentedBootAndPackageReplacementActions",
+    "classname": "com.personal.cameraalarm.BootActionPolicyTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "timeoutOrDisconnectedNeverReportsSuccess",
+    "classname": "com.personal.cameraalarm.BootReconcilerTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "accessDeniedDoesNotRequestRebind",
+    "classname": "com.personal.cameraalarm.BootReconcilerTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "delayedConnectCompletesWithinBoundedRetry",
+    "classname": "com.personal.cameraalarm.BootReconcilerTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "failuresRemainBoundedAndEndDisconnected",
+    "classname": "com.personal.cameraalarm.BootReconcilerTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "productionReconcilerPreservesCurrentBootStateAndRecordsOutcome",
+    "classname": "com.personal.cameraalarm.BootReconcilerTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "alreadyConnectedDoesNotRequestRebind",
+    "classname": "com.personal.cameraalarm.BootReconcilerTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "dedupeTtlBoundaryAndBoundedCache",
+    "classname": "com.personal.cameraalarm.CoreTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "concurrentTriggersOnlyScheduleOnce",
+    "classname": "com.personal.cameraalarm.CoreTest",
+    "time": "0.009",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "lateAlarmStillRingsButDuplicateFireAfterStopIsStale",
+    "classname": "com.personal.cameraalarm.CoreTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "reducerTransitionsAndStaleEvents",
+    "classname": "com.personal.cameraalarm.CoreTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "normalizerMergesFieldsAndPreservesAccents",
+    "classname": "com.personal.cameraalarm.CoreTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "matcherChecksPackageModeAndPriority",
+    "classname": "com.personal.cameraalarm.CoreTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "detectsOppoDevices",
+    "classname": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "fallsBackToDefaultAdvisorForPixelAndOthers",
+    "classname": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "retrievesAdvisorByKeyCorrectly",
+    "classname": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "detectsXiaomiDevices",
+    "classname": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "batteryGuidanceUsesThePolicySafeGeneralSettingsScreen",
+    "classname": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "detectsHuaweiDevices",
+    "classname": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "detectsSamsungDevices",
+    "classname": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "detectsVivoDevices",
+    "classname": "com.personal.cameraalarm.DeviceReliabilityRegistryTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "legacyUnrelatedNotificationRowsAreRemovedWithoutDeletingSelectedHistory",
+    "classname": "com.personal.cameraalarm.HistoryRepositoryTest",
+    "time": "0.007",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "retentionEnforcesMaximum100Entries",
+    "classname": "com.personal.cameraalarm.HistoryRepositoryTest",
+    "time": "0.009",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "suppressedEventsAreLimitedTo10Newest",
+    "classname": "com.personal.cameraalarm.HistoryRepositoryTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "recordEventInsertsAndReturnsId",
+    "classname": "com.personal.cameraalarm.HistoryRepositoryTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "retentionAutomaticallyPrunesOlderThan3Days",
+    "classname": "com.personal.cameraalarm.HistoryRepositoryTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "paginationCorrectlyOffsetsPages",
+    "classname": "com.personal.cameraalarm.HistoryRepositoryTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "effectiveStatusComputations",
+    "classname": "com.personal.cameraalarm.MainViewModelTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "readinessStateDerivedStatuses",
+    "classname": "com.personal.cameraalarm.MainViewModelTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "convertsCharSequencesAndIgnoresWrongTypes",
+    "classname": "com.personal.cameraalarm.NotificationFieldsTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "traceExcludesAllAppControlledPayloadAndKeyFields",
+    "classname": "com.personal.cameraalarm.NotificationTracePrivacyTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "triggerRuleEntityHandlesInvalidJsonGracefully",
+    "classname": "com.personal.cameraalarm.PersistenceTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "defaultAppSettingsMatchesSpecification",
+    "classname": "com.personal.cameraalarm.PersistenceTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "alertEventEntityCreationAndSanitization",
+    "classname": "com.personal.cameraalarm.PersistenceTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "triggerRuleEntityMappingRoundtrip",
+    "classname": "com.personal.cameraalarm.PersistenceTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "scenarioH_bootReconciliationClearsOrphanState",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "scenarioC_outsideOvernightRangeSuppressed",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.025",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "scenarioD_boundaryWithDelayFires",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.005",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "scenarioF_previewFollowedByRealAlarmStopsPreview",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "scenarioJ_runtimeControllerStartsGracefully",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "scenarioA_alwaysActiveWithSelectedSound",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "scenarioB_insideOvernightActiveRange",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "scenarioE_outsideEventFollowedByActiveEvent",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.006",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "scenarioI_nonXiaomiAdvisorFallback",
+    "classname": "com.personal.cameraalarm.Phase3IntegrationTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "transientAndDegradedStatesStayDistinct",
+    "classname": "com.personal.cameraalarm.ReadinessStateTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "blockingPermissionsAndConfigurationAreRequired",
+    "classname": "com.personal.cameraalarm.ReadinessStateTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "duplicateKeywordsAfterCaseAndWhitespaceNormalizationAreRejected",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.006",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "keywordOver100CharsRejected",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "validationTriggerDefaultIsZeroAndIncrementsOnCopy",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "blankSourcePackageIsRejected",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "shortKeywordIsRejected",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "emptyKeywordsAreRejected",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "moreThan30KeywordsRejected",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.003",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "blankNameIsRejected",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "suggestedTemplateMatchesTheVietnameseProductContract",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "commasRemainPartOfOneKeywordBecauseCsvIsNoLongerTheEditorContract",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "validRulePassesValidation",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "fieldErrorsFollowPrioritizedValidationHierarchy",
+    "classname": "com.personal.cameraalarm.RuleValidationTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "packageValidationRejectsBlank",
+    "classname": "com.personal.cameraalarm.SourcePickerTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "searchFilteringMatchesLabelOrPackage",
+    "classname": "com.personal.cameraalarm.SourcePickerTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "rejectsWrongPackageDuplicateAndSubmitsMatchingRuleOnce",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "enabledRulesDefineMultipleAllowedPackagesInsteadOfGlobalSource",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.006",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "boundaryAcceptedAt065959SchedulesEvenIfDelayedPast0700",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.007",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "cooldownSuppressionIsMappedToSuppressedCooldownDecision",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "historyFailureDoesNotBreakScheduledAlarmPath",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.005",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "wrongPackageContentIsNeverPassedToPersistentHistory",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "monitoringOffAndNoMatchNeverSubmit",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.006",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "disabledRulePackageIsPrivateAndSamePackageRulesUsePriority",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.005",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "selectedPackageStillPersistsHistory",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.005",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "outsideHoursEventIsSuppressedAndDoesNotMarkDuplicate",
+    "classname": "com.personal.cameraalarm.TriggerPipelineTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "detectsXiaomiFamilyCorrectly",
+    "classname": "com.personal.cameraalarm.XiaomiReliabilityAdvisorTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "xiaomiReportsXiaomiAdvisorName",
+    "classname": "com.personal.cameraalarm.XiaomiReliabilityAdvisorTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "nonXiaomiDevicesAreNotApplicable",
+    "classname": "com.personal.cameraalarm.XiaomiReliabilityAdvisorTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "app",
+    "variant": "testReleaseUnitTest",
+    "name": "nonXiaomiReportsGenericAdvisorName",
+    "classname": "com.personal.cameraalarm.XiaomiReliabilityAdvisorTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "fake-camera",
+    "variant": "testDebugUnitTest",
+    "name": "testHumanDetectedPayload",
+    "classname": "com.personal.fakecamera.FakeNotificationPayloadTest",
+    "time": "0.004",
+    "failed": false
+  },
+  {
+    "module": "fake-camera",
+    "variant": "testDebugUnitTest",
+    "name": "testCameraOfflinePayload",
+    "classname": "com.personal.fakecamera.FakeNotificationPayloadTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "fake-camera",
+    "variant": "testDebugUnitTest",
+    "name": "testNotificationIdGeneration",
+    "classname": "com.personal.fakecamera.FakeNotificationPayloadTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "fake-camera",
+    "variant": "testDebugUnitTest",
+    "name": "testMotionDetectedPayload",
+    "classname": "com.personal.fakecamera.FakeNotificationPayloadTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "fake-camera",
+    "variant": "testDebugUnitTest",
+    "name": "testCustomPayload",
+    "classname": "com.personal.fakecamera.FakeNotificationPayloadTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "fake-camera",
+    "variant": "testReleaseUnitTest",
+    "name": "testHumanDetectedPayload",
+    "classname": "com.personal.fakecamera.FakeNotificationPayloadTest",
+    "time": "0.006",
+    "failed": false
+  },
+  {
+    "module": "fake-camera",
+    "variant": "testReleaseUnitTest",
+    "name": "testCameraOfflinePayload",
+    "classname": "com.personal.fakecamera.FakeNotificationPayloadTest",
+    "time": "0.0",
+    "failed": false
+  },
+  {
+    "module": "fake-camera",
+    "variant": "testReleaseUnitTest",
+    "name": "testNotificationIdGeneration",
+    "classname": "com.personal.fakecamera.FakeNotificationPayloadTest",
+    "time": "0.002",
+    "failed": false
+  },
+  {
+    "module": "fake-camera",
+    "variant": "testReleaseUnitTest",
+    "name": "testMotionDetectedPayload",
+    "classname": "com.personal.fakecamera.FakeNotificationPayloadTest",
+    "time": "0.001",
+    "failed": false
+  },
+  {
+    "module": "fake-camera",
+    "variant": "testReleaseUnitTest",
+    "name": "testCustomPayload",
+    "classname": "com.personal.fakecamera.FakeNotificationPayloadTest",
+    "time": "0.001",
+    "failed": false
+  }
+]

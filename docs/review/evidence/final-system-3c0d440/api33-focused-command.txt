@@ -1,0 +1,2 @@
+2026-09-22T12:41:27.571508+07:00
+am instrument -w -r -e class com.personal.cameraalarm.AlarmSchedulerInstrumentedTest,com.personal.cameraalarm.AlarmStopInstrumentedTest,com.personal.cameraalarm.AlarmDeliveryPriorityInstrumentedTest com.personal.cameraalarm.test/androidx.test.runner.AndroidJUnitRunner

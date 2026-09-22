@@ -1,0 +1,82 @@
+{
+  "trigger_rules": [
+    {
+      "id": "reboot-e2e",
+      "name": "Reboot E2E",
+      "enabled": 1,
+      "sourcePackage": "com.android.shell",
+      "matchMode": "CONTAINS_ANY",
+      "keywordsJson": "[\"reboot probe\"]",
+      "priority": 1,
+      "createdAtEpochMs": 1790044517261,
+      "updatedAtEpochMs": 1790044517261
+    }
+  ],
+  "alert_events": [
+    {
+      "id": 1,
+      "createdAtEpochMs": 1790044557739,
+      "sourcePackage": "com.android.shell",
+      "notificationKey": "0|com.android.shell|2020|fsv-core-1|2000",
+      "title": "Camera",
+      "textPreview": "reboot probe first",
+      "normalizedHash": null,
+      "decision": "SCHEDULED",
+      "ruleId": "reboot-e2e",
+      "alarmToken": "8ce7c7d6-2e00-46f5-baaa-289446b80212",
+      "details": null
+    },
+    {
+      "id": 2,
+      "createdAtEpochMs": 1790044558108,
+      "sourcePackage": "com.android.shell",
+      "notificationKey": "0|com.android.shell|2020|fsv-core-2|2000",
+      "title": "Camera",
+      "textPreview": "reboot probe burst",
+      "normalizedHash": null,
+      "decision": "SUPPRESSED_PENDING",
+      "ruleId": "reboot-e2e",
+      "alarmToken": "0d13773b-8039-4d8e-9182-dee54e2ea9c1",
+      "details": null
+    },
+    {
+      "id": 3,
+      "createdAtEpochMs": 1790044558316,
+      "sourcePackage": "com.android.shell",
+      "notificationKey": "0|com.android.shell|0|0|com.android.shell|g:Aggregate_AlertingSection|2000|0|com.android.shell|g:Aggregate_AlertingSection",
+      "title": null,
+      "textPreview": null,
+      "normalizedHash": null,
+      "decision": "IGNORED_NO_RULE_MATCH",
+      "ruleId": null,
+      "alarmToken": null,
+      "details": null
+    },
+    {
+      "id": 4,
+      "createdAtEpochMs": 1790044564278,
+      "sourcePackage": "com.android.shell",
+      "notificationKey": "0|com.android.shell|2020|fsv-core-1|2000",
+      "title": "Camera",
+      "textPreview": "camera reboot probe first",
+      "normalizedHash": null,
+      "decision": "ALARM_FIRED",
+      "ruleId": "reboot-e2e",
+      "alarmToken": "8ce7c7d6-2e00-46f5-baaa-289446b80212",
+      "details": null
+    },
+    {
+      "id": 5,
+      "createdAtEpochMs": 1790044565227,
+      "sourcePackage": "com.android.shell",
+      "notificationKey": "0|com.android.shell|2020|fsv-core-3|2000",
+      "title": "Camera",
+      "textPreview": "reboot probe while ringing",
+      "normalizedHash": null,
+      "decision": "SUPPRESSED_RINGING",
+      "ruleId": "reboot-e2e",
+      "alarmToken": "f5169a28-6859-4781-af93-794062c3a228",
+      "details": null
+    }
+  ]
+}

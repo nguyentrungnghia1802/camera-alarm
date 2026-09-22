@@ -1,0 +1,1 @@
+C:/Users/NTNghia/AppData/Local/Android/Sdk/platform-tools/adb.exe -s emulator-5554 shell am instrument -w -r -e class com.personal.cameraalarm.AlarmDeliveryPriorityInstrumentedTest com.personal.cameraalarm.test/androidx.test.runner.AndroidJUnitRunner

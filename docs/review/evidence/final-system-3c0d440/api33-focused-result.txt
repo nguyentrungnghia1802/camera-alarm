@@ -1,0 +1,53 @@
+INSTRUMENTATION_STATUS: class=com.personal.cameraalarm.AlarmSchedulerInstrumentedTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=
+com.personal.cameraalarm.AlarmSchedulerInstrumentedTest:
+INSTRUMENTATION_STATUS: test=tokenPendingIntentCanBeFoundAndCancelledWithoutCancellingAnotherToken
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.personal.cameraalarm.AlarmSchedulerInstrumentedTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=tokenPendingIntentCanBeFoundAndCancelledWithoutCancellingAnotherToken
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.personal.cameraalarm.AlarmStopInstrumentedTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=
+com.personal.cameraalarm.AlarmStopInstrumentedTest:
+INSTRUMENTATION_STATUS: test=secondStartCannotReplaceStopActionForActiveAlarm
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.personal.cameraalarm.AlarmStopInstrumentedTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=secondStartCannotReplaceStopActionForActiveAlarm
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.personal.cameraalarm.AlarmDeliveryPriorityInstrumentedTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=
+com.personal.cameraalarm.AlarmDeliveryPriorityInstrumentedTest:
+INSTRUMENTATION_STATUS: test=retryDeliveryDoesNotWaitForUnrelatedBackgroundBroadcast
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.personal.cameraalarm.AlarmDeliveryPriorityInstrumentedTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=retryDeliveryDoesNotWaitForUnrelatedBackgroundBroadcast
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: 22.478
+
+OK (3 tests)
+
+
+INSTRUMENTATION_CODE: -1

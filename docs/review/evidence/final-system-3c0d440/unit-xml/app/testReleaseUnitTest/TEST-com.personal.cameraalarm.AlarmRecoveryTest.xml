@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.personal.cameraalarm.AlarmRecoveryTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-09-22T02:22:55" hostname="ACERNITRO5-NTNG" time="0.079">
+  <properties/>
+  <testcase name="bootAndReceiverWaitForTriggerTransactionAndDoNotEraseNewState" classname="com.personal.cameraalarm.AlarmRecoveryTest" time="0.014"/>
+  <testcase name="crashAfterPersistBeforeScheduleRearmsOnHydrateAndRepeatedBootDoesNotResetIt" classname="com.personal.cameraalarm.AlarmRecoveryTest" time="0.003"/>
+  <testcase name="lateDeliveryWithinGraceWinsOnce" classname="com.personal.cameraalarm.AlarmRecoveryTest" time="0.003"/>
+  <testcase name="autonomousWatchdogRetriesOnceThenReleasesWithoutAnotherNotification" classname="com.personal.cameraalarm.AlarmRecoveryTest" time="0.016"/>
+  <testcase name="receiverDispatchFailureReleasesOwnership" classname="com.personal.cameraalarm.AlarmRecoveryTest" time="0.006"/>
+  <testcase name="everyFailureRetainsItsOwnerAfterRetirement" classname="com.personal.cameraalarm.AlarmRecoveryTest" time="0.005"/>
+  <testcase name="zeroDelayStillAllowsPlatformMinimumFuturityBeforeRecovery" classname="com.personal.cameraalarm.AlarmRecoveryTest" time="0.004"/>
+  <testcase name="monotonicDeadlineDoesNotExtendWhenWallClockMovesBack" classname="com.personal.cameraalarm.AlarmRecoveryTest" time="0.003"/>
+  <testcase name="missingWatchdogAndScheduleFailureNeverLeavePending" classname="com.personal.cameraalarm.AlarmRecoveryTest" time="0.001"/>
+  <testcase name="stopBetweenReceiverAndServicePreventsAudioAndPreservesNewToken" classname="com.personal.cameraalarm.AlarmRecoveryTest" time="0.002"/>
+  <testcase name="recoveryBudgetSurvivesProcessRestart" classname="com.personal.cameraalarm.AlarmRecoveryTest" time="0.002"/>
+  <testcase name="duplicateRecoveryAndOldStopCannotRetireReplacement" classname="com.personal.cameraalarm.AlarmRecoveryTest" time="0.006"/>
+  <testcase name="burstKeepsDeadlineAndSingleDelivery" classname="com.personal.cameraalarm.AlarmRecoveryTest" time="0.007"/>
+  <testcase name="revokeRegrantCannotResurrectRetiredToken" classname="com.personal.cameraalarm.AlarmRecoveryTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

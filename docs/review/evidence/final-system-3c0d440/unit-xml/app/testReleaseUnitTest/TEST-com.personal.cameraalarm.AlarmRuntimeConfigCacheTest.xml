@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.personal.cameraalarm.AlarmRuntimeConfigCacheTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-09-22T02:22:55" hostname="ACERNITRO5-NTNG" time="0.002">
+  <properties/>
+  <testcase name="coldStartReadReturnsSafeDefaultsWithoutWaitingForSettingsIo" classname="com.personal.cameraalarm.AlarmRuntimeConfigCacheTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

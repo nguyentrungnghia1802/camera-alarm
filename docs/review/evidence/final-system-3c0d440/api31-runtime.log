@@ -1,0 +1,229 @@
+--------- beginning of main
+09-22 09:26:11.253  2375  2755 I TestRunner: run started: 1 tests
+09-22 09:26:11.254  2375  2755 I TestRunner: started: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 09:26:11.463  2375  2755 I StopProbe: START_FIRST elapsed=51328
+09-22 09:26:11.536  2375  2375 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=test-first
+09-22 09:26:11.612  2375  2375 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=test-first epoch_ms=1790043971612 elapsed_ms=51478 session=0282f6a0-6b4b-48e1-a9d3-f8684cef4ac4 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 09:26:11.768  2375  2375 I CameraAlarm: ALARM_TIMING foreground_ms=280 token=test-first
+09-22 09:26:12.101  2375  2375 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 09:26:12.106  2375  2375 D CameraAlarm: Alarm sound:
+09-22 09:26:12.106  2375  2375 D CameraAlarm: selected key: alarm_warning_aloud
+09-22 09:26:12.106  2375  2375 D CameraAlarm: resolved resource: 2131296260
+09-22 09:26:12.106  2375  2375 D CameraAlarm: prepare result: success
+09-22 09:26:12.106  2375  2375 D CameraAlarm: play result: success
+09-22 09:26:12.106  2375  2375 I CameraAlarm: AUDIO_STARTED: token=test-first
+09-22 09:26:12.109  2375  2375 I CameraAlarm: AUDIO_STARTED token=test-first epoch_ms=1790043972109 elapsed_ms=51974 session=0282f6a0-6b4b-48e1-a9d3-f8684cef4ac4 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 09:26:12.109  2375  2375 I CameraAlarm: ALARM_TIMING runtime_started_ms=621 token=test-first
+09-22 09:26:12.399  2375  2375 I CameraAlarm: ALARMACTIVITY_CREATED: token=test-first
+09-22 09:26:12.727  2375  2755 I StopProbe: ACTIVITY_RESUMED elapsed=52593
+09-22 09:26:14.482  2375  2755 I StopProbe: MAIN_IDLE elapsed=54347
+09-22 09:26:14.500  2375  2755 I StopProbe: SEND_STOP elapsed=54366
+09-22 09:26:14.530  2375  2755 I StopProbe: SENT_STOP elapsed=54395
+09-22 09:26:14.562  2375  2375 I CameraAlarm: STOP_RECEIVER_FIRED: token=test-first
+09-22 09:26:14.655  2375  2375 D CameraAlarm: runtime stopped token=test-first
+09-22 09:26:14.723  2375  2755 I TestRunner: finished: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 09:26:14.927  2375  2375 D CameraAlarm: runtime stopped token=test-first
+09-22 09:26:15.689  2375  2755 I TestRunner: run finished: 1 tests, 0 failed, 0 ignored
+09-22 09:26:18.493  2994  3013 I TestRunner: run started: 1 tests
+09-22 09:26:18.495  2994  3013 I TestRunner: started: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 09:26:18.538  2994  3013 I StopProbe: START_FIRST elapsed=58403
+09-22 09:26:18.558  2994  2994 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=test-first
+09-22 09:26:18.597  2994  2994 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=test-first epoch_ms=1790043978597 elapsed_ms=58462 session=85362123-efef-45cf-a832-b18e0875aa89 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 09:26:18.608  2994  2994 I CameraAlarm: ALARM_TIMING foreground_ms=58 token=test-first
+09-22 09:26:18.661  2994  2994 I CameraAlarm: AUDIO_STARTED: key=alarm_default resId=2131296256
+09-22 09:26:18.661  2994  2994 D CameraAlarm: Alarm sound:
+09-22 09:26:18.661  2994  2994 D CameraAlarm: selected key: alarm_default
+09-22 09:26:18.661  2994  2994 D CameraAlarm: resolved resource: 2131296256
+09-22 09:26:18.661  2994  2994 D CameraAlarm: prepare result: success
+09-22 09:26:18.661  2994  2994 D CameraAlarm: play result: success
+09-22 09:26:18.662  2994  2994 I CameraAlarm: AUDIO_STARTED: token=test-first
+09-22 09:26:18.665  2994  2994 I CameraAlarm: AUDIO_STARTED token=test-first epoch_ms=1790043978665 elapsed_ms=58531 session=85362123-efef-45cf-a832-b18e0875aa89 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 09:26:18.666  2994  2994 I CameraAlarm: ALARM_TIMING runtime_started_ms=116 token=test-first
+09-22 09:26:18.918  2994  2994 I CameraAlarm: ALARMACTIVITY_CREATED: token=test-first
+09-22 09:26:19.379  2994  3013 I StopProbe: ACTIVITY_RESUMED elapsed=59245
+09-22 09:26:21.280  2994  3013 I StopProbe: MAIN_IDLE elapsed=61146
+09-22 09:26:21.390  2994  3013 I StopProbe: SEND_STOP elapsed=61256
+09-22 09:26:21.394  2994  3013 I StopProbe: SENT_STOP elapsed=61259
+09-22 09:26:21.397  2994  2994 I CameraAlarm: STOP_RECEIVER_FIRED: token=test-first
+09-22 09:26:21.501  2994  2994 D CameraAlarm: runtime stopped token=test-first
+09-22 09:26:21.548  2994  3013 I TestRunner: finished: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 09:26:21.557  2994  2994 D CameraAlarm: runtime stopped token=test-first
+09-22 09:26:22.820  2994  3013 I TestRunner: run finished: 1 tests, 0 failed, 0 ignored
+09-22 09:26:39.397  4063  4317 I TestRunner: run started: 28 tests
+09-22 09:26:39.404  4063  4317 I TestRunner: started: tokenPendingIntentCanBeFoundAndCancelledWithoutCancellingAnotherToken(com.personal.cameraalarm.AlarmSchedulerInstrumentedTest)
+09-22 09:26:39.417  4063  4317 I CameraAlarm: OS_ALARM_REGISTERED token=instrumented-test epoch_ms=1790043999417 elapsed_ms=79282 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=null delay_ms=null overdue_ms=null deadline_ms=1790044059411 mode=alarm_clock
+09-22 09:26:39.424  4063  4317 I TestRunner: finished: tokenPendingIntentCanBeFoundAndCancelledWithoutCancellingAnotherToken(com.personal.cameraalarm.AlarmSchedulerInstrumentedTest)
+09-22 09:26:39.429  4063  4317 I TestRunner: started: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 09:26:39.577  4063  4317 I StopProbe: START_FIRST elapsed=79443
+09-22 09:26:39.613  4063  4063 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=test-first
+09-22 09:26:39.672  4063  4063 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=test-first epoch_ms=1790043999672 elapsed_ms=79537 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 09:26:39.796  4063  4063 I CameraAlarm: ALARM_TIMING foreground_ms=197 token=test-first
+09-22 09:26:40.001  4063  4063 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 09:26:40.001  4063  4063 D CameraAlarm: Alarm sound:
+09-22 09:26:40.001  4063  4063 D CameraAlarm: selected key: alarm_warning_aloud
+09-22 09:26:40.001  4063  4063 D CameraAlarm: resolved resource: 2131296260
+09-22 09:26:40.001  4063  4063 D CameraAlarm: prepare result: success
+09-22 09:26:40.001  4063  4063 D CameraAlarm: play result: success
+09-22 09:26:40.001  4063  4063 I CameraAlarm: AUDIO_STARTED: token=test-first
+09-22 09:26:40.014  4063  4063 I CameraAlarm: AUDIO_STARTED token=test-first epoch_ms=1790044000014 elapsed_ms=79879 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 09:26:40.014  4063  4063 I CameraAlarm: ALARM_TIMING runtime_started_ms=415 token=test-first
+09-22 09:26:40.360  4063  4063 I CameraAlarm: ALARMACTIVITY_CREATED: token=test-first
+09-22 09:26:40.762  4063  4317 I StopProbe: ACTIVITY_RESUMED elapsed=80627
+09-22 09:26:42.648  4063  4317 I StopProbe: MAIN_IDLE elapsed=82514
+09-22 09:26:42.653  4063  4317 I StopProbe: SEND_STOP elapsed=82518
+09-22 09:26:42.659  4063  4063 I CameraAlarm: STOP_RECEIVER_FIRED: token=test-first
+09-22 09:26:42.660  4063  4317 I StopProbe: SENT_STOP elapsed=82525
+09-22 09:26:42.837  4063  4063 D CameraAlarm: runtime stopped token=test-first
+09-22 09:26:42.962  4063  4317 I TestRunner: finished: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 09:26:43.108  4063  4063 D CameraAlarm: runtime stopped token=test-first
+09-22 09:26:44.015  4063  4317 I TestRunner: started: realDataStoreInvalidatesAllPreviousBootStatesAndKeepsCurrentBootPending(com.personal.cameraalarm.BootStateStoreInstrumentedTest)
+09-22 09:26:44.448  4063  4317 I TestRunner: finished: realDataStoreInvalidatesAllPreviousBootStatesAndKeepsCurrentBootPending(com.personal.cameraalarm.BootStateStoreInstrumentedTest)
+09-22 09:26:44.456  4063  4317 I TestRunner: started: currentSnapshotTransactionCannotEraseNewBootWrite(com.personal.cameraalarm.BootStateStoreInstrumentedTest)
+09-22 09:26:45.210  4063  4317 I TestRunner: finished: currentSnapshotTransactionCannotEraseNewBootWrite(com.personal.cameraalarm.BootStateStoreInstrumentedTest)
+09-22 09:26:45.213  4063  4317 I TestRunner: started: triggerRuleDaoCrud(com.personal.cameraalarm.DatabaseInstrumentedTest)
+09-22 09:26:45.244  4063  4317 I TestRunner: finished: triggerRuleDaoCrud(com.personal.cameraalarm.DatabaseInstrumentedTest)
+09-22 09:26:45.247  4063  4317 I TestRunner: started: alertEventDaoPrunesByMaximumCountAndKeepsPaginationStable(com.personal.cameraalarm.DatabaseInstrumentedTest)
+09-22 09:26:45.415  4063  4317 I TestRunner: finished: alertEventDaoPrunesByMaximumCountAndKeepsPaginationStable(com.personal.cameraalarm.DatabaseInstrumentedTest)
+09-22 09:26:45.417  4063  4317 I TestRunner: started: alertEventDaoCapsSuppressedEventsWithoutRemovingTriggeredEvents(com.personal.cameraalarm.DatabaseInstrumentedTest)
+09-22 09:26:45.465  4063  4317 I TestRunner: finished: alertEventDaoCapsSuppressedEventsWithoutRemovingTriggeredEvents(com.personal.cameraalarm.DatabaseInstrumentedTest)
+09-22 09:26:45.472  4063  4317 I TestRunner: started: alertEventDaoPrunesEventsOutsideRetentionWindow(com.personal.cameraalarm.DatabaseInstrumentedTest)
+09-22 09:26:45.522  4063  4317 I TestRunner: finished: alertEventDaoPrunesEventsOutsideRetentionWindow(com.personal.cameraalarm.DatabaseInstrumentedTest)
+09-22 09:26:45.526  4063  4317 I TestRunner: started: ruleSettingsAndOemGuidanceResolveInEnglishAndVietnamese(com.personal.cameraalarm.LocalizationInstrumentedTest)
+09-22 09:26:45.555  4063  4317 I TestRunner: finished: ruleSettingsAndOemGuidanceResolveInEnglishAndVietnamese(com.personal.cameraalarm.LocalizationInstrumentedTest)
+09-22 09:26:45.559  4063  4317 I TestRunner: started: bootReceiverIsNotExportedToThirdPartyApps(com.personal.cameraalarm.ManifestSecurityInstrumentedTest)
+09-22 09:26:45.565  4063  4317 I TestRunner: finished: bootReceiverIsNotExportedToThirdPartyApps(com.personal.cameraalarm.ManifestSecurityInstrumentedTest)
+09-22 09:26:45.569  4063  4317 I TestRunner: started: lostOsDeliveryRetriesAutonomouslyAndLateCallbackCannotClaimReplacement(com.personal.cameraalarm.PendingDeliveryInstrumentedTest)
+09-22 09:26:45.608  4063  4317 I CameraAlarm: ALARM_PENDING_CREATED token=lost-delivery-85452428990 epoch_ms=1790044005608 elapsed_ms=85474 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=1790044006600 delay_ms=1000 overdue_ms=0 attempt=0
+09-22 09:26:45.612  4063  4317 I CameraAlarm: OS_ALARM_REGISTERED token=lost-delivery-85452428990 epoch_ms=1790044005612 elapsed_ms=85477 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=null delay_ms=null overdue_ms=null deadline_ms=1790044006600 mode=alarm_clock
+09-22 09:26:45.612  4063  4317 I CameraAlarm: EXACT_ALARM_SCHEDULED token=lost-delivery-85452428990 epoch_ms=1790044005612 elapsed_ms=85478 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=1790044006600 delay_ms=1000 overdue_ms=0 attempt=0
+09-22 09:26:56.610  4063  4364 I CameraAlarm: PENDING_RETIRED token=lost-delivery-85452428990 epoch_ms=1790044016610 elapsed_ms=96475 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=1790044006600 delay_ms=1000 overdue_ms=10010 Pending overdue; attempt=0
+09-22 09:26:56.610  4063  4364 I CameraAlarm: PENDING_RECOVERY token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d epoch_ms=1790044016610 elapsed_ms=96476 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=1790044016610 delay_ms=1000 overdue_ms=0 replaces=lost-delivery-85452428990
+09-22 09:26:56.619  4063  4364 I CameraAlarm: ALARM_PENDING_CREATED token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d epoch_ms=1790044016619 elapsed_ms=96484 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=1790044016610 delay_ms=1000 overdue_ms=9 attempt=1
+09-22 09:26:56.620  4063  4364 I CameraAlarm: OS_ALARM_REGISTERED token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d epoch_ms=1790044016620 elapsed_ms=96486 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=null delay_ms=null overdue_ms=null deadline_ms=1790044016610 mode=alarm_clock
+09-22 09:26:56.621  4063  4364 I CameraAlarm: EXACT_ALARM_SCHEDULED token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d epoch_ms=1790044016620 elapsed_ms=96486 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=1790044016610 delay_ms=1000 overdue_ms=10 attempt=1
+09-22 09:27:01.626  4063  4063 I CameraAlarm: ALARM_RECEIVER_ENTRY token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d epoch_ms=1790044021625 elapsed_ms=101491 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=null delay_ms=null overdue_ms=null elapsed_ms=101491
+09-22 09:27:01.632  4063  4366 I CameraAlarm: ALARM_RECEIVER_FIRED token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d epoch_ms=1790044021632 elapsed_ms=101497 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=1790044016610 delay_ms=1000 overdue_ms=5022 attempt=1
+09-22 09:27:01.638  4063  4366 I CameraAlarm: RINGING token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d epoch_ms=1790044021638 elapsed_ms=101504 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=1790044016610 delay_ms=1000 overdue_ms=5028 attempt=1
+09-22 09:27:01.643  4063  4366 I CameraAlarm: SERVICE_REQUESTED token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d epoch_ms=1790044021643 elapsed_ms=101508 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=1790044016610 delay_ms=1000 overdue_ms=5033 
+09-22 09:27:01.646  4063  4317 I CameraAlarm: STALE_ALARM token=null epoch_ms=1790044021646 elapsed_ms=101512 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=null delay_ms=null overdue_ms=null token=lost-delivery-85452428990
+09-22 09:27:01.659  4063  4063 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d
+09-22 09:27:01.659  4063  4063 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d epoch_ms=1790044021659 elapsed_ms=101524 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=1790044016610 delay_ms=1000 overdue_ms=5049 
+09-22 09:27:01.672  4063  4063 I CameraAlarm: ALARM_TIMING foreground_ms=28 token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d
+09-22 09:27:01.704  4063  4063 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 09:27:01.704  4063  4063 D CameraAlarm: Alarm sound:
+09-22 09:27:01.704  4063  4063 D CameraAlarm: selected key: alarm_warning_aloud
+09-22 09:27:01.704  4063  4063 D CameraAlarm: resolved resource: 2131296260
+09-22 09:27:01.704  4063  4063 D CameraAlarm: prepare result: success
+09-22 09:27:01.704  4063  4063 D CameraAlarm: play result: success
+09-22 09:27:01.704  4063  4063 I CameraAlarm: AUDIO_STARTED: token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d
+09-22 09:27:01.708  4063  4063 I CameraAlarm: AUDIO_STARTED token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d epoch_ms=1790044021708 elapsed_ms=101573 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=1790044016610 delay_ms=1000 overdue_ms=5098 
+09-22 09:27:01.708  4063  4063 I CameraAlarm: ALARM_TIMING runtime_started_ms=64 token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d
+09-22 09:27:01.709  4063  4063 I CameraAlarm: FULLSCREEN_INTENT_SENT: token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d
+09-22 09:27:01.784  4063  4063 I CameraAlarm: Direct startActivity called for token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d
+09-22 09:27:01.845  4063  4063 I CameraAlarm: ALARMACTIVITY_CREATED: token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d
+09-22 09:27:01.877  4063  4317 I TestRunner: finished: lostOsDeliveryRetriesAutonomouslyAndLateCallbackCannotClaimReplacement(com.personal.cameraalarm.PendingDeliveryInstrumentedTest)
+09-22 09:27:01.883  4063  4317 I TestRunner: started: prepare(com.personal.cameraalarm.RebootScenarioPreparation)
+09-22 09:27:01.909  4063  4317 E TestRunner: assumption failed: prepare(com.personal.cameraalarm.RebootScenarioPreparation)
+09-22 09:27:01.920  4063  4317 E TestRunner: ----- begin exception -----
+09-22 09:27:01.920  4063  4317 E TestRunner: org.junit.AssumptionViolatedException: got: <false>, expected: is <true>
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.Assume.assumeThat(Assume.java:106)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.Assume.assumeTrue(Assume.java:50)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at com.personal.cameraalarm.RebootScenarioPreparation$prepare$1.invokeSuspend(RebootScenarioPreparation.kt:20)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source:1)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source:1)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at com.personal.cameraalarm.RebootScenarioPreparation.prepare(RebootScenarioPreparation.kt:18)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at java.lang.reflect.Method.invoke(Native Method)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.Suite.runChild(Suite.java:128)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.Suite.runChild(Suite.java:27)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:68)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:59)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at androidx.test.runner.AndroidJUnitRunner.onStart(AndroidJUnitRunner.java:467)
+09-22 09:27:01.920  4063  4317 E TestRunner: 	at android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:2248)
+09-22 09:27:01.924  4063  4317 E TestRunner: ----- end exception -----
+09-22 09:27:01.928  4063  4317 I TestRunner: finished: prepare(com.personal.cameraalarm.RebootScenarioPreparation)
+09-22 09:27:01.934  4063  4317 I TestRunner: started: migration1To2PreservesRulesAndNormalizesPriorityInOldEvaluationOrder(com.personal.cameraalarm.RuleMigrationInstrumentedTest)
+09-22 09:27:02.110  4063  4063 D CameraAlarm: runtime stopped token=ecdeb09c-e1dc-4112-af7a-6fd698af8c2d
+09-22 09:27:02.170  4063  4317 I TestRunner: finished: migration1To2PreservesRulesAndNormalizesPriorityInOldEvaluationOrder(com.personal.cameraalarm.RuleMigrationInstrumentedTest)
+09-22 09:27:03.020  4063  4317 I TestRunner: started: maximumThreeRulesAndUniquePrioritiesAreEnforced(com.personal.cameraalarm.RuleRepositoryInstrumentedTest)
+09-22 09:27:03.092  4063  4317 I TestRunner: finished: maximumThreeRulesAndUniquePrioritiesAreEnforced(com.personal.cameraalarm.RuleRepositoryInstrumentedTest)
+09-22 09:27:03.095  4063  4317 I TestRunner: started: deleteDoesNotRenumberRemainingRules(com.personal.cameraalarm.RuleRepositoryInstrumentedTest)
+09-22 09:27:03.111  4063  4317 I TestRunner: finished: deleteDoesNotRenumberRemainingRules(com.personal.cameraalarm.RuleRepositoryInstrumentedTest)
+09-22 09:27:03.115  4063  4317 I TestRunner: started: editingToOccupiedPrioritySwapsAtomicallyAndPreservesCreatedAt(com.personal.cameraalarm.RuleRepositoryInstrumentedTest)
+09-22 09:27:03.144  4063  4317 I TestRunner: finished: editingToOccupiedPrioritySwapsAtomicallyAndPreservesCreatedAt(com.personal.cameraalarm.RuleRepositoryInstrumentedTest)
+09-22 09:27:03.148  4063  4317 I TestRunner: started: notificationActionsFollowLanguageEvenWhileAlarmIsActive(com.personal.cameraalarm.SelectedLanguageInstrumentedTest)
+09-22 09:27:04.686  4063  4063 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=test-language
+09-22 09:27:04.689  4063  4063 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=test-language epoch_ms=1790044024689 elapsed_ms=104554 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 09:27:04.714  4063  4063 I CameraAlarm: ALARM_TIMING foreground_ms=30 token=test-language
+09-22 09:27:04.755  4063  4063 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 09:27:04.755  4063  4063 D CameraAlarm: Alarm sound:
+09-22 09:27:04.755  4063  4063 D CameraAlarm: selected key: alarm_warning_aloud
+09-22 09:27:04.755  4063  4063 D CameraAlarm: resolved resource: 2131296260
+09-22 09:27:04.755  4063  4063 D CameraAlarm: prepare result: success
+09-22 09:27:04.755  4063  4063 D CameraAlarm: play result: success
+09-22 09:27:04.755  4063  4063 I CameraAlarm: AUDIO_STARTED: token=test-language
+09-22 09:27:04.766  4063  4063 I CameraAlarm: AUDIO_STARTED token=test-language epoch_ms=1790044024766 elapsed_ms=104631 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 09:27:04.766  4063  4063 I CameraAlarm: ALARM_TIMING runtime_started_ms=83 token=test-language
+09-22 09:27:05.543  4063  4063 I CameraAlarm: ALARMACTIVITY_CREATED: token=test-language
+09-22 09:27:06.022  4063  4063 I CameraAlarm: ALARMACTIVITY_CREATED: token=test-language
+09-22 09:27:06.225  4063  4063 I CameraAlarm: STOP_RECEIVER_FIRED: token=test-language
+09-22 09:27:06.586  4063  4063 D CameraAlarm: runtime stopped token=test-language
+09-22 09:27:07.219  4063  4317 I TestRunner: finished: notificationActionsFollowLanguageEvenWhileAlarmIsActive(com.personal.cameraalarm.SelectedLanguageInstrumentedTest)
+09-22 09:27:07.276  4063  4317 I TestRunner: started: selectedLanguageReachesActivityDialogAndMessages(com.personal.cameraalarm.SelectedLanguageInstrumentedTest)
+09-22 09:27:10.939  4063  4317 I TestRunner: finished: selectedLanguageReachesActivityDialogAndMessages(com.personal.cameraalarm.SelectedLanguageInstrumentedTest)
+09-22 09:27:10.948  4063  4317 I TestRunner: started: freshStoreUsesOfficialDefaultProfile(com.personal.cameraalarm.SettingsDefaultsInstrumentedTest)
+09-22 09:27:10.961  4063  4317 I TestRunner: finished: freshStoreUsesOfficialDefaultProfile(com.personal.cameraalarm.SettingsDefaultsInstrumentedTest)
+09-22 09:27:10.965  4063  4317 I TestRunner: started: existingV2StorePreservesFalseWhenUpgradedToV3(com.personal.cameraalarm.SettingsDefaultsInstrumentedTest)
+09-22 09:27:10.982  4063  4317 I TestRunner: finished: existingV2StorePreservesFalseWhenUpgradedToV3(com.personal.cameraalarm.SettingsDefaultsInstrumentedTest)
+09-22 09:27:10.987  4063  4317 I TestRunner: started: existingStoreWithoutVersionPreservesOldEffectiveDefaults(com.personal.cameraalarm.SettingsDefaultsInstrumentedTest)
+09-22 09:27:11.007  4063  4317 I TestRunner: finished: existingStoreWithoutVersionPreservesOldEffectiveDefaults(com.personal.cameraalarm.SettingsDefaultsInstrumentedTest)
+09-22 09:27:11.011  4063  4317 I TestRunner: started: resetPersistsOfficialDefaultsAcrossRepositoryRecreation(com.personal.cameraalarm.SettingsDefaultsInstrumentedTest)
+09-22 09:27:11.034  4063  4317 I TestRunner: finished: resetPersistsOfficialDefaultsAcrossRepositoryRecreation(com.personal.cameraalarm.SettingsDefaultsInstrumentedTest)
+09-22 09:27:11.037  4063  4317 I TestRunner: started: savingStaleSettingsDraftDoesNotDisableMonitoring(com.personal.cameraalarm.SettingsDefaultsInstrumentedTest)
+09-22 09:27:11.067  4063  4317 I TestRunner: finished: savingStaleSettingsDraftDoesNotDisableMonitoring(com.personal.cameraalarm.SettingsDefaultsInstrumentedTest)
+09-22 09:27:11.072  4063  4317 I TestRunner: started: transientReadErrorDoesNotEmitMonitoringOffDefaults(com.personal.cameraalarm.SettingsReadRecoveryInstrumentedTest)
+09-22 09:27:12.078  4063  4317 I TestRunner: finished: transientReadErrorDoesNotEmitMonitoringOffDefaults(com.personal.cameraalarm.SettingsReadRecoveryInstrumentedTest)
+09-22 09:27:12.081  4063  4317 I TestRunner: started: persistedSettingsAndRulesDrivePipelineWhileMonitoringOffSuppresses(com.personal.cameraalarm.V1IntegrationInstrumentedTest)
+09-22 09:27:12.155  4063  4317 I CameraAlarm: TRIGGER_MATCHED token=a26c4221-3d90-4af4-9e9c-1133179011bc epoch_ms=1790044032155 elapsed_ms=112020 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=null delay_ms=null overdue_ms=null rule=instrumented-runtime-rule package=com.camera.instrumented
+09-22 09:27:12.167  4063  4317 I CameraAlarm: ALARM_PENDING_CREATED token=a26c4221-3d90-4af4-9e9c-1133179011bc epoch_ms=1790044032167 elapsed_ms=112032 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=1790044037156 delay_ms=5000 overdue_ms=0 attempt=0
+09-22 09:27:12.172  4063  4317 I CameraAlarm: OS_ALARM_REGISTERED token=a26c4221-3d90-4af4-9e9c-1133179011bc epoch_ms=1790044032172 elapsed_ms=112037 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=null delay_ms=null overdue_ms=null deadline_ms=1790044037156 mode=alarm_clock
+09-22 09:27:12.172  4063  4317 I CameraAlarm: EXACT_ALARM_SCHEDULED token=a26c4221-3d90-4af4-9e9c-1133179011bc epoch_ms=1790044032172 elapsed_ms=112037 session=0aa6fbbd-1aff-43ca-b057-45b377a3c4e2 deadline_ms=1790044037156 delay_ms=5000 overdue_ms=0 attempt=0
+09-22 09:27:12.173  4063  4317 D CameraAlarm: decision=SCHEDULED source=com.camera.instrumented
+09-22 09:27:12.294  4063  4317 I TestRunner: finished: persistedSettingsAndRulesDrivePipelineWhileMonitoringOffSuppresses(com.personal.cameraalarm.V1IntegrationInstrumentedTest)
+09-22 09:27:12.297  4063  4317 I TestRunner: started: settingsPersistAcrossRepositoryRecreation(com.personal.cameraalarm.V1IntegrationInstrumentedTest)
+09-22 09:27:12.389  4063  4317 I TestRunner: finished: settingsPersistAcrossRepositoryRecreation(com.personal.cameraalarm.V1IntegrationInstrumentedTest)
+09-22 09:27:12.392  4063  4317 I TestRunner: started: pendingStatePersistsButOrphanRingingStateIsCleared(com.personal.cameraalarm.V1IntegrationInstrumentedTest)
+09-22 09:27:12.423  4063  4317 I TestRunner: finished: pendingStatePersistsButOrphanRingingStateIsCleared(com.personal.cameraalarm.V1IntegrationInstrumentedTest)
+09-22 09:27:12.425  4063  4317 I TestRunner: started: roomRulesAndHistoryPersistAcrossDatabaseReopen(com.personal.cameraalarm.V1IntegrationInstrumentedTest)
+09-22 09:27:12.466  4063  4317 I TestRunner: finished: roomRulesAndHistoryPersistAcrossDatabaseReopen(com.personal.cameraalarm.V1IntegrationInstrumentedTest)
+09-22 09:27:12.469  4063  4317 I TestRunner: run finished: 28 tests, 0 failed, 0 ignored

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.personal.cameraalarm.AlarmSoundTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-09-22T02:22:55" hostname="ACERNITRO5-NTNG" time="0.007">
+  <properties/>
+  <testcase name="catalogContainsAllBundledSounds" classname="com.personal.cameraalarm.AlarmSoundTest" time="0.003"/>
+  <testcase name="isValidKeyIdentifiesCorrectKeys" classname="com.personal.cameraalarm.AlarmSoundTest" time="0.0"/>
+  <testcase name="validKeyResolvesExpectedSound" classname="com.personal.cameraalarm.AlarmSoundTest" time="0.0"/>
+  <testcase name="nullOrBlankKeyFallsBackToDefaultSound" classname="com.personal.cameraalarm.AlarmSoundTest" time="0.001"/>
+  <testcase name="defaultSoundResolvesCorrectly" classname="com.personal.cameraalarm.AlarmSoundTest" time="0.0"/>
+  <testcase name="productionAlarmWithNullSoundKeyPassesNullToPlayer" classname="com.personal.cameraalarm.AlarmSoundTest" time="0.001"/>
+  <testcase name="productionAlarmUsesSelectedLogicalKey" classname="com.personal.cameraalarm.AlarmSoundTest" time="0.0"/>
+  <testcase name="unknownKeyFallsBackToDefaultSound" classname="com.personal.cameraalarm.AlarmSoundTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

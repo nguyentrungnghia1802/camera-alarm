@@ -1,0 +1,15 @@
+{
+  "boot": 8,
+  "state": "ringing",
+  "at": 1790044564259,
+  "owner_nonce": "29ae2f5d-2d33-4d73-8b04-8913f99398ef",
+  "token": "8ce7c7d6-2e00-46f5-baaa-289446b80212",
+  "source": "com.android.shell",
+  "notification_key": "0|com.android.shell|2020|fsv-core-1|2000",
+  "rule": "reboot-e2e",
+  "received": 1790044558684,
+  "deadline": 1790044561699,
+  "configured_delay": 3000,
+  "title": "Camera",
+  "preview": "camera reboot probe first"
+}

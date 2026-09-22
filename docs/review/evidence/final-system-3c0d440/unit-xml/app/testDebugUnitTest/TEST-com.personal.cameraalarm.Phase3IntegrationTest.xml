@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.personal.cameraalarm.Phase3IntegrationTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-09-22T02:22:54" hostname="ACERNITRO5-NTNG" time="0.039">
+  <properties/>
+  <testcase name="scenarioH_bootReconciliationClearsOrphanState" classname="com.personal.cameraalarm.Phase3IntegrationTest" time="0.004"/>
+  <testcase name="scenarioC_outsideOvernightRangeSuppressed" classname="com.personal.cameraalarm.Phase3IntegrationTest" time="0.021"/>
+  <testcase name="scenarioD_boundaryWithDelayFires" classname="com.personal.cameraalarm.Phase3IntegrationTest" time="0.002"/>
+  <testcase name="scenarioF_previewFollowedByRealAlarmStopsPreview" classname="com.personal.cameraalarm.Phase3IntegrationTest" time="0.0"/>
+  <testcase name="scenarioJ_runtimeControllerStartsGracefully" classname="com.personal.cameraalarm.Phase3IntegrationTest" time="0.002"/>
+  <testcase name="scenarioA_alwaysActiveWithSelectedSound" classname="com.personal.cameraalarm.Phase3IntegrationTest" time="0.002"/>
+  <testcase name="scenarioB_insideOvernightActiveRange" classname="com.personal.cameraalarm.Phase3IntegrationTest" time="0.003"/>
+  <testcase name="scenarioE_outsideEventFollowedByActiveEvent" classname="com.personal.cameraalarm.Phase3IntegrationTest" time="0.003"/>
+  <testcase name="scenarioI_nonXiaomiAdvisorFallback" classname="com.personal.cameraalarm.Phase3IntegrationTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

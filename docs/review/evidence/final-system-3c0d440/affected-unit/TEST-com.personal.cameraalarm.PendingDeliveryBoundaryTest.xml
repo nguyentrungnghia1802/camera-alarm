@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.personal.cameraalarm.PendingDeliveryBoundaryTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-09-22T05:32:24" hostname="ACERNITRO5-NTNG" time="0.024">
+  <properties/>
+  <testcase name="watchdogBeforeGraceKeepsOriginalDeadlineAndBurstSuppression" classname="com.personal.cameraalarm.PendingDeliveryBoundaryTest" time="0.004"/>
+  <testcase name="callbackQueuedDuringRetirementCannotClaimReplacement" classname="com.personal.cameraalarm.PendingDeliveryBoundaryTest" time="0.006"/>
+  <testcase name="watchdogWinningAtOrAfterGraceTransfersExclusiveOwnership" classname="com.personal.cameraalarm.PendingDeliveryBoundaryTest" time="0.003"/>
+  <testcase name="callbackWinningBeforeAtOrAfterGraceClaimsExactlyOnce" classname="com.personal.cameraalarm.PendingDeliveryBoundaryTest" time="0.005"/>
+  <testcase name="recoveryQueuedDuringCallbackCannotInvalidateRingingOwner" classname="com.personal.cameraalarm.PendingDeliveryBoundaryTest" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,17 @@
+Verifies
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): true
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1
+Signer #1 certificate DN: CN=Camera Alarm Personal Release, OU=Personal, O=Camera Alarm, L=Bangkok, C=TH
+Signer #1 certificate SHA-256 digest: e6f06f695b13d98150dba8a718b923f54d93ddd47901f47c64f27b9586f93900
+Signer #1 certificate SHA-1 digest: 4fb71a91c901d6becaa9a05e102525e4bd509401
+Signer #1 certificate MD5 digest: 8c4d5d6f7275c852b4dfc8a8b5b0470a
+Signer #1 key algorithm: RSA
+Signer #1 key size (bits): 4096
+Signer #1 public key SHA-256 digest: 7a5d382c89f3575c9b027f17a3545934dd95f3250c7932b93144aa9c673fc572
+Signer #1 public key SHA-1 digest: c1b68dd717192c0c16031aae104290a8c24a86c2
+Signer #1 public key MD5 digest: 51f327f582fb76421a9ed867cb187730

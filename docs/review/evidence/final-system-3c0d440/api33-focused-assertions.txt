@@ -1,0 +1,1 @@
+PASS: 3/3 targeted instrumentation cases; runtime DataStore Idle; no CameraAlarmService or active alarm MediaPlayer after cleanup. Tested source/APK hashes unchanged.

@@ -1,0 +1,6 @@
+cold-1: PASS
+warm-1: PASS
+cold-2: PASS
+warm-2: PASS
+cold-3: PASS
+warm-3: PASS

@@ -1,0 +1,82 @@
+[
+  {
+    "stage": "ALARM_PENDING_CREATED",
+    "token": "lost-delivery-66264768900",
+    "epoch": 1790050060697,
+    "elapsed": 66298,
+    "deadline": "1790050061666",
+    "line": "09-22 11:07:40.697  2595  3197 I CameraAlarm: ALARM_PENDING_CREATED token=lost-delivery-66264768900 epoch_ms=1790050060697 elapsed_ms=66298 session=a617eb4a-9908-4a90-92f3-67d2e1cc2c90 deadline_ms=1790050061666 delay_ms=1000 overdue_ms=0 attempt=0"
+  },
+  {
+    "stage": "OS_ALARM_REGISTERED",
+    "token": "lost-delivery-66264768900",
+    "epoch": 1790050060702,
+    "elapsed": 66303,
+    "deadline": "null",
+    "line": "09-22 11:07:40.702  2595  3197 I CameraAlarm: OS_ALARM_REGISTERED token=lost-delivery-66264768900 epoch_ms=1790050060702 elapsed_ms=66303 session=a617eb4a-9908-4a90-92f3-67d2e1cc2c90 deadline_ms=null delay_ms=null overdue_ms=null deadline_ms=1790050061666 mode=alarm_clock"
+  },
+  {
+    "stage": "PENDING_RETIRED",
+    "token": "lost-delivery-66264768900",
+    "epoch": 1790050071703,
+    "elapsed": 77304,
+    "deadline": "1790050061666",
+    "line": "09-22 11:07:51.703  2595  3200 I CameraAlarm: PENDING_RETIRED token=lost-delivery-66264768900 epoch_ms=1790050071703 elapsed_ms=77304 session=a617eb4a-9908-4a90-92f3-67d2e1cc2c90 deadline_ms=1790050061666 delay_ms=1000 overdue_ms=10037 Pending overdue; attempt=0"
+  },
+  {
+    "stage": "PENDING_RECOVERY",
+    "token": "8d993295-edf4-4cb7-bffa-5f2c4a136fca",
+    "epoch": 1790050071705,
+    "elapsed": 77306,
+    "deadline": "1790050071704",
+    "line": "09-22 11:07:51.705  2595  3200 I CameraAlarm: PENDING_RECOVERY token=8d993295-edf4-4cb7-bffa-5f2c4a136fca epoch_ms=1790050071705 elapsed_ms=77306 session=a617eb4a-9908-4a90-92f3-67d2e1cc2c90 deadline_ms=1790050071704 delay_ms=1000 overdue_ms=1 replaces=lost-delivery-66264768900"
+  },
+  {
+    "stage": "ALARM_PENDING_CREATED",
+    "token": "8d993295-edf4-4cb7-bffa-5f2c4a136fca",
+    "epoch": 1790050071717,
+    "elapsed": 77318,
+    "deadline": "1790050071704",
+    "line": "09-22 11:07:51.717  2595  3200 I CameraAlarm: ALARM_PENDING_CREATED token=8d993295-edf4-4cb7-bffa-5f2c4a136fca epoch_ms=1790050071717 elapsed_ms=77318 session=a617eb4a-9908-4a90-92f3-67d2e1cc2c90 deadline_ms=1790050071704 delay_ms=1000 overdue_ms=13 attempt=1"
+  },
+  {
+    "stage": "OS_ALARM_REGISTERED",
+    "token": "8d993295-edf4-4cb7-bffa-5f2c4a136fca",
+    "epoch": 1790050071719,
+    "elapsed": 77321,
+    "deadline": "null",
+    "line": "09-22 11:07:51.719  2595  3200 I CameraAlarm: OS_ALARM_REGISTERED token=8d993295-edf4-4cb7-bffa-5f2c4a136fca epoch_ms=1790050071719 elapsed_ms=77321 session=a617eb4a-9908-4a90-92f3-67d2e1cc2c90 deadline_ms=null delay_ms=null overdue_ms=null deadline_ms=1790050071704 mode=alarm_clock"
+  },
+  {
+    "stage": "ALARM_RECEIVER_ENTRY",
+    "token": "8d993295-edf4-4cb7-bffa-5f2c4a136fca",
+    "epoch": 1790050076735,
+    "elapsed": 82336,
+    "deadline": "null",
+    "line": "09-22 11:07:56.735  2595  2595 I CameraAlarm: ALARM_RECEIVER_ENTRY token=8d993295-edf4-4cb7-bffa-5f2c4a136fca epoch_ms=1790050076735 elapsed_ms=82336 session=a617eb4a-9908-4a90-92f3-67d2e1cc2c90 deadline_ms=null delay_ms=null overdue_ms=null elapsed_ms=82336"
+  },
+  {
+    "stage": "RINGING",
+    "token": "8d993295-edf4-4cb7-bffa-5f2c4a136fca",
+    "epoch": 1790050076757,
+    "elapsed": 82358,
+    "deadline": "1790050071704",
+    "line": "09-22 11:07:56.757  2595  3220 I CameraAlarm: RINGING token=8d993295-edf4-4cb7-bffa-5f2c4a136fca epoch_ms=1790050076757 elapsed_ms=82358 session=a617eb4a-9908-4a90-92f3-67d2e1cc2c90 deadline_ms=1790050071704 delay_ms=1000 overdue_ms=5053 attempt=1"
+  },
+  {
+    "stage": "STALE_ALARM",
+    "token": "null",
+    "epoch": 1790050076783,
+    "elapsed": 82384,
+    "deadline": "null",
+    "line": "09-22 11:07:56.783  2595  3197 I CameraAlarm: STALE_ALARM token=null epoch_ms=1790050076783 elapsed_ms=82384 session=a617eb4a-9908-4a90-92f3-67d2e1cc2c90 deadline_ms=null delay_ms=null overdue_ms=null token=lost-delivery-66264768900"
+  },
+  {
+    "stage": "AUDIO_STARTED",
+    "token": "8d993295-edf4-4cb7-bffa-5f2c4a136fca",
+    "epoch": 1790050077929,
+    "elapsed": 83530,
+    "deadline": "1790050071704",
+    "line": "09-22 11:07:57.931  2595  2595 I CameraAlarm: AUDIO_STARTED token=8d993295-edf4-4cb7-bffa-5f2c4a136fca epoch_ms=1790050077929 elapsed_ms=83530 session=a617eb4a-9908-4a90-92f3-67d2e1cc2c90 deadline_ms=1790050071704 delay_ms=1000 overdue_ms=6225 "
+  }
+]

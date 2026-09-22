@@ -1,0 +1,30 @@
+ACTIVITY MANAGER SERVICES (dumpsys activity services)
+  Last ANR service:
+ServiceRecord{8854d21 u0 com.google.android.as/com.google.android.apps.miphone.aiai.captions.SystemCaptionsManagerService}
+    intent={act=android.service.systemcaptions.SystemCaptionsManagerService cmp=com.google.android.as/com.google.android.apps.miphone.aiai.captions.SystemCaptionsManagerService}
+    packageName=com.google.android.as
+    processName=com.google.android.as
+    baseDir=/product/priv-app/DevicePersonalizationPrebuiltPixel2021/DevicePersonalizationPrebuiltPixel2021.apk
+    dataDir=/data/user/0/com.google.android.as
+    app=ProcessRecord{955ad1 1533:com.google.android.as/u0a118}
+    allowWhileInUsePermissionInFgs=true
+    recentCallingPackage=android
+    recentCallingUid=1000
+    allowStartForeground=PROC_STATE_PERSISTENT
+    startForegroundCount=0
+    infoAllowStartForeground=[callingPackage: android; callingUid: 1000; uidState: PER ; intent: Intent { act=android.service.systemcaptions.SystemCaptionsManagerService cmp=com.google.android.as/com.google.android.apps.miphone.aiai.captions.SystemCaptionsManagerService }; code:PROC_STATE_PERSISTENT; tempAllowListReason:<broadcast:1000:android.intent.action.TIME_SET,reason:,reasonCode:TIME_CHANGED,duration:20000,callingUid:1000>; targetSdkVersion:33; callerTargetSdkVersion:33; startForegroundCount:0; bindFromPackage:null]
+    createTime=-20s178ms startingBgTimeout=--
+    lastActivity=-20s65ms restartTime=-20s65ms createdFromFg=true
+    executeNesting=2 executeFg=true executingStart=-20s63ms
+    Bindings:
+    * IntentBindRecord{1298dd2 CREATE}:
+      intent={act=android.service.systemcaptions.SystemCaptionsManagerService cmp=com.google.android.as/com.google.android.apps.miphone.aiai.captions.SystemCaptionsManagerService}
+      binder=null
+      requested=true received=false hasBound=true doRebind=false
+      * Client AppBindRecord{a538ea3 ProcessRecord{4b4375c 506:system/1000}}
+        Per-process Connections:
+          ConnectionRecord{741b270 u0 CR FGS CAPS com.google.android.as/com.google.android.apps.miphone.aiai.captions.SystemCaptionsManagerService:@b1fdcb3}
+    All Connections:
+      ConnectionRecord{741b270 u0 CR FGS CAPS com.google.android.as/com.google.android.apps.miphone.aiai.captions.SystemCaptionsManagerService:@b1fdcb3}
+
+  (nothing)

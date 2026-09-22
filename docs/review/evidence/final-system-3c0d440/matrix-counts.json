@@ -1,0 +1,30 @@
+[
+  {
+    "api": 31,
+    "total": 28,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 1
+  },
+  {
+    "api": 33,
+    "total": 28,
+    "failed": 1,
+    "errors": 0,
+    "skipped": 1
+  },
+  {
+    "api": 34,
+    "total": 28,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 1
+  },
+  {
+    "api": 36,
+    "total": 28,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 1
+  }
+]

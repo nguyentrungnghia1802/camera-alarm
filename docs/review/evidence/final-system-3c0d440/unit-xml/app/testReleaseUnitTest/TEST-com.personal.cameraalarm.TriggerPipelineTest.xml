@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.personal.cameraalarm.TriggerPipelineTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-09-22T02:22:55" hostname="ACERNITRO5-NTNG" time="0.051">
+  <properties/>
+  <testcase name="rejectsWrongPackageDuplicateAndSubmitsMatchingRuleOnce" classname="com.personal.cameraalarm.TriggerPipelineTest" time="0.004"/>
+  <testcase name="enabledRulesDefineMultipleAllowedPackagesInsteadOfGlobalSource" classname="com.personal.cameraalarm.TriggerPipelineTest" time="0.006"/>
+  <testcase name="boundaryAcceptedAt065959SchedulesEvenIfDelayedPast0700" classname="com.personal.cameraalarm.TriggerPipelineTest" time="0.007"/>
+  <testcase name="cooldownSuppressionIsMappedToSuppressedCooldownDecision" classname="com.personal.cameraalarm.TriggerPipelineTest" time="0.004"/>
+  <testcase name="historyFailureDoesNotBreakScheduledAlarmPath" classname="com.personal.cameraalarm.TriggerPipelineTest" time="0.005"/>
+  <testcase name="wrongPackageContentIsNeverPassedToPersistentHistory" classname="com.personal.cameraalarm.TriggerPipelineTest" time="0.004"/>
+  <testcase name="monitoringOffAndNoMatchNeverSubmit" classname="com.personal.cameraalarm.TriggerPipelineTest" time="0.006"/>
+  <testcase name="disabledRulePackageIsPrivateAndSamePackageRulesUsePriority" classname="com.personal.cameraalarm.TriggerPipelineTest" time="0.005"/>
+  <testcase name="selectedPackageStillPersistsHistory" classname="com.personal.cameraalarm.TriggerPipelineTest" time="0.005"/>
+  <testcase name="outsideHoursEventIsSuppressedAndDoesNotMarkDuplicate" classname="com.personal.cameraalarm.TriggerPipelineTest" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

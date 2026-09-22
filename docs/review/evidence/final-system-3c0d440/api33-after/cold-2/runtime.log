@@ -1,0 +1,200 @@
+--------- beginning of system
+09-22 12:37:01.523   493   733 W ActivityManager: Slow operation: 67ms so far, now at startProcess: done creating new process record
+09-22 12:37:01.524   493   733 W ActivityManager: Slow operation: 68ms so far, now at startProcess: stepping in to startProcess
+09-22 12:37:01.525   493   733 W ActivityManager: Slow operation: 69ms so far, now at startProcess: done starting proc!
+09-22 12:37:01.601   493  2130 I ActivityManager: Force stopping com.personal.cameraalarm appid=10174 user=0: start instr
+09-22 12:37:01.667   493   528 W ActivityManager: Slow operation: 143ms so far, now at startProcess: done updating battery stats
+09-22 12:37:01.668   493   528 W ActivityManager: Slow operation: 144ms so far, now at startProcess: building log message
+09-22 12:37:01.668   493   528 I ActivityManager: Start proc 2576:com.google.android.as.oss/u0a114 for service {com.google.android.as.oss/com.google.android.apps.miphone.astrea.grpc.AstreaGrpcService}
+09-22 12:37:01.668   493   528 W ActivityManager: Slow operation: 144ms so far, now at startProcess: starting to update pids map
+09-22 12:37:01.668   493   528 W ActivityManager: Slow operation: 144ms so far, now at startProcess: done updating pids map
+09-22 12:37:01.668   493   528 W ActivityManager: Slow operation: 57ms so far, now at startProcess: asking zygote to start proc
+09-22 12:37:01.722   493   528 W ActivityManager: Slow operation: 111ms so far, now at startProcess: returned from zygote!
+09-22 12:37:01.732   493   528 W ActivityManager: Slow operation: 121ms so far, now at startProcess: done updating battery stats
+09-22 12:37:01.732   493   528 W ActivityManager: Slow operation: 121ms so far, now at startProcess: building log message
+09-22 12:37:01.732   493   528 I ActivityManager: Start proc 2594:com.personal.cameraalarm/u0a174 for added application com.personal.cameraalarm
+09-22 12:37:01.732   493   528 W ActivityManager: Slow operation: 121ms so far, now at startProcess: starting to update pids map
+09-22 12:37:01.733   493   528 W ActivityManager: Slow operation: 122ms so far, now at startProcess: done updating pids map
+09-22 12:37:02.803   493   527 W BroadcastQueue: Exported Denial: sending Intent { act=android.net.conn.CONNECTIVITY_CHANGE flg=0x4200010 (has extras) }, action: android.net.conn.CONNECTIVITY_CHANGE from null (uid=-1) due to receiver ProcessRecord{20767ae 1923:com.google.android.youtube/u0a138} (uid 10138) not specifying RECEIVER_EXPORTED
+--------- beginning of main
+09-22 12:37:03.238  1169  1281 I AlarmManager: set [name: SystemMemoryCache type: 2 triggerAtMillis: 315360069749 windowMillis: -1 intervalMillis: 0]
+09-22 12:37:03.509   493  2025 W ActivityManager: Receiver with filter android.content.IntentFilter@99b6d52 already registered for pid 2036, callerPackage is com.google.android.ims
+09-22 12:37:04.000   493   528 W ActivityManager: Slow operation: 53ms so far, now at startProcess: returned from zygote!
+09-22 12:37:04.000   493   528 W ActivityManager: Slow operation: 54ms so far, now at startProcess: done updating battery stats
+09-22 12:37:04.000   493   528 W ActivityManager: Slow operation: 54ms so far, now at startProcess: building log message
+09-22 12:37:04.001   493   528 I ActivityManager: Start proc 2717:com.android.chrome/u0a125 for service {com.android.chrome/org.chromium.chrome.browser.customtabs.CustomTabsConnectionService}
+09-22 12:37:04.001   493   528 W ActivityManager: Slow operation: 54ms so far, now at startProcess: starting to update pids map
+09-22 12:37:04.001   493   528 W ActivityManager: Slow operation: 54ms so far, now at startProcess: done updating pids map
+09-22 12:37:04.611   686   686 W AlarmManager: Unrecognized alarm listener com.google.android.systemui.smartspace.KeyguardZenAlarmViewController$showNextAlarm$1@ceb69c7
+09-22 12:37:04.611   686   686 W AlarmManager: Unrecognized alarm listener com.google.android.systemui.smartspace.KeyguardZenAlarmViewController$showNextAlarm$1@ceb69c7
+09-22 12:37:04.814   686   686 W AlarmManager: Unrecognized alarm listener com.google.android.systemui.smartspace.KeyguardZenAlarmViewController$showNextAlarm$1@ceb69c7
+09-22 12:37:04.831   686   686 W AlarmManager: Unrecognized alarm listener com.google.android.systemui.smartspace.KeyguardZenAlarmViewController$showNextAlarm$1@ceb69c7
+09-22 12:37:05.629   493  1985 W AlarmManager: Window length 1383505805528178432ms too long; limiting to 1 day
+09-22 12:37:07.084   493  1985 W ActivityManager: Unable to start service Intent { act=com.google.android.gms.home.service.START pkg=com.google.android.gms } U=0: not found
+09-22 12:37:07.090   493  1985 W ActivityManager: Unbind failed: could not find connection for android.os.BinderProxy@75ee845
+09-22 12:37:07.244   493   528 W ActivityManager: Slow operation: 113ms so far, now at startProcess: asking zygote to start proc
+09-22 12:37:07.261   493   528 W ActivityManager: Slow operation: 130ms so far, now at startProcess: returned from zygote!
+09-22 12:37:07.357   493   528 W ActivityManager: Slow operation: 226ms so far, now at startProcess: done updating battery stats
+09-22 12:37:07.358   493   528 W ActivityManager: Slow operation: 227ms so far, now at startProcess: building log message
+09-22 12:37:07.358   493   528 I ActivityManager: Start proc 2852:com.google.android.projection.gearhead:car/u0a108 for broadcast {com.google.android.projection.gearhead/com.google.android.apps.auto.carservice.gmscorecompatstub.StubWirelessUuidRegistrationReceiver}
+09-22 12:37:07.358   493   528 W ActivityManager: Slow operation: 227ms so far, now at startProcess: starting to update pids map
+09-22 12:37:07.359   493   528 W ActivityManager: Slow operation: 228ms so far, now at startProcess: done updating pids map
+09-22 12:37:07.371  1169  1169 I AlarmManager: set [name: SystemMemoryCache type: 2 triggerAtMillis: 315360073881 windowMillis: -1 intervalMillis: 0]
+09-22 12:37:07.822  1354  2178 I AlarmManager: setExactAndAllowWhileIdle [name: RemindersNSREFRESH_TIME_REMINDERS_ALARM type: 0 triggerAtMillis: 1790096400000]
+09-22 12:37:07.866   493  1726 I BroadcastQueue: BOOT_COMPLETED_BROADCAST_COMPLETION_LATENCY_REPORTED action:android.intent.action.LOCKED_BOOT_COMPLETED dispatchLatency:101 completeLatency:26760 dispatchRealLatency:101 completeRealLatency:26760 receiversSize:10 userId:0 userType:android.os.usertype.full.SYSTEM
+09-22 12:37:08.638   493  2281 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+09-22 12:37:08.660   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:08.661   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+09-22 12:37:08.661   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:09.220   493   563 W AlarmManager: Window length 1383505805528177920ms too long; limiting to 1 day
+09-22 12:37:10.426   493   528 I ActivityManager: Start proc 2932:com.android.traceur/u0a101 for broadcast {com.android.traceur/com.android.traceur.Receiver}
+09-22 12:37:10.576   493  1726 W AlarmManager: No in-flight alarm for listener android.os.BinderProxy@63c28b6
+09-22 12:37:11.721   493   826 W BroadcastQueue: Target SDK mismatch: receiver ActivityInfo{eadbe21 com.google.android.apps.photos.actionqueue.impl.SystemReceiver} targets 33 but delivery restricted to [0, 23] broadcasting Intent { act=android.net.conn.CONNECTIVITY_CHANGE flg=0x4200010 (has extras) } from android (pid=493, uid=1000) to com.google.android.apps.photos/.actionqueue.impl.SystemReceiver
+09-22 12:37:11.724   493   527 W BroadcastQueue: Target SDK mismatch: receiver ActivityInfo{598d134 com.google.android.apps.photos.jobqueue.JobServiceBroadcastReceiver} targets 33 but delivery restricted to [0, 23] broadcasting Intent { act=android.net.conn.CONNECTIVITY_CHANGE flg=0x4200010 (has extras) } from android (pid=493, uid=1000) to com.google.android.apps.photos/.jobqueue.JobServiceBroadcastReceiver
+09-22 12:37:11.724   493   527 W BroadcastQueue: Target SDK mismatch: receiver ActivityInfo{4071b5d com.google.android.gms.gcm.ServiceAutoStarter} targets 33 but delivery restricted to [0, 23] broadcasting Intent { act=android.net.conn.CONNECTIVITY_CHANGE flg=0x4200010 (has extras) } from android (pid=493, uid=1000) to com.google.android.gms/.gcm.ServiceAutoStarter
+09-22 12:37:11.724   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+09-22 12:37:11.724   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:11.738   493   528 I ActivityManager: Start proc 2996:android.process.media/u0a76 for content provider {com.android.providers.downloads/com.android.providers.downloads.DownloadProvider}
+09-22 12:37:11.892   493  2281 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+09-22 12:37:11.892   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:11.949   493   528 W ActivityManager: Slow operation: 56ms so far, now at startProcess: returned from zygote!
+09-22 12:37:11.950   493   528 W ActivityManager: Slow operation: 57ms so far, now at startProcess: done updating battery stats
+09-22 12:37:11.950   493   528 W ActivityManager: Slow operation: 57ms so far, now at startProcess: building log message
+09-22 12:37:11.950   493   528 I ActivityManager: Start proc 3014:com.android.externalstorage/u0a73 for broadcast {com.android.externalstorage/com.android.externalstorage.MountReceiver}
+09-22 12:37:11.950   493   528 W ActivityManager: Slow operation: 57ms so far, now at startProcess: starting to update pids map
+09-22 12:37:11.950   493   528 W ActivityManager: Slow operation: 57ms so far, now at startProcess: done updating pids map
+09-22 12:37:12.042  1169  2888 I AlarmManager: setExactAndAllowWhileIdle [name: GCM_CONN_ALARM type: 2 triggerAtMillis: 83232]
+09-22 12:37:14.002   493   528 I ActivityManager: Start proc 3104:com.google.android.apps.photos/u0a143 for broadcast {com.google.android.apps.photos/com.google.android.apps.photos.sdcard.envcache.ExternalStorageStateChangeBroadcastReceiver}
+09-22 12:37:14.676   493  2271 W AlarmManager: Alarms must either supply a PendingIntent or an AlarmReceiver
+09-22 12:37:15.818  1169  1285 I AlarmManager: setExactAndAllowWhileIdle [name: GCM_HB_ALARM type: 2 triggerAtMillis: 642329]
+09-22 12:37:16.210  1169  1285 I AlarmManager: setExactAndAllowWhileIdle [name: GCM_HB_ALARM type: 2 triggerAtMillis: 642721]
+09-22 12:37:16.278  1169  1285 I AlarmManager: setExactAndAllowWhileIdle [name: GCM_HB_ALARM type: 2 triggerAtMillis: 642788]
+09-22 12:37:16.629   493  2269 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.USER_PRESENT flg=0x24200010 } to com.android.chrome/org.chromium.chrome.browser.sharing.click_to_call.ClickToCallMessageHandler$PhoneUnlockedReceiver
+09-22 12:37:16.630   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.USER_PRESENT flg=0x24200010 } to com.google.android.gms/.auth.setup.devicesignals.LockScreenReceiver
+09-22 12:37:16.630   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.USER_PRESENT flg=0x24200010 } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:16.630   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REMOVED dat=package: flg=0x4000010 (has extras) } to com.google.android.gms/.games.chimera.GamesSystemBroadcastReceiverProxy
+09-22 12:37:16.630   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REMOVED dat=package: flg=0x4000010 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:16.630   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REMOVED dat=package: flg=0x4000010 (has extras) } to com.google.android.googlequicksearchbox/com.google.android.apps.gsa.googlequicksearchbox.GelStubAppWatcher
+09-22 12:37:16.630   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package: flg=0x4000010 (has extras) } to com.google.android.packageinstaller/com.android.packageinstaller.PackageInstalledReceiver
+09-22 12:37:16.631   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package: flg=0x4000010 (has extras) } to com.google.android.gms/.games.chimera.GamesSystemBroadcastReceiverProxy
+09-22 12:37:16.631   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package: flg=0x4000010 (has extras) } to com.google.android.gms/.gass.chimera.PackageChangeBroadcastReceiver
+09-22 12:37:16.631   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package: flg=0x4000010 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:16.631   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package: flg=0x4000010 (has extras) } to com.google.android.googlequicksearchbox/com.google.android.apps.gsa.googlequicksearchbox.GelStubAppWatcher
+09-22 12:37:16.631   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REPLACED dat=package: flg=0x4000010 (has extras) } to com.google.android.gms/.gass.chimera.PackageChangeBroadcastReceiver
+09-22 12:37:16.631   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REPLACED dat=package: flg=0x4000010 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:16.631   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REPLACED dat=package: flg=0x4000010 (has extras) } to com.google.android.googlequicksearchbox/com.google.android.apps.gsa.googlequicksearchbox.GelStubAppWatcher
+09-22 12:37:16.833   493   528 I ActivityManager: Start proc 3162:com.google.android.gms.unstable/u0a119 for service {com.google.android.gms/com.google.android.gms.droidguard.DroidGuardService}
+09-22 12:37:16.834   493   563 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REMOVED dat=package: flg=0x4000010 (has extras) } to com.google.android.gms/.games.chimera.GamesSystemBroadcastReceiverProxy
+09-22 12:37:16.835   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REMOVED dat=package: flg=0x4000010 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:16.835   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REMOVED dat=package: flg=0x4000010 (has extras) } to com.google.android.googlequicksearchbox/com.google.android.apps.gsa.googlequicksearchbox.GelStubAppWatcher
+09-22 12:37:16.835   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package: flg=0x4000010 (has extras) } to com.google.android.packageinstaller/com.android.packageinstaller.PackageInstalledReceiver
+09-22 12:37:16.835   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package: flg=0x4000010 (has extras) } to com.google.android.gms/.games.chimera.GamesSystemBroadcastReceiverProxy
+09-22 12:37:16.835   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package: flg=0x4000010 (has extras) } to com.google.android.gms/.gass.chimera.PackageChangeBroadcastReceiver
+09-22 12:37:16.835   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package: flg=0x4000010 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:16.835   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package: flg=0x4000010 (has extras) } to com.google.android.googlequicksearchbox/com.google.android.apps.gsa.googlequicksearchbox.GelStubAppWatcher
+09-22 12:37:16.835   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REPLACED dat=package: flg=0x4000010 (has extras) } to com.google.android.gms/.gass.chimera.PackageChangeBroadcastReceiver
+09-22 12:37:16.835   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REPLACED dat=package: flg=0x4000010 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:16.835   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REPLACED dat=package: flg=0x4000010 (has extras) } to com.google.android.googlequicksearchbox/com.google.android.apps.gsa.googlequicksearchbox.GelStubAppWatcher
+09-22 12:37:17.038   493  2280 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+09-22 12:37:17.039   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:17.040   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+09-22 12:37:17.040   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:17.040   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+09-22 12:37:17.040   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:17.040   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+09-22 12:37:17.041   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:17.192   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+09-22 12:37:17.193   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:17.564   493   528 I ActivityManager: Start proc 3194:com.android.dynsystem/1000 for broadcast {com.android.dynsystem/com.android.dynsystem.BootCompletedReceiver}
+09-22 12:37:17.884   493   528 I ActivityManager: Start proc 3219:com.android.dynsystem:dynsystem/1000 for service {com.android.dynsystem/com.android.dynsystem.DynamicSystemInstallationService}
+09-22 12:37:17.912   493  2269 I ActivityManager: com.android.managedprovisioning is exempt from freezer
+09-22 12:37:17.953   493   528 I ActivityManager: Start proc 3226:com.android.managedprovisioning/u0a75 for broadcast {com.android.managedprovisioning/com.android.managedprovisioning.BootReminder}
+09-22 12:37:19.224   493   528 I ActivityManager: Start proc 3272:com.android.providers.calendar/u0a83 for broadcast {com.android.providers.calendar/com.android.providers.calendar.CalendarReceiver}
+09-22 12:37:19.703   493   528 I ActivityManager: Start proc 3292:com.android.remoteprovisioner/u0a151 for broadcast {com.android.remoteprovisioner/com.android.remoteprovisioner.BootReceiver}
+09-22 12:37:20.354   493  2271 I ActivityManager: com.android.shell is exempt from freezer
+09-22 12:37:20.400   493   528 I ActivityManager: Start proc 3333:com.android.shell/2000 for broadcast {com.android.shell/com.android.shell.HeapDumpReceiver}
+09-22 12:37:20.879   493   528 W ActivityManager: Slow operation: 56ms so far, now at startProcess: done updating battery stats
+09-22 12:37:20.880   493   528 W ActivityManager: Slow operation: 57ms so far, now at startProcess: building log message
+09-22 12:37:20.881   493   528 I ActivityManager: Start proc 3355:com.google.android.apps.maps/u0a140 for broadcast {com.google.android.apps.maps/com.google.android.apps.gmm.geofence.RestartDetectionBroadcastReceiver}
+09-22 12:37:20.881   493   528 W ActivityManager: Slow operation: 58ms so far, now at startProcess: starting to update pids map
+09-22 12:37:20.884   493   528 W ActivityManager: Slow operation: 61ms so far, now at startProcess: done updating pids map
+09-22 12:37:21.494  2594  3345 I TestRunner: run started: 1 tests
+09-22 12:37:21.495  2594  3345 I TestRunner: started: lostOsDeliveryRetriesAutonomouslyAndLateCallbackCannotClaimReplacement(com.personal.cameraalarm.PendingDeliveryInstrumentedTest)
+09-22 12:37:22.087   493  2271 W ActivityManager: Unable to start service Intent { cmp=com.google.android.projection.gearhead/com.google.android.apps.auto.carservice.service.impl.GearheadCarStartupService } U=0: not found
+09-22 12:37:22.091   493  2271 W ActivityManager: Unbind failed: could not find connection for android.os.BinderProxy@5b9ee7d
+09-22 12:37:22.517  2594  3345 I CameraAlarm: ALARM_PENDING_CREATED token=lost-delivery-88582973222 epoch_ms=1790055442517 elapsed_ms=89027 session=a10c203d-f681-4b44-bf49-37c6b653e321 deadline_ms=1790055443081 delay_ms=1000 overdue_ms=0 attempt=0
+09-22 12:37:22.526  2594  3345 I CameraAlarm: OS_ALARM_REGISTERED token=lost-delivery-88582973222 epoch_ms=1790055442526 elapsed_ms=89036 session=a10c203d-f681-4b44-bf49-37c6b653e321 deadline_ms=null delay_ms=null overdue_ms=null deadline_ms=1790055443081 mode=alarm_clock
+09-22 12:37:22.527  2594  3345 I CameraAlarm: EXACT_ALARM_SCHEDULED token=lost-delivery-88582973222 epoch_ms=1790055442526 elapsed_ms=89037 session=a10c203d-f681-4b44-bf49-37c6b653e321 deadline_ms=1790055443081 delay_ms=1000 overdue_ms=0 attempt=0
+09-22 12:37:22.698   686   686 W AlarmManager: Unrecognized alarm listener com.android.systemui.keyguard.KeyguardSliceProvider$$ExternalSyntheticLambda0@2518991
+09-22 12:37:22.722   686   686 W AlarmManager: Unrecognized alarm listener com.google.android.systemui.smartspace.KeyguardZenAlarmViewController$showNextAlarm$1@ceb69c7
+09-22 12:37:23.230   493   528 I ActivityManager: Start proc 3438:com.google.android.apps.maps:server_recovery_process/u0a140 for broadcast {com.google.android.apps.maps/com.google.android.apps.gmm.plugins.serverrecovery.PhenotypeServerRecoveryHandlerImpl}
+09-22 12:37:25.071   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+09-22 12:37:25.071   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:25.642   493   528 I ActivityManager: Start proc 3489:com.google.android.calendar/u0a124 for broadcast {com.google.android.calendar/com.google.android.apps.calendar.sync.SyncOnUnlockReceiver}
+09-22 12:37:26.203   493   528 I ActivityManager: Start proc 3550:com.google.android.configupdater/u0a105 for broadcast {com.google.android.configupdater/com.google.android.configupdater.MainReceiver}
+09-22 12:37:26.936   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+09-22 12:37:26.936   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:28.342   493   528 I ActivityManager: Start proc 3638:com.google.android.onetimeinitializer/u0a109 for broadcast {com.google.android.onetimeinitializer/com.google.android.onetimeinitializer.OneTimeInitializerReceiver}
+09-22 12:37:28.569   493  1709 I ActivityManager: com.google.android.packageinstaller is exempt from freezer
+09-22 12:37:28.636   493   528 W ActivityManager: Slow operation: 67ms so far, now at startProcess: returned from zygote!
+09-22 12:37:28.638   493   528 W ActivityManager: Slow operation: 69ms so far, now at startProcess: done updating battery stats
+09-22 12:37:28.638   493   528 W ActivityManager: Slow operation: 69ms so far, now at startProcess: building log message
+09-22 12:37:28.638   493   528 I ActivityManager: Start proc 3662:com.google.android.packageinstaller/u0a79 for broadcast {com.google.android.packageinstaller/com.android.packageinstaller.TemporaryFileManager}
+09-22 12:37:28.638   493   528 W ActivityManager: Slow operation: 69ms so far, now at startProcess: starting to update pids map
+09-22 12:37:28.643   493   528 W ActivityManager: Slow operation: 74ms so far, now at startProcess: done updating pids map
+09-22 12:37:28.980   493   528 I ActivityManager: Start proc 3681:com.google.android.partnersetup/u0a104 for broadcast {com.google.android.partnersetup/com.google.android.partnersetup.GooglePartnerSetup}
+09-22 12:37:29.533   493   528 I ActivityManager: Start proc 3709:com.google.android.projection.gearhead:shared/u0a108 for broadcast {com.google.android.projection.gearhead/com.google.android.apps.auto.components.app.fzero.FzeroReceiver}
+09-22 12:37:30.122   493   528 I ActivityManager: Start proc 3738:com.google.android.settings.intelligence/u0a107 for broadcast {com.google.android.settings.intelligence/com.google.android.settings.intelligence.modules.battery.impl.usage.BootBroadcastReceiver}
+09-22 12:37:30.495   493   528 W ActivityManager: Slow operation: 62ms so far, now at startProcess: returned from zygote!
+09-22 12:37:30.495   493   528 W ActivityManager: Slow operation: 62ms so far, now at startProcess: done updating battery stats
+09-22 12:37:30.495   493   528 W ActivityManager: Slow operation: 62ms so far, now at startProcess: building log message
+09-22 12:37:30.495   493   528 I ActivityManager: Start proc 3778:com.google.android.setupwizard/u0a116 for broadcast {com.google.android.setupwizard/com.google.android.setupwizard.pairing.PairingBootReceiver}
+09-22 12:37:30.495   493   528 W ActivityManager: Slow operation: 62ms so far, now at startProcess: starting to update pids map
+09-22 12:37:30.495   493   528 W ActivityManager: Slow operation: 62ms so far, now at startProcess: done updating pids map
+09-22 12:37:31.003   493   528 I ActivityManager: Start proc 3801:com.google.android.tts/u0a133 for broadcast {com.google.android.tts/androidx.work.impl.background.systemalarm.RescheduleReceiver}
+09-22 12:37:31.861   493  1147 I ActivityManager: Finished processing BOOT_COMPLETED for u0
+09-22 12:37:31.861   493  1147 I BroadcastQueue: BOOT_COMPLETED_BROADCAST_COMPLETION_LATENCY_REPORTED action:android.intent.action.BOOT_COMPLETED dispatchLatency:25788 completeLatency:47237 dispatchRealLatency:25788 completeRealLatency:47237 receiversSize:126 userId:0 userType:android.os.usertype.full.SYSTEM
+09-22 12:37:32.914   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+09-22 12:37:32.919   493   527 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 12:37:32.971   493   528 I ActivityManager: Start proc 3885:com.android.emergency/u0a156 for content provider {com.android.emergency/com.android.emergency.EmergencySearchIndexablesProvider}
+09-22 12:37:33.143   493   528 I ActivityManager: Start proc 3907:com.google.android.gms.ui/u0a119 for content provider {com.google.android.gms/com.google.android.gms.accountsettings.content.SettingsSearchContentProvider}
+09-22 12:37:33.214  2594  3391 I CameraAlarm: PENDING_RETIRED token=lost-delivery-88582973222 epoch_ms=1790055453212 elapsed_ms=99722 session=a10c203d-f681-4b44-bf49-37c6b653e321 deadline_ms=1790055443081 delay_ms=1000 overdue_ms=10131 Pending overdue; attempt=0
+09-22 12:37:33.215  2594  3391 I CameraAlarm: PENDING_RECOVERY token=f131e320-8edc-4ea1-97b6-73f5fdbf9f2b epoch_ms=1790055453215 elapsed_ms=99725 session=a10c203d-f681-4b44-bf49-37c6b653e321 deadline_ms=1790055453215 delay_ms=1000 overdue_ms=0 replaces=lost-delivery-88582973222
+09-22 12:37:33.240  2594  3391 I CameraAlarm: ALARM_PENDING_CREATED token=f131e320-8edc-4ea1-97b6-73f5fdbf9f2b epoch_ms=1790055453240 elapsed_ms=99750 session=a10c203d-f681-4b44-bf49-37c6b653e321 deadline_ms=1790055453215 delay_ms=1000 overdue_ms=25 attempt=1
+09-22 12:37:33.253  2594  3391 I CameraAlarm: OS_ALARM_REGISTERED token=f131e320-8edc-4ea1-97b6-73f5fdbf9f2b epoch_ms=1790055453253 elapsed_ms=99763 session=a10c203d-f681-4b44-bf49-37c6b653e321 deadline_ms=null delay_ms=null overdue_ms=null deadline_ms=1790055453215 mode=alarm_clock
+09-22 12:37:33.253  2594  3391 I CameraAlarm: EXACT_ALARM_SCHEDULED token=f131e320-8edc-4ea1-97b6-73f5fdbf9f2b epoch_ms=1790055453253 elapsed_ms=99763 session=a10c203d-f681-4b44-bf49-37c6b653e321 deadline_ms=1790055453215 delay_ms=1000 overdue_ms=38 attempt=1
+09-22 12:37:33.360   686   686 W AlarmManager: Unrecognized alarm listener com.android.systemui.keyguard.KeyguardSliceProvider$$ExternalSyntheticLambda0@2518991
+09-22 12:37:33.374   493   528 W ActivityManager: Slow operation: 56ms so far, now at startProcess: returned from zygote!
+09-22 12:37:33.391   493   528 W ActivityManager: Slow operation: 73ms so far, now at startProcess: done updating battery stats
+09-22 12:37:33.391   493   528 W ActivityManager: Slow operation: 73ms so far, now at startProcess: building log message
+09-22 12:37:33.391   493   528 I ActivityManager: Start proc 3923:com.google.android.marvin.talkback/u0a145 for content provider {com.google.android.marvin.talkback/com.google.android.accessibility.talkback.preference.search.TalkBackSearchIndexablesProvider}
+09-22 12:37:33.391   493   528 W ActivityManager: Slow operation: 73ms so far, now at startProcess: starting to update pids map
+09-22 12:37:33.427   493   528 W ActivityManager: Slow operation: 109ms so far, now at startProcess: done updating pids map
+09-22 12:37:33.467   686   686 W AlarmManager: Unrecognized alarm listener com.google.android.systemui.smartspace.KeyguardZenAlarmViewController$showNextAlarm$1@ceb69c7
+09-22 12:37:34.648  1169  3881 I AlarmManager: set [name: SystemMemoryCache type: 2 triggerAtMillis: 315360101158 windowMillis: -1 intervalMillis: 0]
+09-22 12:37:38.271  2594  2594 I CameraAlarm: ALARM_RECEIVER_ENTRY token=f131e320-8edc-4ea1-97b6-73f5fdbf9f2b epoch_ms=1790055458271 elapsed_ms=104781 session=a10c203d-f681-4b44-bf49-37c6b653e321 deadline_ms=null delay_ms=null overdue_ms=null elapsed_ms=104781
+09-22 12:37:38.277  2594  3391 I CameraAlarm: ALARM_RECEIVER_FIRED token=f131e320-8edc-4ea1-97b6-73f5fdbf9f2b epoch_ms=1790055458277 elapsed_ms=104787 session=a10c203d-f681-4b44-bf49-37c6b653e321 deadline_ms=1790055453215 delay_ms=1000 overdue_ms=5062 attempt=1
+09-22 12:37:38.295  2594  3391 I CameraAlarm: RINGING token=f131e320-8edc-4ea1-97b6-73f5fdbf9f2b epoch_ms=1790055458295 elapsed_ms=104805 session=a10c203d-f681-4b44-bf49-37c6b653e321 deadline_ms=1790055453215 delay_ms=1000 overdue_ms=5080 attempt=1
+09-22 12:37:38.324   493   512 I ActivityManager: Background started FGS: Allowed [callingPackage: com.personal.cameraalarm; callingUid: 10174; uidState: FGS ; intent: Intent { act=com.personal.cameraalarm.action.START_ALARM cmp=com.personal.cameraalarm/.alarm.CameraAlarmService (has extras) }; code:ACTIVITY_STARTER; tempAllowListReason:<broadcast:u0a174:com.personal.cameraalarm.action.FIRE_ALARM,reason:,reasonCode:ALARM_MANAGER_ALARM_CLOCK,duration:10000,callingUid:10174>; targetSdkVersion:36; callerTargetSdkVersion:36; startForegroundCount:0; bindFromPackage:null]
+09-22 12:37:38.332  2594  3391 I CameraAlarm: SERVICE_REQUESTED token=f131e320-8edc-4ea1-97b6-73f5fdbf9f2b epoch_ms=1790055458332 elapsed_ms=104842 session=a10c203d-f681-4b44-bf49-37c6b653e321 deadline_ms=1790055453215 delay_ms=1000 overdue_ms=5117 
+09-22 12:37:38.358  2594  3345 I CameraAlarm: STALE_ALARM token=null epoch_ms=1790055458358 elapsed_ms=104868 session=a10c203d-f681-4b44-bf49-37c6b653e321 deadline_ms=null delay_ms=null overdue_ms=null token=lost-delivery-88582973222
+09-22 12:37:38.389  2594  2594 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=f131e320-8edc-4ea1-97b6-73f5fdbf9f2b
+09-22 12:37:38.389  2594  2594 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=f131e320-8edc-4ea1-97b6-73f5fdbf9f2b epoch_ms=1790055458389 elapsed_ms=104899 session=a10c203d-f681-4b44-bf49-37c6b653e321 deadline_ms=1790055453215 delay_ms=1000 overdue_ms=5174 
+09-22 12:37:38.491  2594  2594 I CameraAlarm: ALARM_TIMING foreground_ms=122 token=f131e320-8edc-4ea1-97b6-73f5fdbf9f2b
+09-22 12:37:38.872  2594  2594 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 12:37:38.874  2594  2594 D CameraAlarm: Alarm sound:
+09-22 12:37:38.874  2594  2594 D CameraAlarm: selected key: alarm_warning_aloud
+09-22 12:37:38.874  2594  2594 D CameraAlarm: resolved resource: 2131296260
+09-22 12:37:38.874  2594  2594 D CameraAlarm: prepare result: success
+09-22 12:37:38.874  2594  2594 D CameraAlarm: play result: success
+09-22 12:37:38.876  2594  2594 I CameraAlarm: AUDIO_STARTED: token=f131e320-8edc-4ea1-97b6-73f5fdbf9f2b
+09-22 12:37:38.882  2594  2594 I CameraAlarm: AUDIO_STARTED token=f131e320-8edc-4ea1-97b6-73f5fdbf9f2b epoch_ms=1790055458881 elapsed_ms=105392 session=a10c203d-f681-4b44-bf49-37c6b653e321 deadline_ms=1790055453215 delay_ms=1000 overdue_ms=5666 
+09-22 12:37:38.884  2594  2594 I CameraAlarm: ALARM_TIMING runtime_started_ms=515 token=f131e320-8edc-4ea1-97b6-73f5fdbf9f2b
+09-22 12:37:38.885  2594  2594 I CameraAlarm: FULLSCREEN_INTENT_SENT: token=f131e320-8edc-4ea1-97b6-73f5fdbf9f2b
+09-22 12:37:39.391  2594  2594 I CameraAlarm: Direct startActivity called for token=f131e320-8edc-4ea1-97b6-73f5fdbf9f2b
+09-22 12:37:39.626  2594  3345 I TestRunner: finished: lostOsDeliveryRetriesAutonomouslyAndLateCallbackCannotClaimReplacement(com.personal.cameraalarm.PendingDeliveryInstrumentedTest)
+09-22 12:37:39.643  2594  3345 I TestRunner: run finished: 1 tests, 0 failed, 0 ignored
+09-22 12:37:39.720   493   826 I ActivityManager: Force stopping com.personal.cameraalarm appid=10174 user=0: finished inst
+09-22 12:37:39.749  2594  2594 I CameraAlarm: ALARMACTIVITY_CREATED: token=f131e320-8edc-4ea1-97b6-73f5fdbf9f2b
+09-22 12:37:39.792   493   826 I ActivityManager: Killing 2594:com.personal.cameraalarm/u0a174 (adj 0): stop com.personal.cameraalarm due to finished inst
+09-22 12:37:40.758   493  1503 V ActivityManager: Got obituary of 2594:com.personal.cameraalarm

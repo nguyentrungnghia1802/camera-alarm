@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.personal.cameraalarm.HistoryRepositoryTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-09-22T02:22:53" hostname="ACERNITRO5-NTNG" time="0.03">
+  <properties/>
+  <testcase name="legacyUnrelatedNotificationRowsAreRemovedWithoutDeletingSelectedHistory" classname="com.personal.cameraalarm.HistoryRepositoryTest" time="0.008"/>
+  <testcase name="retentionEnforcesMaximum100Entries" classname="com.personal.cameraalarm.HistoryRepositoryTest" time="0.012"/>
+  <testcase name="suppressedEventsAreLimitedTo10Newest" classname="com.personal.cameraalarm.HistoryRepositoryTest" time="0.005"/>
+  <testcase name="recordEventInsertsAndReturnsId" classname="com.personal.cameraalarm.HistoryRepositoryTest" time="0.001"/>
+  <testcase name="retentionAutomaticallyPrunesOlderThan3Days" classname="com.personal.cameraalarm.HistoryRepositoryTest" time="0.001"/>
+  <testcase name="paginationCorrectlyOffsetsPages" classname="com.personal.cameraalarm.HistoryRepositoryTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
