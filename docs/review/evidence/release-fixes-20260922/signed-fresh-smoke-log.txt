@@ -1,0 +1,65 @@
+--------- beginning of main
+09-22 08:58:59.383  5155  5167 I TestRunner: run started: 3 tests
+09-22 08:58:59.386  5155  5167 I TestRunner: started: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 08:58:59.499  5155  5167 I StopProbe: START_FIRST elapsed=246996
+09-22 08:58:59.521  5155  5155 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=test-first
+09-22 08:58:59.523  5155  5155 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=test-first epoch_ms=1790042339523 elapsed_ms=247020 session=a523c9e4-1f36-47d3-9333-3113a5085620 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 08:58:59.583  5155  5155 I CameraAlarm: ALARM_TIMING foreground_ms=66 token=test-first
+09-22 08:58:59.841  5155  5155 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 08:58:59.842  5155  5155 I CameraAlarm: AUDIO_STARTED: token=test-first
+09-22 08:58:59.867  5155  5155 I CameraAlarm: AUDIO_STARTED token=test-first epoch_ms=1790042339867 elapsed_ms=247364 session=a523c9e4-1f36-47d3-9333-3113a5085620 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 08:58:59.868  5155  5155 I CameraAlarm: ALARM_TIMING runtime_started_ms=351 token=test-first
+09-22 08:59:00.247  5155  5155 I CameraAlarm: ALARMACTIVITY_CREATED: token=test-first
+09-22 08:59:00.592  5155  5167 I StopProbe: ACTIVITY_RESUMED elapsed=248089
+09-22 08:59:01.525  5155  5167 I StopProbe: MAIN_IDLE elapsed=249022
+09-22 08:59:01.526  5155  5167 I StopProbe: SEND_STOP elapsed=249023
+09-22 08:59:01.530  5155  5167 I StopProbe: SENT_STOP elapsed=249026
+09-22 08:59:01.532  5155  5155 I CameraAlarm: STOP_RECEIVER_FIRED: token=test-first
+09-22 08:59:01.709  5155  5167 I TestRunner: finished: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 08:59:03.598  5155  5167 I TestRunner: started: notificationActionsFollowLanguageEvenWhileAlarmIsActive(com.personal.cameraalarm.SelectedLanguageInstrumentedTest)
+09-22 08:59:05.146  5155  5155 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=test-language
+09-22 08:59:05.147  5155  5155 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=test-language epoch_ms=1790042345147 elapsed_ms=252644 session=a523c9e4-1f36-47d3-9333-3113a5085620 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 08:59:05.152  5155  5155 I CameraAlarm: ALARM_TIMING foreground_ms=10 token=test-language
+09-22 08:59:05.206  5155  5155 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 08:59:05.206  5155  5155 I CameraAlarm: AUDIO_STARTED: token=test-language
+09-22 08:59:05.213  5155  5155 I CameraAlarm: AUDIO_STARTED token=test-language epoch_ms=1790042345213 elapsed_ms=252710 session=a523c9e4-1f36-47d3-9333-3113a5085620 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 08:59:05.213  5155  5155 I CameraAlarm: ALARM_TIMING runtime_started_ms=71 token=test-language
+09-22 08:59:05.534  5155  5155 I CameraAlarm: ALARMACTIVITY_CREATED: token=test-language
+09-22 08:59:05.863  5155  5155 I CameraAlarm: STOP_RECEIVER_FIRED: token=test-language
+09-22 08:59:07.899  5155  5167 I TestRunner: finished: notificationActionsFollowLanguageEvenWhileAlarmIsActive(com.personal.cameraalarm.SelectedLanguageInstrumentedTest)
+09-22 08:59:09.045  5155  5167 I TestRunner: started: selectedLanguageReachesActivityDialogAndMessages(com.personal.cameraalarm.SelectedLanguageInstrumentedTest)
+09-22 08:59:11.721  5155  5167 I TestRunner: finished: selectedLanguageReachesActivityDialogAndMessages(com.personal.cameraalarm.SelectedLanguageInstrumentedTest)
+09-22 08:59:11.727  5155  5167 I TestRunner: run finished: 3 tests, 0 failed, 0 ignored
+09-22 09:00:59.309  5714  5758 I CameraAlarm: BOOT_RECOVERY_INCOMPLETE token=null epoch_ms=1790042459309 elapsed_ms=366805 session=af4c6d42-4775-4ae1-a16c-3146c056d523 deadline_ms=null delay_ms=null overdue_ms=null boot=7 session=af4c6d42-4775-4ae1-a16c-3146c056d523 action=android.intent.action.MY_PACKAGE_REPLACED previous=previous=null previous_boot=null boot=7 invalidated=true reconciled=Idle monitoring=false listener=DISCONNECTED exact=false config=true result=ACCESS_DENIED error=null
+09-22 09:01:01.079  5714  5714 I CameraAlarm: BOOT_RECOVERY_INCOMPLETE token=null epoch_ms=1790042461079 elapsed_ms=368576 session=af4c6d42-4775-4ae1-a16c-3146c056d523 deadline_ms=null delay_ms=null overdue_ms=null boot=7 session=af4c6d42-4775-4ae1-a16c-3146c056d523 action=android.intent.action.MY_PACKAGE_REPLACED previous=previous=null previous_boot=null boot=7 invalidated=true reconciled=Idle monitoring=false listener=DISCONNECTED exact=false config=true result=ACCESS_DENIED error=null
+09-22 09:01:22.341  5933  5946 I TestRunner: run started: 3 tests
+09-22 09:01:22.341  5933  5946 I TestRunner: started: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 09:01:22.415  5933  5946 I StopProbe: START_FIRST elapsed=389912
+09-22 09:01:22.432  5933  5933 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=test-first
+09-22 09:01:22.434  5933  5933 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=test-first epoch_ms=1790042482434 elapsed_ms=389931 session=a1c17b2b-7683-4398-9efe-c1a450e9306b deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 09:01:22.440  5933  5933 I CameraAlarm: ALARM_TIMING foreground_ms=11 token=test-first
+09-22 09:01:22.620  5933  5933 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 09:01:22.621  5933  5933 I CameraAlarm: AUDIO_STARTED: token=test-first
+09-22 09:01:22.640  5933  5933 I CameraAlarm: AUDIO_STARTED token=test-first epoch_ms=1790042482640 elapsed_ms=390137 session=a1c17b2b-7683-4398-9efe-c1a450e9306b deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 09:01:22.641  5933  5933 I CameraAlarm: ALARM_TIMING runtime_started_ms=212 token=test-first
+09-22 09:01:22.842  5933  5933 I CameraAlarm: ALARMACTIVITY_CREATED: token=test-first
+09-22 09:01:23.080  5933  5946 I StopProbe: ACTIVITY_RESUMED elapsed=390577
+09-22 09:01:23.877  5933  5946 I StopProbe: MAIN_IDLE elapsed=391374
+09-22 09:01:23.881  5933  5946 I StopProbe: SEND_STOP elapsed=391378
+09-22 09:01:23.889  5933  5933 I CameraAlarm: STOP_RECEIVER_FIRED: token=test-first
+09-22 09:01:23.896  5933  5946 I StopProbe: SENT_STOP elapsed=391393
+09-22 09:01:24.097  5933  5946 I TestRunner: finished: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 09:01:25.576  5933  5946 I TestRunner: started: notificationActionsFollowLanguageEvenWhileAlarmIsActive(com.personal.cameraalarm.SelectedLanguageInstrumentedTest)
+09-22 09:01:26.887  5933  5933 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=test-language
+09-22 09:01:26.889  5933  5933 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=test-language epoch_ms=1790042486889 elapsed_ms=394386 session=a1c17b2b-7683-4398-9efe-c1a450e9306b deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 09:01:26.896  5933  5933 I CameraAlarm: ALARM_TIMING foreground_ms=10 token=test-language
+09-22 09:01:26.919  5933  5933 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 09:01:26.919  5933  5933 I CameraAlarm: AUDIO_STARTED: token=test-language
+09-22 09:01:26.927  5933  5933 I CameraAlarm: AUDIO_STARTED token=test-language epoch_ms=1790042486927 elapsed_ms=394424 session=a1c17b2b-7683-4398-9efe-c1a450e9306b deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 09:01:26.928  5933  5933 I CameraAlarm: ALARM_TIMING runtime_started_ms=42 token=test-language
+09-22 09:01:27.223  5933  5933 I CameraAlarm: ALARMACTIVITY_CREATED: token=test-language
+09-22 09:01:28.138  5933  5933 I CameraAlarm: STOP_RECEIVER_FIRED: token=test-language
+09-22 09:01:28.834  5933  5946 I TestRunner: finished: notificationActionsFollowLanguageEvenWhileAlarmIsActive(com.personal.cameraalarm.SelectedLanguageInstrumentedTest)
+09-22 09:01:29.596  5933  5946 I TestRunner: started: selectedLanguageReachesActivityDialogAndMessages(com.personal.cameraalarm.SelectedLanguageInstrumentedTest)
+09-22 09:01:32.448  5933  5946 I TestRunner: finished: selectedLanguageReachesActivityDialogAndMessages(com.personal.cameraalarm.SelectedLanguageInstrumentedTest)
+09-22 09:01:32.461  5933  5946 I TestRunner: run finished: 3 tests, 0 failed, 0 ignored

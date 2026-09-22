@@ -1,0 +1,13 @@
+[
+  {
+    "id": "reboot-e2e",
+    "name": "Reboot E2E",
+    "enabled": 1,
+    "sourcePackage": "com.personal.fakecamera",
+    "matchMode": "CONTAINS_ANY",
+    "keywordsJson": "[\"Human\"]",
+    "priority": 1,
+    "createdAtEpochMs": 1790036651792,
+    "updatedAtEpochMs": 1790036787037
+  }
+]

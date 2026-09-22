@@ -1,0 +1,5 @@
+Scheduling restore: Local disk image
+restoreStarting: 1 packages
+onUpdate: 0 = com.personal.cameraalarm
+restoreFinished: 0
+done

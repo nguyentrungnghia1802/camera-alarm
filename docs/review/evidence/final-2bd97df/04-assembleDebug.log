@@ -1,0 +1,97 @@
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:kspDebugKotlin UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:dexBuilderDebug
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders
+> Task :app:mergeDebugGlobalSynthetics
+> Task :app:validateSigningDebug
+> Task :app:checkDebugDuplicateClasses
+> Task :app:writeDebugAppMetadata
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeLibDexDebug
+> Task :app:writeDebugSigningConfigVersions
+> Task :fake-camera:preBuild UP-TO-DATE
+> Task :fake-camera:preDebugBuild UP-TO-DATE
+> Task :fake-camera:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :fake-camera:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :fake-camera:checkDebugAarMetadata UP-TO-DATE
+> Task :fake-camera:generateDebugResValues UP-TO-DATE
+> Task :fake-camera:mapDebugSourceSetPaths UP-TO-DATE
+> Task :fake-camera:generateDebugResources UP-TO-DATE
+> Task :fake-camera:mergeDebugResources UP-TO-DATE
+> Task :fake-camera:packageDebugResources UP-TO-DATE
+> Task :fake-camera:parseDebugLocalResources UP-TO-DATE
+> Task :fake-camera:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :fake-camera:extractDeepLinksDebug UP-TO-DATE
+> Task :fake-camera:processDebugMainManifest UP-TO-DATE
+> Task :fake-camera:processDebugManifest UP-TO-DATE
+> Task :fake-camera:processDebugManifestForPackage UP-TO-DATE
+> Task :fake-camera:processDebugResources UP-TO-DATE
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libdatastore_shared_counter.so.
+
+> Task :fake-camera:compileDebugKotlin UP-TO-DATE
+> Task :fake-camera:javaPreCompileDebug UP-TO-DATE
+> Task :fake-camera:compileDebugJavaWithJavac NO-SOURCE
+> Task :fake-camera:mergeDebugShaders
+> Task :fake-camera:compileDebugShaders NO-SOURCE
+> Task :fake-camera:generateDebugAssets UP-TO-DATE
+> Task :fake-camera:mergeDebugAssets
+> Task :fake-camera:compressDebugAssets
+> Task :fake-camera:desugarDebugFileDependencies
+> Task :app:mergeProjectDexDebug
+> Task :fake-camera:dexBuilderDebug
+> Task :fake-camera:processDebugJavaRes UP-TO-DATE
+> Task :fake-camera:mergeDebugGlobalSynthetics
+> Task :fake-camera:mergeDebugJniLibFolders
+> Task :fake-camera:checkDebugDuplicateClasses
+> Task :fake-camera:validateSigningDebug
+> Task :fake-camera:mergeDebugNativeLibs
+> Task :fake-camera:mergeLibDexDebug
+> Task :fake-camera:writeDebugAppMetadata
+> Task :fake-camera:writeDebugSigningConfigVersions
+
+> Task :fake-camera:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
+
+> Task :fake-camera:mergeProjectDexDebug
+> Task :fake-camera:mergeDebugJavaResource
+> Task :app:mergeDebugJavaResource
+> Task :fake-camera:mergeExtDexDebug
+> Task :app:mergeExtDexDebug
+> Task :fake-camera:packageDebug
+> Task :fake-camera:createDebugApkListingFileRedirect
+> Task :fake-camera:assembleDebug
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 26s
+73 actionable tasks: 38 executed, 35 up-to-date

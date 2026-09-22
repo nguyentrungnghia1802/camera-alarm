@@ -1,0 +1,415 @@
+.class public final Lcom/personal/cameraalarm/notification/CameraNotificationListener;
+.super Landroid/service/notification/NotificationListenerService;
+.source "CameraNotificationListener.kt"
+
+
+# annotations
+.annotation runtime Lkotlin/Metadata;
+    d1 = {
+        "\u0000$\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0008\u0003\n\u0002\u0018\u0002\n\u0002\u0008\u0003\n\u0002\u0010\u0002\n\u0002\u0008\u0003\n\u0002\u0018\u0002\n\u0002\u0008\u0002\u0008\u0007\u0018\u00002\u00020\u0001B\u0007\u00a2\u0006\u0004\u0008\u0002\u0010\u0003J\u0008\u0010\u0008\u001a\u00020\tH\u0016J\u0008\u0010\n\u001a\u00020\tH\u0016J\u0012\u0010\u000b\u001a\u00020\t2\u0008\u0010\u000c\u001a\u0004\u0018\u00010\rH\u0016J\u0008\u0010\u000e\u001a\u00020\tH\u0016R\u0014\u0010\u0004\u001a\u00020\u00058BX\u0082\u0004\u00a2\u0006\u0006\u001a\u0004\u0008\u0006\u0010\u0007\u00a8\u0006\u000f"
+    }
+    d2 = {
+        "Lcom/personal/cameraalarm/notification/CameraNotificationListener;",
+        "Landroid/service/notification/NotificationListenerService;",
+        "<init>",
+        "()V",
+        "app",
+        "Lcom/personal/cameraalarm/app/CameraAlarmApp;",
+        "getApp",
+        "()Lcom/personal/cameraalarm/app/CameraAlarmApp;",
+        "onListenerConnected",
+        "",
+        "onListenerDisconnected",
+        "onNotificationPosted",
+        "sbn",
+        "Landroid/service/notification/StatusBarNotification;",
+        "onDestroy",
+        "app_release"
+    }
+    k = 0x1
+    mv = {
+        0x2,
+        0x0,
+        0x0
+    }
+    xi = 0x30
+.end annotation
+
+
+# static fields
+.field public static final $stable:I
+
+
+# direct methods
+.method static constructor <clinit>()V
+    .registers 0
+
+    return-void
+.end method
+
+.method public constructor <init>()V
+    .registers 1
+
+    .line 11
+    invoke-direct {p0}, Landroid/service/notification/NotificationListenerService;-><init>()V
+
+    return-void
+.end method
+
+.method public static final synthetic access$getApp(Lcom/personal/cameraalarm/notification/CameraNotificationListener;)Lcom/personal/cameraalarm/app/CameraAlarmApp;
+    .registers 1
+
+    .line 11
+    invoke-direct {p0}, Lcom/personal/cameraalarm/notification/CameraNotificationListener;->getApp()Lcom/personal/cameraalarm/app/CameraAlarmApp;
+
+    move-result-object p0
+
+    return-object p0
+.end method
+
+.method private final getApp()Lcom/personal/cameraalarm/app/CameraAlarmApp;
+    .registers 3
+
+    .line 12
+    invoke-virtual {p0}, Lcom/personal/cameraalarm/notification/CameraNotificationListener;->getApplication()Landroid/app/Application;
+
+    move-result-object v0
+
+    const-string v1, "null cannot be cast to non-null type com.personal.cameraalarm.app.CameraAlarmApp"
+
+    invoke-static {v0, v1}, Lkotlin/jvm/internal/Intrinsics;->checkNotNull(Ljava/lang/Object;Ljava/lang/String;)V
+
+    check-cast v0, Lcom/personal/cameraalarm/app/CameraAlarmApp;
+
+    return-object v0
+.end method
+
+
+# virtual methods
+.method public onDestroy()V
+    .registers 2
+
+    .line 58
+    invoke-direct {p0}, Lcom/personal/cameraalarm/notification/CameraNotificationListener;->getApp()Lcom/personal/cameraalarm/app/CameraAlarmApp;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/personal/cameraalarm/app/CameraAlarmApp;->getContainer()Lcom/personal/cameraalarm/app/AppContainer;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/personal/cameraalarm/app/AppContainer;->getListenerConnection()Lcom/personal/cameraalarm/notification/ListenerConnectionState;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/personal/cameraalarm/notification/ListenerConnectionState;->disconnected()V
+
+    .line 59
+    invoke-super {p0}, Landroid/service/notification/NotificationListenerService;->onDestroy()V
+
+    return-void
+.end method
+
+.method public onListenerConnected()V
+    .registers 2
+
+    .line 15
+    invoke-super {p0}, Landroid/service/notification/NotificationListenerService;->onListenerConnected()V
+
+    .line 16
+    invoke-direct {p0}, Lcom/personal/cameraalarm/notification/CameraNotificationListener;->getApp()Lcom/personal/cameraalarm/app/CameraAlarmApp;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/personal/cameraalarm/app/CameraAlarmApp;->getContainer()Lcom/personal/cameraalarm/app/AppContainer;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/personal/cameraalarm/app/AppContainer;->getListenerConnection()Lcom/personal/cameraalarm/notification/ListenerConnectionState;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/personal/cameraalarm/notification/ListenerConnectionState;->connected()V
+
+    return-void
+.end method
+
+.method public onListenerDisconnected()V
+    .registers 6
+
+    .line 21
+    invoke-direct {p0}, Lcom/personal/cameraalarm/notification/CameraNotificationListener;->getApp()Lcom/personal/cameraalarm/app/CameraAlarmApp;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/personal/cameraalarm/app/CameraAlarmApp;->getContainer()Lcom/personal/cameraalarm/app/AppContainer;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/personal/cameraalarm/app/AppContainer;->getListenerConnection()Lcom/personal/cameraalarm/notification/ListenerConnectionState;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/personal/cameraalarm/notification/ListenerConnectionState;->disconnected()V
+
+    .line 23
+    invoke-super {p0}, Landroid/service/notification/NotificationListenerService;->onListenerDisconnected()V
+
+    .line 24
+    invoke-direct {p0}, Lcom/personal/cameraalarm/notification/CameraNotificationListener;->getApp()Lcom/personal/cameraalarm/app/CameraAlarmApp;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/personal/cameraalarm/app/CameraAlarmApp;->getContainer()Lcom/personal/cameraalarm/app/AppContainer;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/personal/cameraalarm/app/AppContainer;->getRecoveryJobs()Lcom/personal/cameraalarm/boot/RecoveryJobs;
+
+    move-result-object v0
+
+    const/4 v1, 0x2
+
+    const/4 v2, 0x0
+
+    const-string v3, "LISTENER_DISCONNECTED"
+
+    const/4 v4, 0x0
+
+    invoke-static {v0, v3, v4, v1, v2}, Lcom/personal/cameraalarm/boot/RecoveryJobs;->boot$default(Lcom/personal/cameraalarm/boot/RecoveryJobs;Ljava/lang/String;IILjava/lang/Object;)Z
+
+    .line 27
+    :try_start_26
+    new-instance v0, Landroid/content/ComponentName;
+
+    move-object v1, p0
+
+    check-cast v1, Landroid/content/Context;
+
+    const-class v2, Lcom/personal/cameraalarm/notification/CameraNotificationListener;
+
+    invoke-direct {v0, v1, v2}, Landroid/content/ComponentName;-><init>(Landroid/content/Context;Ljava/lang/Class;)V
+
+    invoke-static {v0}, Landroid/service/notification/NotificationListenerService;->requestRebind(Landroid/content/ComponentName;)V
+    :try_end_33
+    .catchall {:try_start_26 .. :try_end_33} :catchall_33
+
+    :catchall_33
+    return-void
+.end method
+
+.method public onNotificationPosted(Landroid/service/notification/StatusBarNotification;)V
+    .registers 11
+
+    if-nez p1, :cond_3
+
+    return-void
+
+    .line 33
+    :cond_3
+    invoke-direct {p0}, Lcom/personal/cameraalarm/notification/CameraNotificationListener;->getApp()Lcom/personal/cameraalarm/app/CameraAlarmApp;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/personal/cameraalarm/app/CameraAlarmApp;->getContainer()Lcom/personal/cameraalarm/app/AppContainer;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/personal/cameraalarm/app/AppContainer;->getListenerConnection()Lcom/personal/cameraalarm/notification/ListenerConnectionState;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/personal/cameraalarm/notification/ListenerConnectionState;->getStatus()Lkotlinx/coroutines/flow/StateFlow;
+
+    move-result-object v0
+
+    invoke-interface {v0}, Lkotlinx/coroutines/flow/StateFlow;->getValue()Ljava/lang/Object;
+
+    move-result-object v0
+
+    sget-object v1, Lcom/personal/cameraalarm/notification/ListenerStatus;->CONNECTED:Lcom/personal/cameraalarm/notification/ListenerStatus;
+
+    if-eq v0, v1, :cond_2a
+
+    .line 34
+    invoke-direct {p0}, Lcom/personal/cameraalarm/notification/CameraNotificationListener;->getApp()Lcom/personal/cameraalarm/app/CameraAlarmApp;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/personal/cameraalarm/app/CameraAlarmApp;->getContainer()Lcom/personal/cameraalarm/app/AppContainer;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/personal/cameraalarm/app/AppContainer;->getListenerConnection()Lcom/personal/cameraalarm/notification/ListenerConnectionState;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/personal/cameraalarm/notification/ListenerConnectionState;->connected()V
+
+    .line 36
+    :cond_2a
+    invoke-virtual {p1}, Landroid/service/notification/StatusBarNotification;->getPackageName()Ljava/lang/String;
+
+    move-result-object v0
+
+    invoke-virtual {p1}, Landroid/service/notification/StatusBarNotification;->getId()I
+
+    move-result v1
+
+    new-instance v2, Ljava/lang/StringBuilder;
+
+    const-string v3, "NOTIFICATION_RECEIVED: pkg="
+
+    invoke-direct {v2, v3}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
+
+    invoke-virtual {v2, v0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v0
+
+    const-string v2, " id="
+
+    invoke-virtual {v0, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v0
+
+    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v0
+
+    const-string v1, "CameraAlarm"
+
+    invoke-static {v1, v0}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+
+    .line 37
+    sget-object v0, Lcom/personal/cameraalarm/notification/NotificationExtractor;->INSTANCE:Lcom/personal/cameraalarm/notification/NotificationExtractor;
+
+    invoke-virtual {v0, p1}, Lcom/personal/cameraalarm/notification/NotificationExtractor;->from(Landroid/service/notification/StatusBarNotification;)Lcom/personal/cameraalarm/notification/IncomingNotification;
+
+    move-result-object p1
+
+    .line 38
+    sget-object v0, Lcom/personal/cameraalarm/alarm/AlarmTrace;->INSTANCE:Lcom/personal/cameraalarm/alarm/AlarmTrace;
+
+    .line 39
+    invoke-virtual {p1}, Lcom/personal/cameraalarm/notification/IncomingNotification;->getTraceToken()Ljava/lang/String;
+
+    move-result-object v1
+
+    invoke-static {v1}, Lcom/personal/cameraalarm/alarm/AlarmToken;->constructor-impl(Ljava/lang/String;)Ljava/lang/String;
+
+    move-result-object v2
+
+    .line 40
+    invoke-virtual {p1}, Lcom/personal/cameraalarm/notification/IncomingNotification;->getPackageName()Ljava/lang/String;
+
+    move-result-object v1
+
+    invoke-virtual {p1}, Lcom/personal/cameraalarm/notification/IncomingNotification;->getKey()Ljava/lang/String;
+
+    move-result-object v3
+
+    new-instance v4, Ljava/lang/StringBuilder;
+
+    const-string v5, "package="
+
+    invoke-direct {v4, v5}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
+
+    invoke-virtual {v4, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v1
+
+    const-string v4, " key="
+
+    invoke-virtual {v1, v4}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v1
+
+    invoke-virtual {v1, v3}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v1
+
+    invoke-virtual {v1}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v4
+
+    const/4 v5, 0x4
+
+    const/4 v6, 0x0
+
+    .line 38
+    const-string v1, "NOTIFICATION_RECEIVED"
+
+    const/4 v3, 0x0
+
+    invoke-static/range {v0 .. v6}, Lcom/personal/cameraalarm/alarm/AlarmTrace;->record-BqF2Mhs$default(Lcom/personal/cameraalarm/alarm/AlarmTrace;Ljava/lang/String;Ljava/lang/String;Lcom/personal/cameraalarm/alarm/TriggerSnapshot;Ljava/lang/String;ILjava/lang/Object;)V
+
+    .line 42
+    const-class v0, Landroid/os/PowerManager;
+
+    invoke-virtual {p0, v0}, Lcom/personal/cameraalarm/notification/CameraNotificationListener;->getSystemService(Ljava/lang/Class;)Ljava/lang/Object;
+
+    move-result-object v0
+
+    check-cast v0, Landroid/os/PowerManager;
+
+    const/4 v1, 0x0
+
+    if-eqz v0, :cond_9c
+
+    const/4 v2, 0x1
+
+    .line 43
+    const-string v3, "CameraAlarm:NotificationPostedWakeLock"
+
+    invoke-virtual {v0, v2, v3}, Landroid/os/PowerManager;->newWakeLock(ILjava/lang/String;)Landroid/os/PowerManager$WakeLock;
+
+    move-result-object v0
+
+    goto :goto_9d
+
+    :cond_9c
+    move-object v0, v1
+
+    :goto_9d
+    if-eqz v0, :cond_a4
+
+    const-wide/16 v2, 0x2710
+
+    .line 44
+    invoke-virtual {v0, v2, v3}, Landroid/os/PowerManager$WakeLock;->acquire(J)V
+
+    .line 46
+    :cond_a4
+    invoke-direct {p0}, Lcom/personal/cameraalarm/notification/CameraNotificationListener;->getApp()Lcom/personal/cameraalarm/app/CameraAlarmApp;
+
+    move-result-object v2
+
+    invoke-virtual {v2}, Lcom/personal/cameraalarm/app/CameraAlarmApp;->getScope()Lkotlinx/coroutines/CoroutineScope;
+
+    move-result-object v3
+
+    new-instance v2, Lcom/personal/cameraalarm/notification/CameraNotificationListener$onNotificationPosted$1;
+
+    invoke-direct {v2, p0, p1, v0, v1}, Lcom/personal/cameraalarm/notification/CameraNotificationListener$onNotificationPosted$1;-><init>(Lcom/personal/cameraalarm/notification/CameraNotificationListener;Lcom/personal/cameraalarm/notification/IncomingNotification;Landroid/os/PowerManager$WakeLock;Lkotlin/coroutines/Continuation;)V
+
+    move-object v6, v2
+
+    check-cast v6, Lkotlin/jvm/functions/Function2;
+
+    const/4 v7, 0x3
+
+    const/4 v8, 0x0
+
+    const/4 v4, 0x0
+
+    const/4 v5, 0x0
+
+    invoke-static/range {v3 .. v8}, Lkotlinx/coroutines/BuildersKt;->launch$default(Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;Lkotlinx/coroutines/CoroutineStart;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlinx/coroutines/Job;
+
+    return-void
+.end method
+

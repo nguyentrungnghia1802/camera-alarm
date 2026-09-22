@@ -1,0 +1,6 @@
+app Debug: tests=137, failures=0, errors=0, skipped=0
+app Release: tests=137, failures=0, errors=0, skipped=0
+app lint: {'Warning': 93}
+fake-camera Debug: tests=5, failures=0, errors=0, skipped=0
+fake-camera Release: tests=5, failures=0, errors=0, skipped=0
+fake-camera lint: {'Warning': 14}

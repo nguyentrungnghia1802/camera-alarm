@@ -1,0 +1,6 @@
+Running incremental backup for 1 requested packages.
+Package @pm@ with result: Success
+Package com.personal.cameraalarm with progress: 2048/1024
+Package com.personal.cameraalarm with progress: 3072/1024
+Package com.personal.cameraalarm with result: Success
+Backup finished with result: Success

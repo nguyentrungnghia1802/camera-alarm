@@ -1,0 +1,12 @@
+         1790036844.671  6192  6192 D CameraAlarm: prepare result: success
+         1790036844.671  6192  6192 D CameraAlarm: play result: success
+         1790036844.671  6192  6192 I CameraAlarm: AUDIO_STARTED: token=5e48f4af-8ee7-4382-bbe6-6f9f91a26edf
+         1790036844.673  6192  6192 I CameraAlarm: AUDIO_STARTED token=5e48f4af-8ee7-4382-bbe6-6f9f91a26edf epoch_ms=1790036844673 elapsed_ms=1367673 session=3439ea07-26cc-41b5-8327-cec2aff8f315 deadline_ms=1790036842462 delay_ms=3000 overdue_ms=2211 
+         1790036844.674  6192  6192 I CameraAlarm: ALARM_TIMING runtime_started_ms=82 token=5e48f4af-8ee7-4382-bbe6-6f9f91a26edf
+         1790036844.675  6192  6192 I CameraAlarm: FULLSCREEN_INTENT_SENT: token=5e48f4af-8ee7-4382-bbe6-6f9f91a26edf
+         1790036844.706  6192  6192 I CameraAlarm: Direct startActivity called for token=5e48f4af-8ee7-4382-bbe6-6f9f91a26edf
+         1790036844.859  6192  6192 I CameraAlarm: NOTIFICATION_RECEIVED: pkg=com.personal.cameraalarm id=1
+         1790036844.859  6192  6192 I CameraAlarm: NOTIFICATION_RECEIVED token=9800b41f-64aa-4c69-b3a4-7caaaf0067c7 epoch_ms=1790036844859 elapsed_ms=1367859 session=3439ea07-26cc-41b5-8327-cec2aff8f315 deadline_ms=null delay_ms=null overdue_ms=null package=com.personal.cameraalarm key=0|com.personal.cameraalarm|1|null|10197
+         1790036889.487  6192  6192 I CameraAlarm: ALARMACTIVITY_CREATED: token=5e48f4af-8ee7-4382-bbe6-6f9f91a26edf
+         1790036889.528  6192  6192 I CameraAlarm: STOP_RECEIVER_FIRED: token=5e48f4af-8ee7-4382-bbe6-6f9f91a26edf
+         1790036889.623  6192  6192 D CameraAlarm: runtime stopped token=5e48f4af-8ee7-4382-bbe6-6f9f91a26edf

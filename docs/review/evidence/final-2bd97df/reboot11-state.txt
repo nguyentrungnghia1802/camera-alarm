@@ -1,0 +1,11 @@
+boot=11; before PIN
+    State: RUNNING_LOCKED
+  Started users state: [0=RUNNING_LOCKED]
+pidof CameraAlarm (empty expected):
+
+    State: RUNNING_UNLOCKED
+  Started users state: [0=RUNNING_UNLOCKED]
+
+
+      topResumedActivity=ActivityRecord{4b8e324 u0 com.google.android.apps.nexuslauncher/.NexusLauncherActivity t12}
+

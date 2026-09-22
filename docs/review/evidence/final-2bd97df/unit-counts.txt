@@ -1,0 +1,4 @@
+app Debug tests=135 failures=0 errors=0 skipped=0
+app Release tests=135 failures=0 errors=0 skipped=0
+fake-camera Debug tests=5 failures=0 errors=0 skipped=0
+fake-camera Release tests=5 failures=0 errors=0 skipped=0

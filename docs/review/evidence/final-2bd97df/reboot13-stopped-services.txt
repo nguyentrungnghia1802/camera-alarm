@@ -1,0 +1,35 @@
+ACTIVITY MANAGER SERVICES (dumpsys activity services)
+  User 0 active services:
+  * ServiceRecord{acaa667 u0 com.personal.cameraalarm/.notification.CameraNotificationListener}
+    intent={act=android.service.notification.NotificationListenerService cmp=com.personal.cameraalarm/.notification.CameraNotificationListener}
+    packageName=com.personal.cameraalarm
+    processName=com.personal.cameraalarm
+    permission=android.permission.BIND_NOTIFICATION_LISTENER_SERVICE
+    baseDir=/data/app/~~POIf4gyGXtueE8eu7zjnCQ==/com.personal.cameraalarm-Sev0ctnt0_H3mypYOfuLAg==/base.apk
+    dataDir=/data/user/0/com.personal.cameraalarm
+    app=ProcessRecord{3d4ae39 1891:com.personal.cameraalarm/u0a197}
+    allowlistManager=true
+    mAllowWhileInUsePermissionInFgsReason=PROC_STATE_PERSISTENT
+    allowUiJobScheduling=false
+    recentCallingPackage=android
+    recentCallingUid=1000
+    allowStartForeground=PROC_STATE_PERSISTENT
+    startForegroundCount=0
+    infoAllowStartForeground=[callingPackage: android; callingUid: 1000; uidState: PER ; uidBFSL: [BFSL]; intent: Intent { act=android.service.notification.NotificationListenerService cmp=com.personal.cameraalarm/.notification.CameraNotificationListener }; code:PROC_STATE_PERSISTENT; tempAllowListReason:<null>; targetSdkVersion:36; callerTargetSdkVersion:34; startForegroundCount:0; bindFromPackage:null: isBindService:true]
+    createTime=-1m52s201ms startingBgTimeout=--
+    lastActivity=-1m51s190ms restartTime=-1m51s190ms createdFromFg=true
+    Bindings:
+    * IntentBindRecord{d5d71d7 CREATE}:
+      intent={act=android.service.notification.NotificationListenerService cmp=com.personal.cameraalarm/.notification.CameraNotificationListener}
+      binder=android.os.BinderProxy@cc32ac4
+      requested=true received=true hasBound=true doRebind=false
+      * Client AppBindRecord{db91dad ProcessRecord{8c1c912 523:system/1000}}
+        Per-process Connections:
+          ConnectionRecord{ee652ef u0 CR FGS !PRCP com.personal.cameraalarm/.notification.CameraNotificationListener:@c2ec3ce flags=0x5000101}
+    All Connections:
+      ConnectionRecord{ee652ef u0 CR FGS !PRCP com.personal.cameraalarm/.notification.CameraNotificationListener:@c2ec3ce flags=0x5000101}
+
+  Connection bindings to services:
+  * ConnectionRecord{ee652ef u0 CR FGS !PRCP com.personal.cameraalarm/.notification.CameraNotificationListener:@c2ec3ce flags=0x5000101}
+    binding=AppBindRecord{db91dad com.personal.cameraalarm/.notification.CameraNotificationListener:system}
+    conn=android.app.LoadedApk$ServiceDispatcher$InnerConnection@c2ec3ce flags=0x5000101

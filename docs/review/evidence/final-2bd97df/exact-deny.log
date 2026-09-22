@@ -1,0 +1,13 @@
+         1790036922.290  6192  6192 I CameraAlarm: FULLSCREEN_INTENT_SENT: token=f4954d89-b355-4919-9130-968676ac8859
+         1790036922.301  6192  6192 I CameraAlarm: Direct startActivity called for token=f4954d89-b355-4919-9130-968676ac8859
+         1790036922.464  6192  6192 I CameraAlarm: NOTIFICATION_RECEIVED: pkg=com.personal.cameraalarm id=1
+         1790036922.464  6192  6192 I CameraAlarm: NOTIFICATION_RECEIVED token=38ca0eea-9132-487a-8362-394c4cf04872 epoch_ms=1790036922464 elapsed_ms=1445464 session=3439ea07-26cc-41b5-8327-cec2aff8f315 deadline_ms=null delay_ms=null overdue_ms=null package=com.personal.cameraalarm key=0|com.personal.cameraalarm|1|null|10197
+         1790036922.486  6192  6192 I CameraAlarm: ALARMACTIVITY_CREATED: token=f4954d89-b355-4919-9130-968676ac8859
+         1790036949.436  6192  6192 I CameraAlarm: STOP_RECEIVER_FIRED: token=f4954d89-b355-4919-9130-968676ac8859
+         1790036949.545  6192  6192 D CameraAlarm: runtime stopped token=f4954d89-b355-4919-9130-968676ac8859
+         1790036952.626  7101  7101 D CameraAlarm: listener connected
+         1790036953.214  7101  7101 I CameraAlarm: NOTIFICATION_RECEIVED: pkg=com.personal.fakecamera id=1004
+         1790036953.223  7101  7101 I CameraAlarm: NOTIFICATION_RECEIVED token=852461a5-eed9-4064-8fc5-07d17001ee09 epoch_ms=1790036953223 elapsed_ms=1476223 session=8a8683b7-7f5b-41d0-a734-35b064ae80a8 deadline_ms=null delay_ms=null overdue_ms=null package=com.personal.fakecamera key=0|com.personal.fakecamera|1004|null|10196
+         1790036953.340  7101  7126 I CameraAlarm: TRIGGER_MATCHED token=852461a5-eed9-4064-8fc5-07d17001ee09 epoch_ms=1790036953325 elapsed_ms=1476325 session=8a8683b7-7f5b-41d0-a734-35b064ae80a8 deadline_ms=null delay_ms=null overdue_ms=null rule=reboot-e2e package=com.personal.fakecamera
+         1790036953.445  7101  7126 I CameraAlarm: PENDING_RETIRED token=852461a5-eed9-4064-8fc5-07d17001ee09 epoch_ms=1790036953445 elapsed_ms=1476445 session=8a8683b7-7f5b-41d0-a734-35b064ae80a8 deadline_ms=1790036956377 delay_ms=3000 overdue_ms=0 Exact alarm permission missing
+         1790036953.451  7101  7126 D CameraAlarm: decision=SCHEDULE_FAILED source=com.personal.fakecamera

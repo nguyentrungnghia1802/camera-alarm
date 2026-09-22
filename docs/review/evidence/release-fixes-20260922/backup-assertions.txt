@@ -1,0 +1,4 @@
+settings byte-identical=True
+settings SHA256=539962372cb365fbd390dad604c8678f4db16e937f1cb47ff282edc605d29d76
+restored runtime after launch=b'\n\n\n\x04boot\x12\x02\x18\x0b\n\x0f\n\x05state\x12\x06*\x04idle'
+old token present=False

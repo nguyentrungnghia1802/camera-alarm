@@ -1,0 +1,77 @@
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:kspDebugKotlin UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:bundleDebugClassesToCompileJar UP-TO-DATE
+> Task :app:preDebugAndroidTestBuild SKIPPED
+> Task :app:generateDebugAndroidTestResValues
+> Task :app:generateDebugAndroidTestLintModel
+> Task :app:extractProguardFiles
+> Task :app:generateDebugLintReportModel
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:generateDebugUnitTestLintModel
+> Task :fake-camera:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :fake-camera:preBuild UP-TO-DATE
+> Task :fake-camera:preDebugBuild UP-TO-DATE
+> Task :fake-camera:checkDebugAarMetadata UP-TO-DATE
+> Task :fake-camera:generateDebugResValues UP-TO-DATE
+> Task :fake-camera:mapDebugSourceSetPaths UP-TO-DATE
+> Task :fake-camera:generateDebugResources UP-TO-DATE
+> Task :fake-camera:mergeDebugResources UP-TO-DATE
+> Task :fake-camera:packageDebugResources UP-TO-DATE
+> Task :fake-camera:parseDebugLocalResources UP-TO-DATE
+> Task :fake-camera:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :fake-camera:extractDeepLinksDebug UP-TO-DATE
+> Task :fake-camera:processDebugMainManifest UP-TO-DATE
+> Task :fake-camera:processDebugManifest UP-TO-DATE
+> Task :fake-camera:processDebugManifestForPackage UP-TO-DATE
+> Task :fake-camera:processDebugResources UP-TO-DATE
+> Task :fake-camera:compileDebugKotlin UP-TO-DATE
+> Task :fake-camera:javaPreCompileDebug UP-TO-DATE
+> Task :fake-camera:compileDebugJavaWithJavac NO-SOURCE
+> Task :fake-camera:bundleDebugClassesToCompileJar UP-TO-DATE
+> Task :fake-camera:preDebugAndroidTestBuild SKIPPED
+> Task :fake-camera:generateDebugAndroidTestResValues
+> Task :fake-camera:generateDebugAndroidTestLintModel
+> Task :fake-camera:extractProguardFiles
+> Task :fake-camera:generateDebugLintReportModel
+> Task :fake-camera:preDebugUnitTestBuild UP-TO-DATE
+> Task :fake-camera:generateDebugUnitTestLintModel
+> Task :app:lintAnalyzeDebugAndroidTest
+> Task :app:lintAnalyzeDebugUnitTest
+> Task :fake-camera:lintAnalyzeDebugAndroidTest
+> Task :fake-camera:lintAnalyzeDebugUnitTest
+> Task :app:lintAnalyzeDebug
+> Task :fake-camera:lintAnalyzeDebug
+
+> Task :fake-camera:lintReportDebug
+Wrote HTML report to file:///D:/_CODE_BANK/Project_/04_Extensions/camera-alarm/fake-camera/build/reports/lint-results-debug.html
+
+> Task :fake-camera:lintDebug
+> Task :fake-camera:lint
+
+> Task :app:lintReportDebug
+Wrote HTML report to file:///D:/_CODE_BANK/Project_/04_Extensions/camera-alarm/app/build/reports/lint-results-debug.html
+
+> Task :app:lintDebug
+> Task :app:lint
+
+BUILD SUCCESSFUL in 59s
+55 actionable tasks: 20 executed, 35 up-to-date

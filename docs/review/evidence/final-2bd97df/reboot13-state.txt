@@ -1,0 +1,11 @@
+boot13 before PIN
+    State: RUNNING_LOCKED
+  Started users state: [0=RUNNING_LOCKED]
+CameraAlarm pid (empty before PIN):
+
+    State: RUNNING_UNLOCKED
+  Started users state: [0=RUNNING_UNLOCKED]
+
+
+      topResumedActivity=ActivityRecord{fbceda7 u0 com.google.android.apps.nexuslauncher/.NexusLauncherActivity t14}
+

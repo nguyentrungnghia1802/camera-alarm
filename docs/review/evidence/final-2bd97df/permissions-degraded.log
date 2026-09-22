@@ -1,0 +1,28 @@
+--------- beginning of main
+         1790037003.470  7101  7126 I CameraAlarm: BOOT_RECOVERY_INCOMPLETE token=null epoch_ms=1790037003470 elapsed_ms=1526470 session=8a8683b7-7f5b-41d0-a734-35b064ae80a8 deadline_ms=null delay_ms=null overdue_ms=null boot=9 session=8a8683b7-7f5b-41d0-a734-35b064ae80a8 action=android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED previous=Idle reconciled=Idle monitoring=true listener=DISCONNECTED exact=true config=true result=ACCESS_DENIED error=null
+         1790037003.471  7101  7101 I CameraAlarm: BOOT_RECOVERY_INCOMPLETE token=null epoch_ms=1790037003470 elapsed_ms=1526470 session=8a8683b7-7f5b-41d0-a734-35b064ae80a8 deadline_ms=null delay_ms=null overdue_ms=null boot=9 session=8a8683b7-7f5b-41d0-a734-35b064ae80a8 action=LISTENER_DISCONNECTED previous=Idle reconciled=Idle monitoring=true listener=DISCONNECTED exact=true config=true result=ACCESS_DENIED error=null
+         1790037008.693  7101  7101 D CameraAlarm: listener connected
+         1790037012.420  7227  7227 D CameraAlarm: listener connected
+         1790037013.126  7227  7227 I CameraAlarm: NOTIFICATION_RECEIVED: pkg=com.personal.fakecamera id=1006
+         1790037013.129  7227  7227 I CameraAlarm: NOTIFICATION_RECEIVED token=5684d202-0258-44af-8ee7-e33f74875459 epoch_ms=1790037013128 elapsed_ms=1536129 session=24ce7168-ba52-4d94-a3a0-6355de219e3b deadline_ms=null delay_ms=null overdue_ms=null package=com.personal.fakecamera key=0|com.personal.fakecamera|1006|null|10196
+         1790037013.206  7227  7251 I CameraAlarm: TRIGGER_MATCHED token=5684d202-0258-44af-8ee7-e33f74875459 epoch_ms=1790037013206 elapsed_ms=1536206 session=24ce7168-ba52-4d94-a3a0-6355de219e3b deadline_ms=null delay_ms=null overdue_ms=null rule=reboot-e2e package=com.personal.fakecamera
+         1790037013.319  7227  7251 I CameraAlarm: ALARM_PENDING_CREATED token=5684d202-0258-44af-8ee7-e33f74875459 epoch_ms=1790037013319 elapsed_ms=1536319 session=24ce7168-ba52-4d94-a3a0-6355de219e3b deadline_ms=1790037016239 delay_ms=3000 overdue_ms=0 attempt=0
+         1790037013.327  7227  7251 I CameraAlarm: OS_ALARM_REGISTERED token=5684d202-0258-44af-8ee7-e33f74875459 epoch_ms=1790037013327 elapsed_ms=1536327 session=24ce7168-ba52-4d94-a3a0-6355de219e3b deadline_ms=null delay_ms=null overdue_ms=null deadline_ms=1790037016239 mode=alarm_clock
+         1790037013.328  7227  7251 I CameraAlarm: EXACT_ALARM_SCHEDULED token=5684d202-0258-44af-8ee7-e33f74875459 epoch_ms=1790037013328 elapsed_ms=1536328 session=24ce7168-ba52-4d94-a3a0-6355de219e3b deadline_ms=1790037016239 delay_ms=3000 overdue_ms=0 attempt=0
+         1790037013.334  7227  7251 D CameraAlarm: decision=SCHEDULED source=com.personal.fakecamera
+         1790037018.332  7227  7227 I CameraAlarm: ALARM_RECEIVER_ENTRY token=5684d202-0258-44af-8ee7-e33f74875459 epoch_ms=1790037018332 elapsed_ms=1541332 session=24ce7168-ba52-4d94-a3a0-6355de219e3b deadline_ms=null delay_ms=null overdue_ms=null elapsed_ms=1541332
+         1790037018.349  7227  7250 I CameraAlarm: ALARM_RECEIVER_FIRED token=5684d202-0258-44af-8ee7-e33f74875459 epoch_ms=1790037018349 elapsed_ms=1541349 session=24ce7168-ba52-4d94-a3a0-6355de219e3b deadline_ms=1790037016239 delay_ms=3000 overdue_ms=2110 attempt=0
+         1790037018.395  7227  7250 I CameraAlarm: RINGING token=5684d202-0258-44af-8ee7-e33f74875459 epoch_ms=1790037018395 elapsed_ms=1541395 session=24ce7168-ba52-4d94-a3a0-6355de219e3b deadline_ms=1790037016239 delay_ms=3000 overdue_ms=2156 attempt=0
+         1790037018.417  7227  7250 I CameraAlarm: SERVICE_REQUESTED token=5684d202-0258-44af-8ee7-e33f74875459 epoch_ms=1790037018416 elapsed_ms=1541416 session=24ce7168-ba52-4d94-a3a0-6355de219e3b deadline_ms=1790037016239 delay_ms=3000 overdue_ms=2177 
+         1790037018.440  7227  7227 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=5684d202-0258-44af-8ee7-e33f74875459
+         1790037018.440  7227  7227 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=5684d202-0258-44af-8ee7-e33f74875459 epoch_ms=1790037018440 elapsed_ms=1541440 session=24ce7168-ba52-4d94-a3a0-6355de219e3b deadline_ms=1790037016239 delay_ms=3000 overdue_ms=2201 
+         1790037018.447  7227  7227 I CameraAlarm: ALARM_TIMING foreground_ms=13 token=5684d202-0258-44af-8ee7-e33f74875459
+         1790037018.479  7227  7227 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+         1790037018.479  7227  7227 D CameraAlarm: Alarm sound:
+         1790037018.479  7227  7227 D CameraAlarm: selected key: alarm_warning_aloud
+         1790037018.479  7227  7227 D CameraAlarm: resolved resource: 2131296260
+         1790037018.479  7227  7227 D CameraAlarm: prepare result: success
+         1790037018.479  7227  7227 D CameraAlarm: play result: success
+         1790037018.479  7227  7227 I CameraAlarm: AUDIO_STARTED: token=5684d202-0258-44af-8ee7-e33f74875459
+         1790037018.481  7227  7227 I CameraAlarm: AUDIO_STARTED token=5684d202-0258-44af-8ee7-e33f74875459 epoch_ms=1790037018481 elapsed_ms=1541481 session=24ce7168-ba52-4d94-a3a0-6355de219e3b deadline_ms=1790037016239 delay_ms=3000 overdue_ms=2242 
+         1790037018.482  7227  7227 I CameraAlarm: ALARM_TIMING runtime_started_ms=48 token=5684d202-0258-44af-8ee7-e33f74875459

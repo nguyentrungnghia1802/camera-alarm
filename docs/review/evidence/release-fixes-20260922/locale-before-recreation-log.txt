@@ -1,0 +1,13 @@
+--------- beginning of main
+09-22 08:24:58.261  4679  4694 D LocaleProbe: printToLog:
+09-22 08:24:58.261  4679  4694 D LocaleProbe: Printing with useUnmergedTree = 'true'
+09-22 08:24:58.261  4679  4694 D LocaleProbe: 1) Node #1 at (l=0.0, t=63.0, r=0.0, b=63.0)px
+09-22 08:24:58.261  4679  4694 D LocaleProbe: 2) Node #155 at (l=0.0, t=0.0, r=735.0, b=305.0)px
+09-22 08:24:58.261  4679  4694 D LocaleProbe: Has 1 child
+09-22 08:24:58.268  4679  4694 I LocaleProbe: language=en expected=Stop Alarm activity=Stop Alarm
+09-22 08:24:58.357  4679  4694 D LocaleProbe: printToLog:
+09-22 08:24:58.357  4679  4694 D LocaleProbe: Printing with useUnmergedTree = 'true'
+09-22 08:24:58.357  4679  4694 D LocaleProbe: 1) Node #1 at (l=0.0, t=63.0, r=0.0, b=63.0)px
+09-22 08:24:58.357  4679  4694 D LocaleProbe: 2) Node #155 at (l=0.0, t=0.0, r=735.0, b=305.0)px
+09-22 08:24:58.357  4679  4694 D LocaleProbe: Has 1 child
+09-22 08:24:58.362  4679  4694 I LocaleProbe: language=vi expected=Tắt cảnh báo activity=Tắt cảnh báo

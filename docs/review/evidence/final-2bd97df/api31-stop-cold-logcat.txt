@@ -1,0 +1,42 @@
+09-22 07:41:25.998  2233  2660 I TestRunner: run started: 1 tests
+09-22 07:41:26.001  2233  2660 I TestRunner: started: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 07:41:26.232  2233  2233 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=test-first
+09-22 07:41:26.236  2233  2233 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=test-first epoch_ms=1790037686236 elapsed_ms=39659 session=41ebff8f-ebdb-4c12-a205-6139ff0258d6 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 07:41:26.255  2233  2233 I CameraAlarm: ALARM_TIMING foreground_ms=99 token=test-first
+09-22 07:41:26.479  2233  2233 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 07:41:26.479  2233  2233 D CameraAlarm: Alarm sound:
+09-22 07:41:26.479  2233  2233 D CameraAlarm: selected key: alarm_warning_aloud
+09-22 07:41:26.479  2233  2233 D CameraAlarm: resolved resource: 2131296260
+09-22 07:41:26.479  2233  2233 D CameraAlarm: prepare result: success
+09-22 07:41:26.479  2233  2233 D CameraAlarm: play result: success
+09-22 07:41:26.479  2233  2233 I CameraAlarm: AUDIO_STARTED: token=test-first
+09-22 07:41:26.482  2233  2233 I CameraAlarm: AUDIO_STARTED token=test-first epoch_ms=1790037686482 elapsed_ms=39906 session=41ebff8f-ebdb-4c12-a205-6139ff0258d6 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 07:41:26.482  2233  2233 I CameraAlarm: ALARM_TIMING runtime_started_ms=327 token=test-first
+09-22 07:41:26.490   523  2461 I ActivityTaskManager: START u0 {dat=cameraalarm://alarm_test/test-first flg=0x34000000 cmp=com.personal.cameraalarm/.ui.alarm.AlarmActivity (has extras)} from uid 10145
+09-22 07:41:26.701  2233  2233 I CameraAlarm: ALARMACTIVITY_CREATED: token=test-first
+09-22 07:41:26.704   523  1363 I ActivityTaskManager: Activity requesting to dismiss Keyguard: ActivityRecord{1217817 u0 com.personal.cameraalarm/.ui.alarm.AlarmActivity t10}
+09-22 07:41:28.260   523   543 I ActivityTaskManager: Displayed com.personal.cameraalarm/.ui.alarm.AlarmActivity: +1s760ms
+09-22 07:41:38.391  2233  2660 E TestRunner: failed: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 07:41:38.392  2233  2660 E TestRunner: ----- begin exception -----
+09-22 07:41:38.392  2233  2660 E TestRunner: kotlinx.coroutines.TimeoutCancellationException: Timed out waiting for 10000 ms
+09-22 07:41:38.392  2233  2660 E TestRunner: 	at kotlinx.coroutines.TimeoutKt.TimeoutCancellationException(Timeout.kt:188)
+09-22 07:41:38.392  2233  2660 E TestRunner: 	at kotlinx.coroutines.TimeoutCoroutine.run(Timeout.kt:156)
+09-22 07:41:38.392  2233  2660 E TestRunner: 	at kotlinx.coroutines.EventLoopImplBase$DelayedRunnableTask.run(EventLoop.common.kt:505)
+09-22 07:41:38.392  2233  2660 E TestRunner: 	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+09-22 07:41:38.392  2233  2660 E TestRunner: 	at kotlinx.coroutines.DefaultExecutor.run(DefaultExecutor.kt:105)
+09-22 07:41:38.392  2233  2660 E TestRunner: 	at java.lang.Thread.run(Thread.java:920)
+09-22 07:41:38.392  2233  2660 E TestRunner: ----- end exception -----
+09-22 07:41:38.392  2233  2660 I TestRunner: finished: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 07:41:38.429  2233  2233 D CameraAlarm: runtime stopped token=test-first
+09-22 07:41:39.356  2233  2660 I TestRunner: run finished: 1 tests, 1 failed, 0 ignored
+09-22 07:41:39.421   523  3453 W ActivityTaskManager: Force removing ActivityRecord{1217817 u0 com.personal.cameraalarm/.ui.alarm.AlarmActivity t10 f}}: app died, no saved state
+09-22 07:41:42.110   523  1341 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.personal.cameraalarm flg=0x4000010 (has extras) } to com.google.android.packageinstaller/com.android.packageinstaller.PackageInstalledReceiver
+09-22 07:41:42.111   523   554 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.personal.cameraalarm flg=0x4000010 (has extras) } to com.google.android.gms/.games.chimera.GamesSystemBroadcastReceiverProxy
+09-22 07:41:42.111   523   554 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.personal.cameraalarm flg=0x4000010 (has extras) } to com.google.android.gms/.gass.chimera.PackageChangeBroadcastReceiver
+09-22 07:41:42.111   523   554 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.personal.cameraalarm flg=0x4000010 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 07:41:42.111   523   554 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.personal.cameraalarm flg=0x4000010 (has extras) } to com.google.android.googlequicksearchbox/com.google.android.apps.gsa.googlequicksearchbox.GelStubAppWatcher
+09-22 07:41:42.133   523   585 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.personal.cameraalarm.test flg=0x4000010 (has extras) } to com.google.android.packageinstaller/com.android.packageinstaller.PackageInstalledReceiver
+09-22 07:41:42.133   523   554 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.personal.cameraalarm.test flg=0x4000010 (has extras) } to com.google.android.gms/.games.chimera.GamesSystemBroadcastReceiverProxy
+09-22 07:41:42.133   523   554 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.personal.cameraalarm.test flg=0x4000010 (has extras) } to com.google.android.gms/.gass.chimera.PackageChangeBroadcastReceiver
+09-22 07:41:42.134   523   554 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.personal.cameraalarm.test flg=0x4000010 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+09-22 07:41:42.134   523   554 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.personal.cameraalarm.test flg=0x4000010 (has extras) } to com.google.android.googlequicksearchbox/com.google.android.apps.gsa.googlequicksearchbox.GelStubAppWatcher

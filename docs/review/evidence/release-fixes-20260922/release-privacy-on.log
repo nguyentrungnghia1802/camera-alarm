@@ -1,0 +1,5 @@
+--------- beginning of main
+09-22 09:04:18.745  6194  6194 I CameraAlarm: NOTIFICATION_RECEIVED: pkg=com.android.shell id=2020
+09-22 09:04:18.745  6194  6194 I CameraAlarm: NOTIFICATION_RECEIVED token=f35bf7e2-986f-4bb6-b41a-a587273da26e epoch_ms=1790042658745 elapsed_ms=566242 session=84e023cc-edb6-472d-96ae-d0d01d4eaf0c deadline_ms=null delay_ms=null overdue_ms=null package=com.android.shell id=2020
+09-22 09:04:18.943  6194  6194 I CameraAlarm: NOTIFICATION_RECEIVED: pkg=com.android.shell id=0
+09-22 09:04:18.943  6194  6194 I CameraAlarm: NOTIFICATION_RECEIVED token=a54f0c33-476a-4ca9-89e0-27565e01221f epoch_ms=1790042658943 elapsed_ms=566440 session=84e023cc-edb6-472d-96ae-d0d01d4eaf0c deadline_ms=null delay_ms=null overdue_ms=null package=com.android.shell id=0

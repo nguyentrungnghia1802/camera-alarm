@@ -1,0 +1,55 @@
+ACTIVITY MANAGER SERVICES (dumpsys activity services)
+  User 0 active services:
+  * ServiceRecord{7a691ed u0 com.personal.cameraalarm/.notification.CameraNotificationListener c:android}
+    intent={act=android.service.notification.NotificationListenerService cmp=com.personal.cameraalarm/.notification.CameraNotificationListener}
+    packageName=com.personal.cameraalarm
+    processName=com.personal.cameraalarm
+    targetSdkVersion=36
+    permission=android.permission.BIND_NOTIFICATION_LISTENER_SERVICE
+    baseDir=/data/app/~~6y_WCVd3F16KzCOtS1N2mg==/com.personal.cameraalarm-dy0aRLqwhJCFwDX5F8yoOA==/base.apk
+    dataDir=/data/user/0/com.personal.cameraalarm
+    app=ProcessRecord{f8c4038 6194:com.personal.cameraalarm/u0a232}
+    allowlistManager=true
+    useNewWiuLogic_forCapabilities()=true
+    useNewWiuLogic_forStart()=true
+    useNewBfslLogic()=true
+    mAllowWiu_noBinding=DENIED
+    mAllowWiu_inBindService=PROC_STATE_PERSISTENT
+    mAllowWiu_byBindings=DENIED
+    getFgsAllowWiu_legacy=PROC_STATE_PERSISTENT
+    getFgsAllowWiu_new=DENIED
+    getFgsAllowWiu_forStart=DENIED
+    getFgsAllowWiu_forCapabilities=DENIED
+    allowUiJobScheduling=false
+    recentCallingPackage=android
+    recentCallingUid=1000
+    mAllowStart_noBinding=DENIED
+    mAllowStart_inBindService=PROC_STATE_PERSISTENT
+    mAllowStart_byBindings=DENIED
+    getFgsAllowStart_legacy=PROC_STATE_PERSISTENT
+    getFgsAllowStart_new=DENIED
+    getFgsAllowStart=DENIED
+    startForegroundCount=0
+    infoAllowStartForeground=[callingPackage: android; callingUid: 1000; uidState: PER ; uidBFSL: [BFSL]; intent: Intent { act=android.service.notification.NotificationListenerService cmp=com.personal.cameraalarm/.notification.CameraNotificationListener }; code:PROC_STATE_PERSISTENT; tempAllowListReason:<null>; allowWiu:10; targetSdkVersion:36; callerTargetSdkVersion:36; startForegroundCount:0; bindFromPackage:null: isBindService:true]
+    createTime=-5m14s282ms startingBgTimeout=--
+    lastActivity=-5m14s282ms restartTime=-5m14s282ms createdFromFg=true
+    Bindings:
+    * IntentBindRecord{beb8748 CREATE}:
+      intent={act=android.service.notification.NotificationListenerService cmp=com.personal.cameraalarm/.notification.CameraNotificationListener}
+      binder=android.os.BinderProxy@30b9e1
+      requested=true received=true hasBound=true doRebind=false
+      * Client AppBindRecord{267e306 ProcessRecord{8e9bcb1 727:system/1000}}
+        Per-process Connections:
+          ConnectionRecord{368c804 u0 CR FGS !PRCP S!CPU com.personal.cameraalarm/.notification.CameraNotificationListener:@74e3c17 flags=0x805000101}
+    All Connections:
+      ConnectionRecord{368c804 u0 CR FGS !PRCP S!CPU com.personal.cameraalarm/.notification.CameraNotificationListener:@74e3c17 flags=0x805000101}
+
+  Connection bindings to services:
+  * ConnectionRecord{368c804 u0 CR FGS !PRCP S!CPU com.personal.cameraalarm/.notification.CameraNotificationListener:@74e3c17 flags=0x805000101}
+    binding=AppBindRecord{267e306 com.personal.cameraalarm/.notification.CameraNotificationListener:system}
+    conn=android.app.LoadedApk$ServiceDispatcher$InnerConnection@74e3c17 flags=0x805000101
+    ongoingCalls=true
+    Bound service session: CR{368c804 727->com.personal.cameraalarm/.notification.CameraNotificationListener flags=0x805000101}
+      Connection present: Yes
+      Ongoing bound service calls: 2
+        onNotificationRankingUpdate=0 onNotificationRemovedFull=1 onNotificationPostedFull=1 onListenerConnected=0 

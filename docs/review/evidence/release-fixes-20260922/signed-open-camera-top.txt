@@ -1,0 +1,3 @@
+
+    topResumedActivity=ActivityRecord{229182846 u0 com.personal.fakecamera/.MainActivity t25}
+

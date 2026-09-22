@@ -1,0 +1,26 @@
+--------- beginning of main
+09-22 08:18:36.852  4375  4488 I TestRunner: run started: 1 tests
+09-22 08:18:36.857  4375  4488 I TestRunner: started: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 08:18:37.045  4375  4488 I StopProbe: START_FIRST elapsed=144091
+09-22 08:18:37.298  4375  4375 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=test-first
+09-22 08:18:37.480  4375  4375 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=test-first epoch_ms=1790039917480 elapsed_ms=144525 session=31f42227-4ba7-4470-a57e-750e68462631 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 08:18:37.537  4375  4375 I CameraAlarm: ALARM_TIMING foreground_ms=461 token=test-first
+09-22 08:18:37.833  4375  4375 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 08:18:37.840  4375  4375 D CameraAlarm: Alarm sound:
+09-22 08:18:37.840  4375  4375 D CameraAlarm: selected key: alarm_warning_aloud
+09-22 08:18:37.840  4375  4375 D CameraAlarm: resolved resource: 2131296260
+09-22 08:18:37.840  4375  4375 D CameraAlarm: prepare result: success
+09-22 08:18:37.840  4375  4375 D CameraAlarm: play result: success
+09-22 08:18:37.840  4375  4375 I CameraAlarm: AUDIO_STARTED: token=test-first
+09-22 08:18:37.859  4375  4375 I CameraAlarm: AUDIO_STARTED token=test-first epoch_ms=1790039917851 elapsed_ms=144905 session=31f42227-4ba7-4470-a57e-750e68462631 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 08:18:37.866  4375  4375 I CameraAlarm: ALARM_TIMING runtime_started_ms=790 token=test-first
+09-22 08:18:38.338  4375  4375 I CameraAlarm: ALARMACTIVITY_CREATED: token=test-first
+09-22 08:18:38.799  4375  4488 I StopProbe: ACTIVITY_RESUMED elapsed=145845
+09-22 08:18:43.432  4375  4488 I StopProbe: MAIN_IDLE elapsed=150478
+09-22 08:18:43.443  4375  4488 I StopProbe: SEND_STOP elapsed=150489
+09-22 08:18:43.447  4375  4488 I StopProbe: SENT_STOP elapsed=150492
+09-22 08:18:43.521  4375  4375 I CameraAlarm: STOP_RECEIVER_FIRED: token=test-first
+09-22 08:18:43.729  4375  4375 D CameraAlarm: runtime stopped token=test-first
+09-22 08:18:43.789  4375  4488 I TestRunner: finished: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 08:18:43.794  4375  4375 D CameraAlarm: runtime stopped token=test-first
+09-22 08:18:44.777  4375  4488 I TestRunner: run finished: 1 tests, 0 failed, 0 ignored

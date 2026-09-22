@@ -1,0 +1,4 @@
+Signed open-camera: no CameraAlarmService and no active USAGE_ALARM AudioPlaybackConfiguration PASS
+Signed stop: no CameraAlarmService and no active USAGE_ALARM AudioPlaybackConfiguration PASS
+Signed activity-stop: no CameraAlarmService and no active USAGE_ALARM AudioPlaybackConfiguration PASS
+Open Camera foreground target is com.personal.fakecamera/.MainActivity PASS

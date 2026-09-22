@@ -1,0 +1,46 @@
+--------- beginning of main
+         1790037984.811  1891  1891 D CameraAlarm: listener connected
+         1790037984.849  1891  1891 I CameraAlarm: BOOT_RECONCILED token=null epoch_ms=1790037984849 elapsed_ms=88849 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=null delay_ms=null overdue_ms=null boot=13 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 action=android.intent.action.BOOT_COMPLETED previous=previous=idle previous_boot=11 boot=13 invalidated=true reconciled=Idle monitoring=true listener=CONNECTED exact=true config=true result=ALREADY_CONNECTED error=null
+         1790037985.574  1891  2968 I CameraAlarm: BOOT_RECONCILED token=null epoch_ms=1790037985573 elapsed_ms=89573 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=null delay_ms=null overdue_ms=null boot=13 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 action=android.intent.action.BOOT_COMPLETED previous=previous=idle previous_boot=11 boot=13 invalidated=true reconciled=Idle monitoring=true listener=CONNECTED exact=true config=true result=CONNECTED error=null
+         1790038021.465  1891  1891 I CameraAlarm: NOTIFICATION_RECEIVED: pkg=com.personal.fakecamera id=1000
+         1790038021.468  1891  1891 I CameraAlarm: NOTIFICATION_RECEIVED token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e epoch_ms=1790038021468 elapsed_ms=125468 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=null delay_ms=null overdue_ms=null package=com.personal.fakecamera key=0|com.personal.fakecamera|1000|null|10196
+         1790038021.527  1891  2969 I CameraAlarm: TRIGGER_MATCHED token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e epoch_ms=1790038021527 elapsed_ms=125527 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=null delay_ms=null overdue_ms=null rule=reboot-e2e package=com.personal.fakecamera
+         1790038021.654  1891  2969 I CameraAlarm: ALARM_PENDING_CREATED token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e epoch_ms=1790038021654 elapsed_ms=125654 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=1790038024594 delay_ms=3000 overdue_ms=0 attempt=0
+         1790038021.678  1891  1891 I CameraAlarm: NOTIFICATION_RECEIVED: pkg=com.personal.fakecamera id=1000
+         1790038021.683  1891  1891 I CameraAlarm: NOTIFICATION_RECEIVED token=03194e65-0f50-48f3-811b-5bbee30108ee epoch_ms=1790038021683 elapsed_ms=125683 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=null delay_ms=null overdue_ms=null package=com.personal.fakecamera key=0|com.personal.fakecamera|1000|null|10196
+         1790038021.693  1891  2969 I CameraAlarm: OS_ALARM_REGISTERED token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e epoch_ms=1790038021693 elapsed_ms=125693 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=null delay_ms=null overdue_ms=null deadline_ms=1790038024594 mode=alarm_clock
+         1790038021.696  1891  2969 I CameraAlarm: EXACT_ALARM_SCHEDULED token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e epoch_ms=1790038021694 elapsed_ms=125694 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=1790038024594 delay_ms=3000 overdue_ms=0 attempt=0
+         1790038021.698  1891  2969 D CameraAlarm: decision=SCHEDULED source=com.personal.fakecamera
+         1790038021.721  1891  2968 I CameraAlarm: TRIGGER_MATCHED token=03194e65-0f50-48f3-811b-5bbee30108ee epoch_ms=1790038021721 elapsed_ms=125721 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=null delay_ms=null overdue_ms=null rule=reboot-e2e package=com.personal.fakecamera
+         1790038021.722  1891  2968 D CameraAlarm: decision=IGNORED_DUPLICATE source=com.personal.fakecamera
+         1790038026.698  1891  1891 I CameraAlarm: ALARM_RECEIVER_ENTRY token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e epoch_ms=1790038026698 elapsed_ms=130698 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=null delay_ms=null overdue_ms=null elapsed_ms=130698
+         1790038026.720  1891  2970 I CameraAlarm: ALARM_RECEIVER_FIRED token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e epoch_ms=1790038026720 elapsed_ms=130720 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=1790038024594 delay_ms=3000 overdue_ms=2126 attempt=0
+         1790038026.766  1891  2956 I CameraAlarm: RINGING token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e epoch_ms=1790038026766 elapsed_ms=130766 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=1790038024594 delay_ms=3000 overdue_ms=2172 attempt=0
+         1790038026.795  1891  2956 I CameraAlarm: SERVICE_REQUESTED token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e epoch_ms=1790038026794 elapsed_ms=130794 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=1790038024594 delay_ms=3000 overdue_ms=2200 
+         1790038026.807  1891  1891 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e
+         1790038026.807  1891  1891 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e epoch_ms=1790038026807 elapsed_ms=130807 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=1790038024594 delay_ms=3000 overdue_ms=2213 
+         1790038026.817  1891  1891 I CameraAlarm: ALARM_TIMING foreground_ms=19 token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e
+         1790038026.846  1891  1891 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+         1790038026.846  1891  1891 D CameraAlarm: Alarm sound:
+         1790038026.846  1891  1891 D CameraAlarm: selected key: alarm_warning_aloud
+         1790038026.846  1891  1891 D CameraAlarm: resolved resource: 2131296260
+         1790038026.846  1891  1891 D CameraAlarm: prepare result: success
+         1790038026.846  1891  1891 D CameraAlarm: play result: success
+         1790038026.847  1891  1891 I CameraAlarm: AUDIO_STARTED: token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e
+         1790038026.850  1891  1891 I CameraAlarm: AUDIO_STARTED token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e epoch_ms=1790038026850 elapsed_ms=130850 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=1790038024594 delay_ms=3000 overdue_ms=2256 
+         1790038026.850  1891  1891 I CameraAlarm: ALARM_TIMING runtime_started_ms=52 token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e
+         1790038026.852  1891  1891 I CameraAlarm: FULLSCREEN_INTENT_SENT: token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e
+         1790038026.872  1891  1891 I CameraAlarm: Direct startActivity called for token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e
+         1790038028.991  1891  1891 I CameraAlarm: NOTIFICATION_RECEIVED: pkg=com.personal.fakecamera id=1000
+         1790038028.991  1891  1891 I CameraAlarm: NOTIFICATION_RECEIVED token=d37b0171-58a7-4175-9129-fb26717e7ff0 epoch_ms=1790038028991 elapsed_ms=132991 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=null delay_ms=null overdue_ms=null package=com.personal.fakecamera key=0|com.personal.fakecamera|1000|null|10196
+         1790038029.009  1891  2969 I CameraAlarm: TRIGGER_MATCHED token=d37b0171-58a7-4175-9129-fb26717e7ff0 epoch_ms=1790038029009 elapsed_ms=133009 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=null delay_ms=null overdue_ms=null rule=reboot-e2e package=com.personal.fakecamera
+         1790038029.010  1891  2969 D CameraAlarm: decision=IGNORED_DUPLICATE source=com.personal.fakecamera
+         1790038041.885  1891  1891 I CameraAlarm: NOTIFICATION_RECEIVED: pkg=com.personal.fakecamera id=1001
+         1790038041.886  1891  1891 I CameraAlarm: NOTIFICATION_RECEIVED token=1b8c61eb-936b-49f0-96c7-2e121bc10f02 epoch_ms=1790038041886 elapsed_ms=145886 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=null delay_ms=null overdue_ms=null package=com.personal.fakecamera key=0|com.personal.fakecamera|1001|null|10196
+         1790038041.914  1891  2968 I CameraAlarm: TRIGGER_MATCHED token=1b8c61eb-936b-49f0-96c7-2e121bc10f02 epoch_ms=1790038041914 elapsed_ms=145914 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=null delay_ms=null overdue_ms=null rule=reboot-e2e package=com.personal.fakecamera
+         1790038041.944  1891  2968 D CameraAlarm: decision=SUPPRESSED_RINGING source=com.personal.fakecamera
+         1790038042.175  1891  1891 I CameraAlarm: NOTIFICATION_RECEIVED: pkg=com.personal.fakecamera id=2147483647
+         1790038042.176  1891  1891 I CameraAlarm: NOTIFICATION_RECEIVED token=669a6e41-469a-4771-abea-abab0f8adaa7 epoch_ms=1790038042176 elapsed_ms=146176 session=86a81393-c694-4b34-9b2c-5b133a4c1b59 deadline_ms=null delay_ms=null overdue_ms=null package=com.personal.fakecamera key=0|com.personal.fakecamera|2147483647|ranker_group|10196|ranker_group
+         1790038042.199  1891  2968 D CameraAlarm: decision=IGNORED_NO_RULE_MATCH source=com.personal.fakecamera
+         1790038087.053  1891  1891 I CameraAlarm: STOP_RECEIVER_FIRED: token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e
+         1790038087.194  1891  1891 D CameraAlarm: runtime stopped token=62b25d3f-2a9f-42e2-882d-ad0a27546e2e

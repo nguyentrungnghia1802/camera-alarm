@@ -1,3 +1,25 @@
+# Current release closure — 2026-09-22
+
+**NOT READY FOR RELEASE.** Production milestone `1bf4736`, final harness/build `21e7516`, main, no push. This checklist supersedes historical completion/open states below; details in [final-release-report.md](../review/final-release-report.md).
+
+- [x] FV-01 remove unrelated raw key/tag trace; privacy regression.
+- [x] FV-02 shared EN/VI Activity/window, Service/action and message locale; dialog/bottom-sheet/snackbar/live-action regression.
+- [x] FV-03 failure owner sourcePackage/ruleId/alarmToken retained across retirement/retry/dispatch; regression.
+- [x] FV-04 cold/warm reproduced, OS background queue #47 measured; foreground-priority user STOP fixes dispatch; same timeout retained.
+- [x] Full clean/test --rerun-tasks/lint/assembleDebug/:app:assembleRelease/:app:assembleAndroidTest PASS (284 unit executions).
+- [x] Final API31/33/34/36 instrumentation: 27 PASS + 1 intentional fixture skip per API, zero failures/errors.
+- [x] Actual local backup/clear/restore E2E; settings-only restore, no history/runtime/token/phantom alarm. Real cloud/OEM transport NOT VERIFIED.
+- [x] Signed APK v2/v3 signature, SHA256, debuggable=false, API36 fresh install/3 smoke tests, versionCode 1→2 upgrade preserving English, synthetic listener trigger/STOP/Open Camera PASS. Real-camera signed trigger remains NOT VERIFIED.
+- [ ] Samsung A50 physical certification and real camera trigger — no device connected; NOT VERIFIED.
+- [ ] Physical EN/VI, font/layout, speaker/vibration and OEM matrix; NOT VERIFIED.
+
+No matcher ANY/ALL or core alarm architecture replacement. Valid existing work/evidence and untracked phone_now.png retained. Historical records follow.
+
+---
+
+> **Final verification update — 2026-09-22, SHA 2bd97df87fc5e1275582fa0d962eb3309bb7eab0:** NOT VERIFIED / NOT READY FOR RELEASE. Verification-only; no implementation/test changes or push. Build/unit/lint/assembly PASS; instrumentation API33/34/36 PASS, API31 cold STOP timeout reproduced (warm control PASS does not close it). See [final release report](../review/final-release-report.md) and [verification evidence](../review/hardening-verification.md).
+>
+> Open checklist: [ ] FV-01 raw wrong-package notification key/tag in release logging; [ ] FV-02 runtime selected-language inconsistency; [ ] FV-03 failure history source/token correlation; [ ] FV-04 API31 cold STOP timeout disposition; [ ] Samsung A50 live/real-camera certification; [ ] physical UI matrix; [ ] actual backup/restore; [ ] current signed fresh/upgrade/trigger/STOP/Open Camera. Xiaomi physical validation: NOT VERIFIED. Historical completion records below do not close these current gates.
 # Camera Alarm — Consolidated Task Plan
 
 > **Source of truth mới:** file này.

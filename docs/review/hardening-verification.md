@@ -1,3 +1,80 @@
+# Current release fixes — 2026-09-22
+
+**NOT READY FOR RELEASE — physical gates remain open.** Production milestone `1bf4736`, final harness/build `21e7516`, main, no push. This section supersedes all earlier findings/status below.
+
+FV-01 raw notification key/tag logging, FV-02 selected-language propagation/cached dialog resources, FV-03 failure source/rule/token correlation and FV-04 API31 cold STOP background-queue starvation are fixed with regression coverage. No ANY/ALL or core architecture change. Affected JVM and EN/VI runtime tests PASS; cold STOP before FAIL/warm PASS, fixed cold PASS at 462ms send-to-stop without increasing timeout.
+
+Full sequential clean/test/lint/debug/release/androidTest gates PASS: 284 unit executions, no failures; lint 0 errors, 93 app/14 fake-camera warnings. Final API31/33/34/36 XML: each 28 cases = 27 PASS + 1 intentional fixture skip, no failure/error (108 executed PASS total).
+
+Backup/restore: actual API31 LocalTransport E2E PASS, including Ringing fixture backup, package clear, restore, byte-identical settings and no database/history/runtime restoration. New runtime Idle, old token absent. Uses documented local encrypted-capability simulation; real cloud/device transfer/OEM NOT VERIFIED. Production exclusion policy unchanged.
+
+Signed release v2/v3 signature PASS, debuggable=false; SHA256 `A6FEB6CCBD0163A34ACA3086C6DBBA8A8F7B4410662F27D7A1879C9C8DC8DE2F`. API36 fresh install and release-target 3/3 smoke PASS; real versionCode 1→2 upgrade retained firstInstallTime/English. Synthetic Fake Camera listener trigger, production STOP and Open Camera PASS with settled service/audio cleanup. Real camera/vendor/cloud signed trigger NOT VERIFIED.
+
+Samsung A50 absent in live ADB; every requested physical certification item and real camera/cloud trigger NOT VERIFIED. Xiaomi physical validation: NOT VERIFIED. Pre-existing phone_now.png preserved; no push.
+
+See [current final release report](final-release-report.md) and [durable evidence](evidence/release-fixes-20260922/README.md) for measured root causes, XML counts, protocol, artifact hashes and boundaries. Older records below are historical.
+
+---
+
+# FINAL VERIFICATION — 2026-09-22 (current code)
+
+**NOT VERIFIED / NOT READY FOR RELEASE**
+
+This section supersedes historical release-readiness conclusions below. Audited SHA: `2bd97df87fc5e1275582fa0d962eb3309bb7eab0`, branch main, version 1.1.0 (2). Verification only: no production/test/config changes, no test weakening, no push. Initial tree contained only untracked `phone_now.png`; preserved.
+
+Full per-group assessment, reproduction steps, timestamps and proposed fix directions: [final-release-report.md](final-release-report.md). Durable selected evidence: [evidence/final-2bd97df](evidence/final-2bd97df/). Full local logs: `C:/Windows/Temp/camera-alarm-final-2bd97df-20260922/`.
+
+## Commands / automated gates
+
+Run sequentially from repository root:
+
+```powershell
+.\gradlew.bat clean
+.\gradlew.bat test --rerun-tasks
+.\gradlew.bat lint
+.\gradlew.bat assembleDebug
+.\gradlew.bat :app:assembleRelease
+.\gradlew.bat :app:assembleAndroidTest
+$env:ANDROID_SERIAL='emulator-5554'
+.\gradlew.bat :app:connectedDebugAndroidTest
+```
+
+First six gates PASS. Unit XML: 135 app + 5 fake-camera per variant, 280 total executions, no failures/errors/skips. Lint: 0 errors, 92 app warnings, retained. Release assembly is unsigned, not a signed-release certification.
+
+Instrumentation was run on one AVD at a time; exact access granted before suite, POST_NOTIFICATIONS on API33+, FSI app-op on API34+. Each XML has 26 cases including one intentionally skipped RebootScenarioPreparation fixture.
+
+| API / Android / model | Suite result |
+|---|---|
+| 31 / 12 / sdk_gphone64_x86_64 | FAIL: 24 pass, 1 STOP timeout, 1 skip |
+| 33 / 13 / sdk_gphone64_x86_64 | PASS: 25 pass, 1 skip |
+| 34 / 14 / sdk_gphone64_x86_64 | PASS: 25 pass, 1 skip |
+| 36 / 16 / sdk_gphone64_x86_64 | PASS: 25 pass, 1 skip |
+
+API31 same unchanged isolated AlarmStopInstrumentedTest failed again after cold boot (13.358s); warm control passed (2.331s). Original failure is not erased. First failure log: audio 07:32:18.638, timeout 07:32:30.786, STOP receiver 07:32:34.459, runtime stopped 07:32:34.461. Delay is before callback handling; emulator/test scheduling versus app causality is unresolved. No test timeout was changed. See retained XML and `api31-stop-*` logs.
+
+## Functional evidence and open gates
+
+- API34 actual Fake Camera notification → per-rule Human match → Pending → AlarmManager → receiver → FGS → MediaPlayer started / vibrator running: PASS bounded synthetic-source E2E. Token `5e48f4af-8ee7-4382-bbe6-6f9f91a26edf`; registration 1790036839517 → receiver 1790036844523 (~5s), audio 1790036844673. Burst suppresses legitimate Pending once, no duplicate or deadline extension. `min_futurity=+5s0ms` observed separately. Not real camera hardware/cloud certification.
+- View Camera stops runtime and opens `com.personal.fakecamera/.MainActivity`; screen-off alarm opens AlarmActivity; STOP clears service/audio/vibration. Warm token-safe STOP tests pass, API31 cold failure remains open.
+- Rules/settings logic, persistence/default/reset/migration tests PASS. UI picker/search/per-rule source and keyword edit/save exercised. Current E2E uses 3s delay, always-active, cooldown 0; 600s/22:30–06:00 defaults verified by tests, not a physical overnight/cooldown cycle.
+- Permission probes: exact deny retires Pending; listener disallow records incomplete readiness and no callbacks, regrant reconnects; POST/FSI deny degrades to audio without full-screen and exposes Main STOP. Permissions restored. Physical battery/OEM flows NOT VERIFIED.
+- Normal history correlation, retention/pagination tests PASS. Wrong-package probe not persisted; logging privacy and failure attribution FAIL as below. Physical clear-history UI NOT VERIFIED.
+- Boot/recovery affected tests pass on completed matrix (only STOP test fails). Current API34 boot13: PIN unlock without opening Camera Alarm, BOOT_RECONCILED monitoring=true/exact=true, Fake Camera token `62b25d3f-2a9f-42e2-882d-ad0a27546e2e`, OS registration 1790038021693 → receiver 1790038026698 → audio 1790038026850, MediaPlayer started. Next unique notification SUPPRESSED_RINGING, no stale Pending/retry. POST permission was false in this reboot probe (audio still works), so no claim of post-reboot FSI/notification action certification. Setup boot11 exact=false is retained separately; app-op persisted with write-settings before successful boot13. STOP performed afterward, emulator PIN removed and permissions restored. Prior same-SHA process-kill evidence retained in root report. No Direct Boot/USER_UNLOCKED receiver; pre-unlock inactivity is expected.
+- ADB only exposes emulator; Samsung A50 live model/API/Android/One UI and ALL physical certification items NOT VERIFIED. Historical SM-A505F data is not current evidence. Xiaomi physical validation: NOT VERIFIED.
+- API34 normal-size/light plus 720x1280/density320/font1.5/dark smoke performed: Main, Rules/editor to Save, Settings, History pagination (29 rows, 2 pages) and Clear confirmation/empty state. Layout controls remained usable in sampled screens; selected-language consistency FAIL including History dialog. Device overrides restored. A50/full language/font/dark/small-screen matrix NOT VERIFIED.
+- Backup allowlist reviewed; actual restore NOT VERIFIED (manager disabled; backupnow returns Backup is not allowed).
+- No current signed production APK at documented output path; signature/fresh/upgrade/real-camera signed gates NOT VERIFIED. Unsigned SHA256 `4826CB871AEE0D2C2F080D07284DD50D497AFB8F5021428640BF3575B08AAA8B`.
+
+## Findings retained without implementation changes
+
+1. **FV-01 / P2:** CameraNotificationListener logs raw notification key before filtering; wrong-package synthetic tag appears, including with monitoring off. Release dex retains logging call. Title/body leakage not observed; tag can contain private data. Retained canary log and release bytecode.
+2. **FV-02 / P2:** selected Vietnamese applies to Main/editor but keyword dialog, alarm actions and AlarmActivity show English on English system. Retained screenshots. Resource tests do not test runtime language propagation across contexts.
+3. **FV-03 / P2:** exact-denial failure emits extra history row with legacy global source and null rule/token despite a different matched per-rule package. Retained synthetic DB rows and source references.
+4. **FV-04 / OPEN:** repeatable API31 cold STOP timeout, warm control PASS; root cause not established, release gate unresolved.
+
+No fixes made. The following older sections are historical records, not current release approval.
+
+---
 # Camera Alarm Release Hardening Verification
 
 ## Phase 0 Baseline — 2026-09-21

@@ -1,147 +1,76 @@
-# Camera Alarm 1.1.0 — Final Release Audit
+# Release hardening closure — 2026-09-22
 
-Date: 2026-09-21
+**Verdict: NOT READY FOR RELEASE.** Code defects FV-01 through FV-04 are fixed; physical Samsung A50 and a real camera/cloud trigger cannot be certified without connected hardware. Emulator/synthetic-source evidence is not promoted to physical PASS.
 
-Branch: `main`
+Production milestone: `1bf4736`; final test-harness/build milestone: `21e7516` on `main`, version 1.1.0 (2). Existing documentation/evidence and `phone_now.png` were preserved. No push, reset, matcher ANY/ALL change or alarm architecture replacement.
 
-Release code commit: `c16545666ebc713bb8f5f2416f531af807da423b`
+## Fixed defects
 
-Release identity: versionCode `2`, versionName `1.1.0`
-
-## Overall status
-
-| Phase | Status | Evidence boundary |
+| Finding | Root cause and fix | Regression |
 |---|---|---|
-| Phase 1 | PASS | All original High implementation gates closed; clean build/test/lint gates pass |
-| Phase 2 | PASS | Room schema 2, explicit 1-to-2 migration, unique priority contract, on-device migration tests |
-| Phase 3 | PASS | Rule V2 complete and covered by unit/instrumentation tests |
-| Phase 4 | PASS | Settings V2 defaults, legacy preservation, reset, and persistence verified |
-| Phase 5 | PASS | Product-integration gate and layout exercise passed |
-| Phase 6 | NOT VERIFIED overall | Final API 31/33/34/36 matrix PASS; Samsung A50 and Xiaomi physical certification not run |
-| Phase 7 | PARTIAL | Implementation and affected final matrix PASS; end-to-end Backup Manager restore NOT VERIFIED because the local transport rejected the release package |
-| Phase 8 | PARTIAL | Clean gates, signing, fresh install, upgrade, and signed Test Alarm/STOP PASS; a real camera notification on the signed build is NOT VERIFIED |
+| FV-01 privacy | Listener traced raw notification key before package filtering; key embeds arbitrary tag. Trace now emits package/id only, with independent UUID. Payload/key/tag never enter unrelated-notification trace. | NotificationTracePrivacyTest; existing source-filter persistence tests |
+| FV-02 EN/VI | Main-only composition locale left Activity/dialog cached Resources and Service/application lookup on system language. Shared localized Activity resources, recreation on language change preserving saved state, selected-locale message/Service lookup, active notification action refresh. | SelectedLanguageInstrumentedTest: EN/VI dialog, bottom sheet, snackbar, Activity lookup and live notification actions |
+| FV-03 failure history | RecordFailure lacked owner snapshot; factory used global source and null correlation. Required TriggerSnapshot flows from retirement/dispatch/reducer into factory, with no global fallback. | Factory lifecycle assertions + permission/schedule/watchdog/dispatch/retry-exhaustion owner tests |
+| FV-04 API31 STOP | User STOP PendingIntent entered OS background broadcast queue behind cold-boot work. It was pending at queue #47, with no receiver dispatch. All user STOP broadcasts now request foreground receiver priority. | Cold before FAIL twice / warm before PASS; fixed cold PASS; unchanged 10-second STOP assertion, token ownership tests retained |
 
-## Original review issues
+API31 measured fixed cold timeline: send 08:23:12.585 → receiver 08:23:12.849 → runtime stopped 08:23:13.047 (264ms to receiver, 462ms to stop). Before fix, send returned in 13–30ms but receiver was never entered within 10s. Main-thread idle and final direct-service cleanup distinguish this from test rendering/receiver/service delay. [Broadcast priority API](https://developer.android.com/reference/android/content/Intent#FLAG_RECEIVER_FOREGROUND).
 
-| Issue | Final status | Resolution |
-|---|---|---|
-| ISSUE-01 Instrumentation gate broken | CLOSED | Production retention API is tested; AndroidTest builds and runs |
-| ISSUE-02 Wrong-package content persisted | CLOSED | Wrong-package/monitoring-off events are excluded and legacy rows removed |
-| ISSUE-03 Blocking DataStore on FGS start | CLOSED | Alarm runtime uses an immutable in-memory snapshot on the critical path |
-| ISSUE-04 Listener recovery component toggle | CLOSED | Bounded `requestRebind` recovery with no component mutation |
-| ISSUE-05 Current release device matrix | PARTIAL / RELEASE GATE OPEN | API 31/33/34/36 PASS on final code; Samsung/Xiaomi physical validation missing |
-| ISSUE-06 History contract mismatch | CLOSED | Rule/token/source lifecycle correlation is carried by `TriggerSnapshot` |
-| ISSUE-07 Test Alarm conflicts with production | CLOSED | Single ownership policy and STOP priority are regression-tested |
-| ISSUE-08 Backup may export notification data | CLOSED for policy | Settings-only allowlist; Room/history/runtime excluded. Actual restore remains NOT VERIFIED |
-| ISSUE-09 Battery optimization flow incomplete | CLOSED | Policy-safe settings route, fallback, and visible failure messaging |
-| ISSUE-10 Localization incomplete | CLOSED | EN/VI resources and locale instrumentation; signed UI language persistence verified |
-| ISSUE-11 Rule edit changes tie-break | CLOSED | Stable creation time plus explicit unique priority/swap contract |
-| ISSUE-12 Exported boot receiver | CLOSED | Non-exported receiver plus fixed action allowlist |
-| ISSUE-13 Duplicate/deprecated full-screen paths | CLOSED | Service is sole launch owner; deprecated wake/priority calls removed |
-| ISSUE-14 Logic-replica tests | CLOSED for scoped debt | Production mappers/policies/controllers are exercised directly |
-| ISSUE-15 Lint/dependency/release packaging | CLOSED with accepted warnings | Lint PASS; warnings triaged; release identity, signing, hash, and install gates complete |
+## Full gates
 
-No unresolved Critical or High implementation defect was found on the final candidate. The open release gates are missing physical/environmental evidence, not silently promoted PASS results.
-
-## Rule V2
-
-- Maximum normal rules: 3.
-- Priority: unique 1–3; occupied priority swaps atomically; delete gaps are preserved.
-- ANY/ALL matching: PASS.
-- Keyword editor: normalized add/edit/delete, blank and duplicate rejection: PASS.
-- Per-rule source: PASS, including multiple packages and same-package deterministic priority.
-- Vietnamese suggested template: PASS.
-- Migration: explicit Room 1-to-2 migration and on-device migration tests PASS.
-
-## Settings V2
-
-- Default sound: Loud Warning 1.
-- Default cooldown: 600 seconds.
-- Default schedule: daily 22:30–06:00, start-inclusive/end-exclusive.
-- Reset defaults: atomic and does not delete rules/history or mutate permissions.
-- Basic/Advanced UI: PASS in EN/VI.
-- Existing-user migration: missing V1 fields retain their prior effective values.
-- Signed upgrade 1.0 to 1.1.0 preserved the saved English selection and `firstInstallTime`.
-
-## Verification
-
-Final commands were run in the required order on the release code commit:
+Executed sequentially after source milestone:
 
 | Gate | Result |
 |---|---|
-| `.\gradlew.bat clean` | PASS after stopping a Gradle daemon that held a `fake-camera` lint-cache JAR |
-| `.\gradlew.bat test --rerun-tasks` | PASS; 123 tests per debug/release variant, 0 failure/error/skip |
-| `.\gradlew.bat lint` | PASS; 0 errors, 92 triaged warnings |
-| `.\gradlew.bat assembleDebug` | PASS |
-| `.\gradlew.bat :app:assembleRelease` | PASS |
-| `.\gradlew.bat :app:assembleAndroidTest` | PASS |
+| `./gradlew clean` | PASS |
+| `./gradlew test --rerun-tasks` | PASS: app 137 + fake-camera 5, both debug/release = 284 executions, no failure/error/skip |
+| `./gradlew lint` | PASS: 0 errors, app 93 warnings and fake-camera 14 warnings; no suppression or warning-free claim |
+| `./gradlew assembleDebug` | PASS |
+| `./gradlew :app:assembleRelease` | PASS |
+| `./gradlew :app:assembleAndroidTest` | PASS |
 
-Final instrumentation after all production changes:
+## API matrix
 
-| Target | Result |
-|---|---|
-| API 31 / Android 12 | PASS, 19/19 |
-| API 33 / Android 13 | PASS, 19/19 |
-| API 34 / Android 14 | PASS, 19/19 |
-| API 36 / Android 16 | PASS, 19/19 |
-| Samsung A50 (`SM-A505F`) | NOT VERIFIED — disconnected from ADB before physical certification |
-| Xiaomi | Implementation COMPLETE; physical validation NOT VERIFIED — no device available |
+| API | Final XML result | Failures / errors |
+|---|---|---|
+| 31 | 27 PASS + 1 intentional fixture skip | 0 |
+| 33 | 27 PASS + 1 intentional fixture skip | 0 |
+| 34 | 27 PASS + 1 intentional fixture skip | 0 |
+| 36 | 27 PASS + 1 intentional fixture skip | 0 |
 
-The matrix includes alarm scheduling, STOP routing, Room/migration, Rule V2, Settings V2, history mapping, manifest exposure, localization resources, and integration paths. It does not substitute for a true camera notification, OEM background policy, reboot, lock-screen, or Doze exercise on the missing physical devices.
+AVDs are run serially, cold boot without snapshots, 1536MB/2 cores, headless/no-audio. Exact access and applicable notification/full-screen permissions are provisioned. Audio service observations do not certify physical speakers/vibration or OEM delivery guarantees. The explicit RebootScenarioPreparation fixture is intentionally skipped in normal suites.
 
-## Reliability and defects fixed
+## Samsung A50 / real camera
 
-- API 36 originally exposed a real foreground-service/full-screen failure. Commit `0d76d41` fixed foreground promotion and STOP dispatch; the full suite passed afterward and again after Phase 7 cleanup.
-- Alarm lifecycle history could lose Rule V2 correlation through asynchronous lookup. Commit `31d3465` carries the original snapshot through fired/stopped/cancelled events.
-- Backup previously lacked an explicit privacy boundary. Commit `91168b8` restricts both legacy and Android 12+ backup paths to durable settings.
-- Battery guidance could request an exemption directly and settings failures could be silent. Commit `04e0b62` uses policy-safe routes, bounded fallbacks, and localized visible errors.
-- Boot/full-screen cleanup removed third-party receiver exposure, duplicate activity launch ownership, deprecated wake-lock/notification-priority use, and hard-coded user text while retaining the API 36-proven service fallback.
-- The first final `clean` attempt hit an open Gradle lint-cache file. Stopping the daemon fixed the environmental lock; the rerun passed. This is not recorded as a product defect.
+**NOT VERIFIED**: no physical device in ADB. Background, screen locked/off, real camera notification, reboot + PIN/no Camera Alarm launch, Pending recovery, physical full-screen/audio/vibration, STOP/Open Camera, 600-second cooldown, listener reconnect and the original incorrect Pending symptom all remain unverified on A50. Historical handset results do not certify final code. Xiaomi physical validation: NOT VERIFIED.
 
-STOP from the signed API 36 Test Alarm was checked at runtime: `AlarmActivity` opened, the foreground service and alarm notification existed, and STOP returned to `MainActivity` while removing both the service and notification. A real camera-source trigger on the signed APK remains NOT VERIFIED.
+## Backup/restore
 
-## Privacy and security
+**PASS for actual API31 local test transport E2E on final source.** Enabled Backup Manager and selected LocalTransport. The initial rejection came from the transport lacking the encryption capability required by production cloud policy. Configured Android's documented local-test `is_encrypted=true`; no application policy was relaxed. Ran backup while the synthetic fixture contained settings, rule/history and a Ringing runtime token; then force-stopped, cleared the disposable emulator's package data and restored dataset 1. Package backup Success; restoreFinished 0.
 
-- Wrong-package and monitoring-off notification content is not persisted.
-- History retention remains 3 days, at most 100 rows, and at most 10 suppressed/ignored rows.
-- Backup exports only `camera_alarm_settings.preferences_pb`; Room/history, rules, notification preview, Pending/Ringing state, token, owner nonce, and runtime metadata are excluded.
-- `BootReceiver` is non-exported and accepts only the fixed boot/package action set.
-- Signing secret is outside Git and protected for the current Windows user.
+Immediately after restore and before opening the app, only the settings file existed: database/history/runtime excluded. After launch, settings were byte-identical (SHA256 `539962372cb365fbd390dad604c8678f4db16e937f1cb47ff282edc605d29d76`), runtime initialized to Idle, and old Ringing token/nonce/preview were absent. Service/audio evidence shows no restored alarm. Original transport/test parameter/disabled state restored afterward.
 
-The API 36 local Backup Manager transport returned `ERROR_PREFLIGHT` and no restorable app dataset, so an actual clear-and-restore cycle was not performed. Policy/build verification is PASS; restore behavior is NOT VERIFIED.
+Actual Google cloud, device-to-device and OEM transports: **NOT VERIFIED**. Local simulated encryption capability is not proof of cloud encryption. [Official local backup test procedure](https://developer.android.com/identity/data/testingbackup).
 
-## Signed artifact
+## Signed release
 
-- Path: `app/build/outputs/apk/release/camera-alarm-1.1.0-signed.apk` (generated, not committed).
-- Size: 13,655,679 bytes.
-- Signature: APK Signature Scheme v2 and v3 PASS; one RSA-4096 signer.
-- Certificate SHA-256: `E6F06F695B13D98150DBA8A718B923F54D93DDD47901F47C64F27B9586F93900`.
-- APK SHA-256: `5487B9A063748B6BDE96858D7865DAAB69C4A0F0190A54FD2096C71B9D98E6C9`.
-- Fresh install/cold launch on API 36: PASS.
-- Same-key versionCode 1 to versionCode 2 upgrade: PASS; persisted language retained.
-- Signed Test Alarm/full-screen/STOP: PASS.
-- Signed real camera notification: NOT VERIFIED.
+Artifact: `app/build/outputs/apk/release/camera-alarm-1.1.0-signed.apk`, version 1.1.0 (2), `debuggable=false`.
 
-## Remaining limitations
+- Existing release certificate SHA256: `E6F06F695B13D98150DBA8A718B923F54D93DDD47901F47C64F27B9586F93900`; APK v2/v3 signature verification PASS.
+- APK SHA256: `A6FEB6CCBD0163A34ACA3086C6DBBA8A8F7B4410662F27D7A1879C9C8DC8DE2F`.
+- Fresh API36 install PASS: target package absence recorded before installation. Release-signed instrumentation ran against the actual non-debuggable release target: Test Alarm/STOP plus EN/VI dialogs/sheet/snackbar/active actions, 3/3 PASS. The test APK is verification-only and is not the distributed artifact.
+- Upgrade PASS: historical `0d76d41` versionCode 1 APK built in an isolated temporary archive and signed with the same key; saved English through Settings, then `adb install -r` to versionCode 2. Both dumps report firstInstallTime `2026-09-22 08:59:42`; English persisted in the new UI. Main repository was not checked out/reset.
+- Signed listener E2E PASS for **synthetic Fake Camera source**: a real Android notification from `com.personal.fakecamera` matched rule `reboot-e2e`/ANY/Human and reached Pending → Ringing → FGS/audio. Example token `7735fee2-9b9b-4ea0-b77a-64f0088cdd40`: received 09:04:52.272, registered 09:04:52.606, receiver 09:04:57.607, audio 09:04:57.731. No recovery retry. Fixture used 3s delay, always-active and cooldown 0; this is not a physical 600s cooldown/overnight certification.
+- Notification STOP PASS for a production token. Open Camera PASS: foreground activity settled on `com.personal.fakecamera/.MainActivity`, alarm service removed and no active alarm MediaPlayer afterward. Settled hierarchy and service/audio dumps support this result.
+- Release privacy canaries with monitoring ON and OFF: shell callback confirmed; title/body/tag canaries absent from CameraAlarm logs. Signed DEX helper reads only package/id. Signed VI keyword dialog, notification actions and AlarmActivity have retained screenshots/XML; AlarmActivity shows Phát hiện lúc / Xem Camera / Tắt cảnh báo, and Activity STOP cleans up service/audio; EN/VI automated runtime coverage is above.
+- Real camera/vendor/cloud trigger on signed APK: **NOT VERIFIED**. Synthetic listener E2E and Test Alarm do not replace it.
 
-- Samsung A50 physical background, locked/off-screen, Doze, reboot/listener recovery, real-camera, audio/vibration, Open Camera, cooldown, and STOP matrix is NOT VERIFIED.
-- Xiaomi physical validation is NOT VERIFIED.
-- End-to-end cloud/device-transfer restore is NOT VERIFIED; the local emulator transport rejected the release package during preflight.
-- A real camera application notification on the signed release was not available.
-- The headless API 36 AVD returned black screenshot frames. UI hierarchy interaction, EN/VI persistence, font scale 1.5, and dark/light switching were exercised; final pixel-level screenshot review was not possible. Phase 5 retains the earlier 360 dp/font-1.5 layout evidence.
-- 92 non-blocking lint warnings remain by explicit triage; dependency upgrades are deferred to a separate compatibility batch.
 
-## Git
+## Evidence and final boundary
 
-- Branch: `main`.
-- Release code commit: `c16545666ebc713bb8f5f2416f531af807da423b`.
-- Final audit documentation: the commit containing this report.
-- Expected post-audit working tree: clean.
-- Expected origin delta after the audit commit: 17 commits ahead, 0 behind.
-- Push: not performed.
+Durable evidence: [release-fixes-20260922](evidence/release-fixes-20260922/README.md), including full gate logs, XML counts, cold/warm STOP probes and broadcast dump, backup/restore files and assertions, signature/hash and signed smoke evidence. Signing key and DPAPI secret stay outside the repository.
 
-## Final verdict
+All code changes are committed on main. Final documentation commit and working-tree status are reported with the delivered artifact. `phone_now.png` is pre-existing and intentionally remains untracked. No push.
 
-**NOT READY FOR RELEASE — RELEASE HOLD.**
+Release remains blocked by unavailable Samsung A50 physical certification and real-camera signed trigger verification. Cloud/OEM backup transport and full physical EN/VI/layout/audio matrix are explicit remaining limits. Historical records are linked separately and do not override this current assessment.
 
-The code, automated gates, four-API emulator matrix, signed artifact, fresh install, upgrade, and signed Test Alarm/STOP are complete. The Definition of Done explicitly requires Samsung A50 physical validation, and the signed real-camera path is also unverified. Those results cannot be inferred from emulator or Test Alarm evidence.
+Historical audited snapshot and original reproductions are preserved in [the 2bd97df verification report](final-release-report-2bd97df.md).

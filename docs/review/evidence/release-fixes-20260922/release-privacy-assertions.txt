@@ -1,0 +1,2 @@
+Release monitoring ON: callback confirmed; title/body/tag canaries absent from app log PASS
+Release monitoring OFF: callback confirmed; title/body/tag canaries absent from app log PASS

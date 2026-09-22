@@ -1,0 +1,7 @@
+databases:
+
+files:
+datastore
+
+files/datastore:
+camera_alarm_settings.preferences_pb

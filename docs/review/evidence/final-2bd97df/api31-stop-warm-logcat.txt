@@ -1,0 +1,48 @@
+09-22 07:41:25.998  2233  2660 I TestRunner: run started: 1 tests
+09-22 07:41:26.001  2233  2660 I TestRunner: started: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 07:41:26.232  2233  2233 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=test-first
+09-22 07:41:26.236  2233  2233 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=test-first epoch_ms=1790037686236 elapsed_ms=39659 session=41ebff8f-ebdb-4c12-a205-6139ff0258d6 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 07:41:26.255  2233  2233 I CameraAlarm: ALARM_TIMING foreground_ms=99 token=test-first
+09-22 07:41:26.479  2233  2233 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 07:41:26.479  2233  2233 D CameraAlarm: Alarm sound:
+09-22 07:41:26.479  2233  2233 D CameraAlarm: selected key: alarm_warning_aloud
+09-22 07:41:26.479  2233  2233 D CameraAlarm: resolved resource: 2131296260
+09-22 07:41:26.479  2233  2233 D CameraAlarm: prepare result: success
+09-22 07:41:26.479  2233  2233 D CameraAlarm: play result: success
+09-22 07:41:26.479  2233  2233 I CameraAlarm: AUDIO_STARTED: token=test-first
+09-22 07:41:26.482  2233  2233 I CameraAlarm: AUDIO_STARTED token=test-first epoch_ms=1790037686482 elapsed_ms=39906 session=41ebff8f-ebdb-4c12-a205-6139ff0258d6 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 07:41:26.482  2233  2233 I CameraAlarm: ALARM_TIMING runtime_started_ms=327 token=test-first
+09-22 07:41:26.701  2233  2233 I CameraAlarm: ALARMACTIVITY_CREATED: token=test-first
+09-22 07:41:38.391  2233  2660 E TestRunner: failed: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 07:41:38.392  2233  2660 E TestRunner: ----- begin exception -----
+09-22 07:41:38.392  2233  2660 E TestRunner: kotlinx.coroutines.TimeoutCancellationException: Timed out waiting for 10000 ms
+09-22 07:41:38.392  2233  2660 E TestRunner: 	at kotlinx.coroutines.TimeoutKt.TimeoutCancellationException(Timeout.kt:188)
+09-22 07:41:38.392  2233  2660 E TestRunner: 	at kotlinx.coroutines.TimeoutCoroutine.run(Timeout.kt:156)
+09-22 07:41:38.392  2233  2660 E TestRunner: 	at kotlinx.coroutines.EventLoopImplBase$DelayedRunnableTask.run(EventLoop.common.kt:505)
+09-22 07:41:38.392  2233  2660 E TestRunner: 	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+09-22 07:41:38.392  2233  2660 E TestRunner: 	at kotlinx.coroutines.DefaultExecutor.run(DefaultExecutor.kt:105)
+09-22 07:41:38.392  2233  2660 E TestRunner: 	at java.lang.Thread.run(Thread.java:920)
+09-22 07:41:38.392  2233  2660 E TestRunner: ----- end exception -----
+09-22 07:41:38.392  2233  2660 I TestRunner: finished: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 07:41:38.429  2233  2233 D CameraAlarm: runtime stopped token=test-first
+09-22 07:41:39.356  2233  2660 I TestRunner: run finished: 1 tests, 1 failed, 0 ignored
+09-22 07:41:51.999  4273  4289 I TestRunner: run started: 1 tests
+09-22 07:41:51.999  4273  4289 I TestRunner: started: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 07:41:52.077  4273  4273 I CameraAlarm: FOREGROUND_SERVICE_STARTED: token=test-first
+09-22 07:41:52.077  4273  4273 I CameraAlarm: FOREGROUND_SERVICE_STARTED token=test-first epoch_ms=1790037712077 elapsed_ms=65501 session=a7f037dc-f211-45f9-9319-dbb037f1b697 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 07:41:52.083  4273  4273 I CameraAlarm: ALARM_TIMING foreground_ms=9 token=test-first
+09-22 07:41:52.166  4273  4273 I CameraAlarm: AUDIO_STARTED: key=alarm_warning_aloud resId=2131296260
+09-22 07:41:52.167  4273  4273 D CameraAlarm: Alarm sound:
+09-22 07:41:52.167  4273  4273 D CameraAlarm: selected key: alarm_warning_aloud
+09-22 07:41:52.167  4273  4273 D CameraAlarm: resolved resource: 2131296260
+09-22 07:41:52.167  4273  4273 D CameraAlarm: prepare result: success
+09-22 07:41:52.167  4273  4273 D CameraAlarm: play result: success
+09-22 07:41:52.167  4273  4273 I CameraAlarm: AUDIO_STARTED: token=test-first
+09-22 07:41:52.172  4273  4273 I CameraAlarm: AUDIO_STARTED token=test-first epoch_ms=1790037712171 elapsed_ms=65595 session=a7f037dc-f211-45f9-9319-dbb037f1b697 deadline_ms=null delay_ms=null overdue_ms=null 
+09-22 07:41:52.172  4273  4273 I CameraAlarm: ALARM_TIMING runtime_started_ms=98 token=test-first
+09-22 07:41:52.336  4273  4273 I CameraAlarm: ALARMACTIVITY_CREATED: token=test-first
+09-22 07:41:53.468  4273  4273 I CameraAlarm: STOP_RECEIVER_FIRED: token=test-first
+09-22 07:41:53.551  4273  4273 D CameraAlarm: runtime stopped token=test-first
+09-22 07:41:53.581  4273  4289 I TestRunner: finished: secondStartCannotReplaceStopActionForActiveAlarm(com.personal.cameraalarm.AlarmStopInstrumentedTest)
+09-22 07:41:53.584  4273  4273 D CameraAlarm: runtime stopped token=test-first
+09-22 07:41:54.330  4273  4289 I TestRunner: run finished: 1 tests, 0 failed, 0 ignored

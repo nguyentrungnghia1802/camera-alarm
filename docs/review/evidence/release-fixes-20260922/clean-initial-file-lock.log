@@ -1,0 +1,26 @@
+> Task :app:clean FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:clean'.
+> java.io.IOException: Unable to delete directory 'D:\_CODE_BANK\Project_\04_Extensions\camera-alarm\app\build'
+    Failed to delete some children. This might happen because a process has files open or has its working directory set in the target directory.
+    - D:\_CODE_BANK\Project_\04_Extensions\camera-alarm\app\build\intermediates\lint-cache\lintAnalyzeDebug\migrated-jars\androidx.compose.runtime.lint.RuntimeIssueRegistry-398cfe4c3e0a311f..jar
+    - D:\_CODE_BANK\Project_\04_Extensions\camera-alarm\app\build\intermediates\lint-cache\lintAnalyzeDebug\migrated-jars\androidx.lifecycle.lint.LiveDataCoreIssueRegistry-32b654e6cacc2c23..jar
+    - D:\_CODE_BANK\Project_\04_Extensions\camera-alarm\app\build\intermediates\lint-cache\lintAnalyzeDebug\migrated-jars
+    - D:\_CODE_BANK\Project_\04_Extensions\camera-alarm\app\build\intermediates\lint-cache\lintAnalyzeDebug
+    - D:\_CODE_BANK\Project_\04_Extensions\camera-alarm\app\build\intermediates\lint-cache\lintAnalyzeDebugUnitTest\migrated-jars\androidx.compose.ui.lint.UiIssueRegistry-15f668e0aab039cc..jar
+    - D:\_CODE_BANK\Project_\04_Extensions\camera-alarm\app\build\intermediates\lint-cache\lintAnalyzeDebugUnitTest\migrated-jars
+    - D:\_CODE_BANK\Project_\04_Extensions\camera-alarm\app\build\intermediates\lint-cache\lintAnalyzeDebugUnitTest
+    - D:\_CODE_BANK\Project_\04_Extensions\camera-alarm\app\build\intermediates\lint-cache
+    - D:\_CODE_BANK\Project_\04_Extensions\camera-alarm\app\build\intermediates
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 8s
+1 actionable task: 1 executed
